@@ -50,17 +50,17 @@ PBJRAG WebUI is a Docker-based application stack that provides a web interface f
 ┌─────────────────────────────────────────────────────────┐
 │         Qdrant Vector Database (Port 6333/6334)         │
 │                                                           │
-│   Multi-Vector Collections:                             │
+│   Multi-Vector Collections (configurable dimension):    │
 │   ┌──────────────┐ ┌──────────────┐ ┌──────────────┐  │
 │   │   Content    │ │   Semantic   │ │   Ethical    │  │
 │   │   Vectors    │ │   Vectors    │ │   Vectors    │  │
-│   │   (1024-dim) │ │   (1024-dim) │ │   (1024-dim) │  │
+│   │   (N-dim)    │ │   (N-dim)    │ │   (N-dim)    │  │
 │   └──────────────┘ └──────────────┘ └──────────────┘  │
 │                                                           │
 │   ┌──────────────┐ ┌──────────────┐                    │
 │   │  Relational  │ │    Phase     │                    │
 │   │   Vectors    │ │   Vectors    │                    │
-│   │   (1024-dim) │ │   (1024-dim) │                    │
+│   │   (N-dim)    │ │   (N-dim)    │                    │
 │   └──────────────┘ └──────────────┘                    │
 │                                                           │
 │   Persistent Storage: /qdrant/storage                   │
@@ -258,6 +258,7 @@ vectors_config = {
    - Content embedding (code)
    - Field embeddings (metadata)
    - Multiple vector spaces
+   - Dimension varies by model: BGE-M3 (1024), Jina-v2 (768)
    ↓
 9. DSCVectorStore.index_chunks()
    - Batch upload to Qdrant
@@ -407,7 +408,7 @@ open http://localhost:8501
 | Data Processing | Pandas 2.2.3 | DataFrame operations |
 | Vector DB | Qdrant 1.12.1 | Semantic search |
 | Syntax Highlighting | Pygments | Code display |
-| Embeddings | BGE-M3/Jina-v2 | Text vectorization |
+| Embeddings | BGE-M3 (1024-dim) / Jina-v2 (768-dim) | Text vectorization |
 | Container Runtime | Docker 24+ | Containerization |
 | Orchestration | Docker Compose | Multi-container |
 | Language | Python 3.11 | Application logic |

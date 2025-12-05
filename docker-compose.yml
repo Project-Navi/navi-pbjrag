@@ -14,7 +14,7 @@ services:
       - QDRANT__SERVICE__HTTP_PORT=6333
       - QDRANT__SERVICE__GRPC_PORT=6334
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:6333/healthz || exit 1"]
       interval: 10s
       timeout: 10s
       retries: 10

@@ -48,6 +48,11 @@ class MockMatchValue:
         self.value = value
 
 
+class MockMatchAny:
+    def __init__(self, any=None):
+        self.any = any
+
+
 class MockRange:
     def __init__(self, gte=None, lte=None):
         self.gte = gte
@@ -137,6 +142,7 @@ class TestDSCVectorStoreInitialization:
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
     @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
+    @patch("pbjrag.dsc.vector_store.MatchAny", MockMatchAny)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -158,6 +164,7 @@ class TestDSCVectorStoreInitialization:
     @patch("pbjrag.dsc.vector_store.Distance", MockDistance)
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
     @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
+    @patch("pbjrag.dsc.vector_store.MatchAny", MockMatchAny)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -182,6 +189,7 @@ class TestDSCVectorStoreInitialization:
     @patch("pbjrag.dsc.vector_store.Distance", MockDistance)
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
     @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
+    @patch("pbjrag.dsc.vector_store.MatchAny", MockMatchAny)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -211,6 +219,7 @@ class TestDSCVectorStoreInitialization:
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
     @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
+    @patch("pbjrag.dsc.vector_store.MatchAny", MockMatchAny)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -341,6 +350,7 @@ class TestDSCVectorStoreCollectionSetup:
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
     @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
+    @patch("pbjrag.dsc.vector_store.MatchAny", MockMatchAny)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -364,6 +374,7 @@ class TestDSCVectorStoreCollectionSetup:
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
     @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
+    @patch("pbjrag.dsc.vector_store.MatchAny", MockMatchAny)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -410,6 +421,7 @@ class TestDSCVectorStoreGracefulFallback:
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
     @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
+    @patch("pbjrag.dsc.vector_store.MatchAny", MockMatchAny)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -812,6 +824,7 @@ class TestDSCVectorStoreSearch:
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
     @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
+    @patch("pbjrag.dsc.vector_store.MatchAny", MockMatchAny)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -866,6 +879,7 @@ class TestDSCVectorStoreSearch:
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
     @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
+    @patch("pbjrag.dsc.vector_store.MatchAny", MockMatchAny)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -917,6 +931,7 @@ class TestDSCVectorStoreSearch:
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
     @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
+    @patch("pbjrag.dsc.vector_store.MatchAny", MockMatchAny)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -969,6 +984,7 @@ class TestDSCVectorStoreSearch:
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
     @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
+    @patch("pbjrag.dsc.vector_store.MatchAny", MockMatchAny)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -1020,6 +1036,7 @@ class TestDSCVectorStoreSearch:
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
     @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
+    @patch("pbjrag.dsc.vector_store.MatchAny", MockMatchAny)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -1166,6 +1183,7 @@ class TestDSCVectorStoreIndexing:
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
     @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
+    @patch("pbjrag.dsc.vector_store.MatchAny", MockMatchAny)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -1251,6 +1269,7 @@ class TestDSCVectorStoreResonance:
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
     @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
+    @patch("pbjrag.dsc.vector_store.MatchAny", MockMatchAny)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -1312,6 +1331,7 @@ class TestDSCVectorStorePhaseEvolution:
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
     @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
+    @patch("pbjrag.dsc.vector_store.MatchAny", MockMatchAny)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -1352,6 +1372,7 @@ class TestDSCVectorStorePhaseEvolution:
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
     @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
+    @patch("pbjrag.dsc.vector_store.MatchAny", MockMatchAny)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)

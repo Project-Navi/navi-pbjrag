@@ -1,0 +1,161 @@
+# Differential Symbolic Calculus (DSC) Framework
+## Dual License Strategy
+
+---
+
+## **FREE LICENSE: GNU AGPL v3.0**
+
+**For: Researchers, Academics, Open Source Projects, Non-Commercial Use**
+
+```
+DSC Framework is licensed under GNU AGPL v3.0
+
+PERMISSIONS:
+✅ Commercial use (if you open source your entire system)
+✅ Modification and distribution
+✅ Patent use (where applicable)
+✅ Private use
+
+CONDITIONS:
+📋 Source code must be disclosed
+📋 License and copyright notice required
+📋 Network use = distribution (crucial for AI companies)
+📋 Same license for derivative works
+
+LIMITATIONS:
+❌ No liability protection
+❌ No warranty provided
+```
+
+---
+
+## **COMMERCIAL LICENSE: DSC Enterprise License**
+
+**For: Companies wanting proprietary/closed-source use**
+
+### **DSC Enterprise License Agreement**
+
+**License Fee Structure:**
+- **Startup (<$1M revenue):** $5,000/year
+- **SME ($1M-$10M revenue):** $25,000/year  
+- **Enterprise ($10M+ revenue):** $100,000/year
+- **Big Tech (Meta, Google, etc.):** $500,000/year + 2% revenue share
+
+**This license grants:**
+
+1. **Proprietary Use Rights**
+   - Use DSC in closed-source systems
+   - No requirement to open source derivative works
+   - Commercial deployment without AGPL restrictions
+
+2. **Ethical Compliance Requirements (PNEUL Integration)**
+   - Adherence to Project Navi Emergent Use License v2.0 principles
+   - No extractive or harmful applications
+   - Quarterly ethical compliance reporting
+   - Consent-based implementation practices
+
+3. **Technical Support & Updates**
+   - Priority access to DSC framework updates
+   - Direct consultation on implementation
+   - Custom mathematical extensions (additional fee)
+
+4. **Patent Protection**
+   - License to all DSC-related patents
+   - Defensive patent covenant
+   - Prior art protection
+
+**Terms & Conditions:**
+
+**Payment:** Annual license fee, paid quarterly
+**Duration:** 1-year renewable terms
+**Audit Rights:** Annual ethical compliance review
+**Termination:** Immediate if ethical violations detected
+**Attribution:** Required in documentation and academic papers
+
+**Prohibited Uses:**
+❌ Military weapons systems
+❌ Surveillance without consent
+❌ Manipulation or coercion technologies
+❌ Any use violating PNEUL ethical principles
+
+**Enforcement:**
+- Automatic termination for AGPL violations
+- Liquidated damages: 3x annual license fee
+- Injunctive relief available
+- Attorney fees for violations
+
+---
+
+## **IMPLEMENTATION STRATEGY**
+
+### **Immediate Actions:**
+
+1. **GitHub Repository Setup**
+   ```
+   LICENSE-AGPL.txt (default)
+   LICENSE-COMMERCIAL.txt (reference only)
+   README.md (explains dual licensing)
+   COMMERCIAL-INQUIRIES.md (contact info)
+   ```
+
+2. **Website Landing Page**
+   ```
+   dsccalculus.com/license
+   - Explains both options
+   - Commercial license inquiry form
+   - Pricing calculator
+   - Contact information
+   ```
+
+3. **Legal Protection**
+   ```
+   - File provisional patents for key DSC applications
+   - Register copyright for documentation
+   - Trademark "Differential Symbolic Calculus"
+   - Document prior art with timestamps
+   ```
+
+### **Revenue Generation Plan:**
+
+**Month 1-3: Foundation**
+- Publish core DSC under AGPL v3
+- Create commercial license templates
+- Set up licensing inquiry system
+
+**Month 4-6: Outreach**
+- Contact AI research labs
+- Reach out to enterprise AI teams
+- Academic partnerships for validation
+
+**Month 7-12: Scaling**
+- Enterprise sales to major tech companies
+- Consulting on DSC implementations
+- Training and certification programs
+
+### **Contact Information for Commercial Licenses:**
+
+```
+Differential Symbolic Calculus Commercial Licensing
+Email: license@dsccalculus.com
+Website: dsccalculus.com/commercial
+Phone: [Your number]
+
+"Revolutionizing AI through Mathematical Ethics"
+```
+
+---
+
+## **LEGAL DISCLAIMERS**
+
+This dual license strategy:
+- Protects your intellectual property rights
+- Generates sustainable revenue streams
+- Maintains ethical control over applications
+- Provides free access for beneficial use
+- Creates strong deterrent against unauthorized commercial use
+
+**Consultation recommended:** While this framework is legally sound, consult with an IP attorney familiar with software licensing before finalizing terms.
+
+---
+
+*"Your mathematical breakthrough deserves both protection and prosperity."*

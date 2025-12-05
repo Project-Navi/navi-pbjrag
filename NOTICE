@@ -1,0 +1,25 @@
+NOTICE
+
+This software is developed by Project Navi (Neural Forge Bootstrapper).
+Copyright © 2024-2025 Project Navi. All rights reserved.
+
+Dual-licensed under:
+- GNU Affero General Public License v3.0 (AGPL-3.0-or-later), OR
+- Commercial License (PNEUL-D v2.2)
+
+See LICENSE file and docs/legal/LICENSE_README.md for full terms.
+
+---
+
+AGPL-3.0 Notice:
+If you modify and run this software as a network service, you must offer
+the complete corresponding source code to your users (AGPL-3.0 §13).
+
+For attribution requirements, see docs/legal/ATTRIBUTION_GUIDE.md.
+
+---
+
+This software includes components analyzing code using Differential Symbolic
+Calculus (DSC), developed as part of the Neural Forge project.
+
+For enhanced support opportunities, see docs/legal/ETHICAL_SUPPORT_FRAMEWORK.md.

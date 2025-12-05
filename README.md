@@ -1,5 +1,9 @@
 # 🥜🍇 navi-pbjrag
 
+[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL%203.0-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+[![License: Commercial](https://img.shields.io/badge/License-Commercial-green.svg)](docs/legal/PNEUL-D_v2.2.md)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+
 ## Peanut Butter Jelly Retrieval Augmented Generation
 
 *Where semantic chunking meets fractal code analysis, creating the perfect adhesion for your codebase.*
@@ -299,7 +303,15 @@ PBJRAG is the mathematical core that powers:
 
 ## 📄 License
 
-MIT License - because good code analysis should be shared, just like a good sandwich.
+**Dual Licensed:**
+- **AGPL-3.0** — Free for open source use ([full text](https://www.gnu.org/licenses/agpl-3.0.html))
+- **Commercial (PNEUL-D v2.2)** — For proprietary use, contact [legal@projectnavi.ai](mailto:legal@projectnavi.ai)
+
+See [LICENSE](LICENSE) and [docs/legal/](docs/legal/) for full terms.
+
+### Ethical Support Program
+
+Open source projects may qualify for enhanced support by voluntarily aligning with our ethical principles. This creates no additional license obligations — it's a separate service relationship. See [ETHICAL_SUPPORT_FRAMEWORK.md](docs/legal/ETHICAL_SUPPORT_FRAMEWORK.md).
 
 ## 🙏 Acknowledgments
 

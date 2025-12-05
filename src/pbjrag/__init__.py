@@ -1,6 +1,14 @@
 """
 PBJRAG v3: Differential Symbolic Calculus for Code Analysis
 
+Copyright (c) 2024-2025 Project Navi. All rights reserved.
+
+SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-PNEUL-D-2.2
+
+This software is dual-licensed:
+- AGPL-3.0-or-later for open source use
+- PNEUL-D v2.2 commercial license (contact legal@projectnavi.ai)
+
 A next-generation code analysis framework that understands code as living,
 evolving symbolic fields rather than static text. PBJRAG combines mathematical
 field theory with practical code analysis to provide deep insights into code

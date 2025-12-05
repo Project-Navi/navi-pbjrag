@@ -7,7 +7,7 @@ name = "navi-pbjrag"
 version = "3.0.0"
 description = "Presence-Based Jurisdictional RAG: 9-dimensional code analysis using Differential Symbolic Calculus"
 readme = "README.md"
-license = "MIT"
+license = "AGPL-3.0-or-later"
 requires-python = ">=3.10"
 authors = [
     { name = "ndspence", email = "ndspence@users.noreply.github.com" }
@@ -24,7 +24,7 @@ keywords = [
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",

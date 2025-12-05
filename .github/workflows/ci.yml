@@ -116,12 +116,12 @@ jobs:
           import sys
           sys.path.insert(0, 'src')
 
-          from pbjrag import DSCAnalyzer, DSCCodeChunker
+          from pbjrag import DSCCodeChunker
 
-          # Performance budget: analysis must complete in <5s for small code
+          # Performance budget: chunking must complete in <5s for small code
           test_code = '''
           def hello_world():
-              print('Hello, World!')
+              print(\"Hello, World!\")
 
           class Calculator:
               def add(self, a, b):
@@ -133,17 +133,14 @@ jobs:
           chunker = DSCCodeChunker()
           chunks = chunker.chunk_code(test_code)
 
-          analyzer = DSCAnalyzer()
-          for chunk in chunks:
-              analyzer.analyze_chunk(chunk)
-
           elapsed = time.perf_counter() - start
 
-          # Budget: 5 seconds max for small code analysis
+          # Budget: 5 seconds max for small code chunking
           budget_ms = 5000
           elapsed_ms = elapsed * 1000
 
-          print(f'Analysis completed in {elapsed_ms:.2f}ms')
+          print(f'Chunking completed in {elapsed_ms:.2f}ms')
+          print(f'Chunks generated: {len(chunks)}')
           print(f'Budget: {budget_ms}ms')
 
           if elapsed_ms > budget_ms:

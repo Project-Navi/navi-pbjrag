@@ -115,6 +115,15 @@ with st.sidebar:
     **Engine:** DSC (Differential Symbolic Calculus)
     """)
 
+    # Clear Session button
+    st.markdown("---")
+    if st.button("🔄 Clear Session", help="Reset all analysis data and start fresh", use_container_width=True):
+        # Clear all session state
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
+        st.success("✅ Session cleared! Restarting...")
+        st.rerun()
+
 # Quick stats (if session state has data)
 if 'analysis_results' in st.session_state and st.session_state.analysis_results:
     st.markdown("---")

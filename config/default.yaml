@@ -71,7 +71,7 @@ vector_store:
 chroma:
   # Path to ChromaDB persistence directory
   # Override with CHROMA_DB_PATH env var
-  path: "/app/chroma_db"
+  path: "./data/chroma_db"
 
   # Collection name
   collection_name: "crown_jewel_dsc"

@@ -98,6 +98,17 @@ Code exists in one of seven lifecycle phases:
 | **Emergent** | 0.8-0.9 | Novel patterns forming |
 | **Grinding** | 0.9-1.0 | Optimization, hardening |
 
+## 📋 Prerequisites
+
+**Required:**
+- Python 3.9+
+
+**Optional** (for full vector search capabilities):
+- Qdrant vector store: `docker run -p 6333:6333 qdrant/qdrant`
+- Ollama with embeddings model: `ollama pull snowflake-arctic-embed2:latest`
+
+> **Note**: PBJRAG works without Qdrant/Ollama - it gracefully falls back to in-memory analysis when these dependencies are unavailable.
+
 ## 🚀 Quick Start
 
 ### Installation

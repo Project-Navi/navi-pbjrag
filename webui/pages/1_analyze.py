@@ -81,6 +81,17 @@ with st.sidebar:
 
     analyze_button = st.button("🚀 Analyze", type="primary", use_container_width=True)
 
+    # Clear Analysis button
+    if 'analysis_results' in st.session_state:
+        st.markdown("---")
+        if st.button("🗑️ Clear Analysis", help="Remove current analysis results", use_container_width=True):
+            if 'analysis_results' in st.session_state:
+                del st.session_state.analysis_results
+            if 'analyzed_path' in st.session_state:
+                del st.session_state.analyzed_path
+            st.success("✅ Analysis cleared!")
+            st.rerun()
+
 # Main content area
 if not PBJRAG_AVAILABLE:
     st.warning("⚠️ PBJRAG is not available. Please install it first.")

@@ -22,6 +22,13 @@ st.set_page_config(page_title="🔍 Explore", page_icon="🔍", layout="wide")
 st.title("🔍 Chunk Explorer")
 st.markdown("Browse and filter analyzed code chunks with detailed insights.")
 
+# Accessibility: Tier labels with icons and descriptions
+TIER_LABELS = {
+    "Φ+": "🟢 Φ+ Crown Jewel",
+    "Φ~": "🟡 Φ~ Standard",
+    "Φ-": "🔴 Φ- Needs Work",
+}
+
 # Check if we have analysis results
 if 'analysis_results' not in st.session_state or not st.session_state.analysis_results:
     st.warning("⚠️ No analysis results found. Please run analysis first.")
@@ -42,7 +49,10 @@ with st.sidebar:
     # Blessing tier filter
     st.subheader("Blessing Tier")
     tier_options = ["All", "Φ+", "Φ~", "Φ-"]
-    selected_tier = st.selectbox("Select Tier", tier_options)
+    tier_display_options = ["All"] + [TIER_LABELS.get(t, t) for t in tier_options[1:]]
+    selected_tier_display = st.selectbox("Select Tier", tier_display_options)
+    # Map back to tier code
+    selected_tier = "All" if selected_tier_display == "All" else tier_options[tier_display_options.index(selected_tier_display)]
 
     # Phase filter
     st.subheader("Blessing Phase")
@@ -127,9 +137,12 @@ for chunk in filtered_chunks:
     field_values = [v for v in field_state.values() if isinstance(v, (int, float))]
     avg_field = sum(field_values) / len(field_values) if field_values else 0
 
+    tier_raw = blessing.get('tier', 'Unknown')
+    tier_display = TIER_LABELS.get(tier_raw, tier_raw)
+
     summary_data.append({
         'Index': chunk['_index'],
-        'Tier': blessing.get('tier', 'Unknown'),
+        'Tier': tier_display,
         'Phase': blessing.get('phase', 'Unknown'),
         'EPC': f"{blessing.get('epc', 0):.3f}",
         'Avg Field': f"{avg_field:.3f}",
@@ -147,7 +160,7 @@ st.subheader("📖 Detailed Chunk View")
 selected_idx = st.selectbox(
     "Select Chunk to View",
     range(len(filtered_chunks)),
-    format_func=lambda i: f"Chunk {filtered_chunks[i]['_index']} - {filtered_chunks[i].get('blessing', {}).get('tier', 'Unknown')}"
+    format_func=lambda i: f"Chunk {filtered_chunks[i]['_index']} - {TIER_LABELS.get(filtered_chunks[i].get('blessing', {}).get('tier', 'Unknown'), filtered_chunks[i].get('blessing', {}).get('tier', 'Unknown'))}"
 )
 
 selected_chunk = filtered_chunks[selected_idx]
@@ -160,8 +173,9 @@ col1, col2 = st.columns([2, 1])
 with col1:
     st.markdown("#### Code Content")
 
-    # Color code based on tier
+    # Display tier with icon, text label, and color for accessibility
     tier = blessing.get('tier', 'Unknown')
+    tier_display = TIER_LABELS.get(tier, tier)
     if tier == 'Φ+':
         color = "green"
     elif tier == 'Φ~':
@@ -171,7 +185,7 @@ with col1:
     else:
         color = "gray"
 
-    st.markdown(f"**Blessing Tier:** :{color}[{tier}]")
+    st.markdown(f"**Blessing Tier:** :{color}[{tier_display}]")
 
     code_content = selected_chunk.get('content', '')
     st.code(code_content, language='python', line_numbers=True)
@@ -248,5 +262,5 @@ with st.expander("💡 Tips"):
 
     - **EPC (0-1)**: Higher = clearer evolutionary path
     - **Field State (0-1)**: Higher values = better in that dimension
-    - **Tier**: Φ+ (best) → Φ~ (okay) → Φ- (needs work)
+    - **Tier**: 🟢 Φ+ Crown Jewel (best) → 🟡 Φ~ Standard (okay) → 🔴 Φ- Needs Work (needs work)
     """)

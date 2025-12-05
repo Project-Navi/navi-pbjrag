@@ -343,7 +343,9 @@ class FieldContainer:
         self.compost = remaining
         return decayed
 
-    def get_compost(self, filter_fn: Optional[callable] = None) -> List[Dict[str, Any]]:
+    def get_compost(
+        self, filter_fn: Optional[Callable[[Dict[str, Any]], bool]] = None
+    ) -> List[Dict[str, Any]]:
         """
         Get items from the compost, optionally filtered.
 

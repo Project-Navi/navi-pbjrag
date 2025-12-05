@@ -159,8 +159,6 @@ class DSCAnalyzer:
 
         # The orchestrator is responsible for phase transitions based on analysis.
         # This method's responsibility is just to produce the analysis.
-        # if self.phase_manager.current_phase == "witness":
-        #     self.phase_manager.transition_to_phase("recognition")
 
         # Detect patterns across chunks
         patterns = self._detect_chunk_patterns(chunks)

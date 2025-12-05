@@ -22,6 +22,13 @@ st.set_page_config(page_title="🔎 Search", page_icon="🔎", layout="wide")
 st.title("🔎 Semantic Search")
 st.markdown("Search for code chunks based on meaning and context using vector embeddings.")
 
+# Accessibility: Tier labels with icons and descriptions
+TIER_LABELS = {
+    "Φ+": "🟢 Φ+ Crown Jewel",
+    "Φ~": "🟡 Φ~ Standard",
+    "Φ-": "🔴 Φ- Needs Work",
+}
+
 # Check if we have analysis results
 if 'analysis_results' not in st.session_state or not st.session_state.analysis_results:
     st.warning("⚠️ No analysis results found. Please run analysis first.")
@@ -75,6 +82,16 @@ with col3:
     )
 
 search_button = st.button("🚀 Search", type="primary")
+
+# Clear search results button
+if 'search_results' in st.session_state:
+    if st.button("🗑️ Clear Search Results", help="Clear current search results"):
+        if 'search_results' in st.session_state:
+            del st.session_state.search_results
+        if 'search_query' in st.session_state:
+            del st.session_state.search_query
+        st.success("✅ Search results cleared!")
+        st.rerun()
 
 # Search function
 def keyword_search(query: str, chunks: list, max_results: int, min_score: float):
@@ -244,8 +261,9 @@ if 'search_results' in st.session_state and st.session_state.search_results:
         chunk_index = result['chunk_index']
         blessing = chunk.get('blessing', {})
 
-        # Determine tier color
+        # Determine tier label with icon and text for accessibility
         tier = blessing.get('tier', 'Unknown')
+        tier_display = TIER_LABELS.get(tier, tier)
         if tier == 'Φ+':
             tier_color = "🟢"
         elif tier == 'Φ~':
@@ -258,7 +276,7 @@ if 'search_results' in st.session_state and st.session_state.search_results:
         # Create expander for each result
         with st.expander(
             f"{tier_color} **Result {i+1}** - Chunk {chunk_index} | "
-            f"Relevance: {score:.2f} | Tier: {tier}",
+            f"Relevance: {score:.2f} | Tier: {tier_display}",
             expanded=(i == 0)  # Expand first result by default
         ):
             col1, col2 = st.columns([3, 1])
@@ -278,7 +296,7 @@ if 'search_results' in st.session_state and st.session_state.search_results:
                 st.markdown("#### Metadata")
                 st.metric("Relevance Score", f"{score:.3f}")
                 st.metric("Chunk Index", chunk_index)
-                st.metric("Blessing Tier", tier)
+                st.metric("Blessing Tier", tier_display)
                 st.metric("EPC", f"{blessing.get('epc', 0):.3f}")
                 st.metric("Phase", blessing.get('phase', 'Unknown'))
 
@@ -354,7 +372,7 @@ else:
 
     with col2:
         phi_plus = sum(1 for c in chunks if c.get('blessing', {}).get('tier') == 'Φ+')
-        st.metric("Φ+ (High Quality)", phi_plus)
+        st.metric("🟢 Φ+ Crown Jewel", phi_plus)
 
     with col3:
         total_lines = sum(len(c.get('content', '').split('\n')) for c in chunks)

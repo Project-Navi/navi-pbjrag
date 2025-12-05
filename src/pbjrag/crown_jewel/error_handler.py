@@ -128,7 +128,7 @@ class ErrorHandler:
                     "action": "fix_syntax",
                     "message": "Fix the syntax error: {error} in {file} at line {line}",
                     "suggestion": (
-                        "Review the code at the specified location " "and correct the syntax error."
+                        "Review the code at the specified location and correct the syntax error."
                     ),
                 },
                 "fix_attribute": {

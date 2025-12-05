@@ -1,0 +1,35 @@
+# Code Ownership for navi-pbjrag
+#
+# This file defines who is responsible for reviewing changes to specific parts of the codebase.
+# Lines starting with '#' are comments. Each line is a file pattern followed by one or more owners.
+#
+# Documentation: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything in the repo
+# These owners will be requested for review when someone opens a pull request
+*       @ndspence
+
+# Core framework components
+/navi_pbjrag/core/          @ndspence
+/navi_pbjrag/retrieval/     @ndspence
+/navi_pbjrag/generation/    @ndspence
+
+# Configuration and setup
+setup.py                    @ndspence
+pyproject.toml             @ndspence
+requirements*.txt          @ndspence
+.github/                   @ndspence
+
+# Documentation
+*.md                       @ndspence
+/docs/                     @ndspence
+
+# Tests - require review from maintainers
+/tests/                    @ndspence
+
+# CI/CD workflows
+/.github/workflows/        @ndspence
+
+# Security-sensitive files
+/.github/SECURITY.md       @ndspence
+/CODEOWNERS               @ndspence

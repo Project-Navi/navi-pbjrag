@@ -1,0 +1,116 @@
+# MANIFEST.in - Specify additional files to include in source distributions
+# This file ensures non-Python files are included when creating sdist packages
+
+# Include documentation files
+include README.md
+include README-WEBUI.md
+include CHANGELOG.md
+include LICENSE
+include INSTALL.md
+include ARCHITECTURE_SUMMARY.md
+
+# Include configuration files
+include pyproject.toml
+include setup.cfg
+include setup.py
+
+# Include requirements files
+include requirements.txt
+include requirements-dev.txt
+
+# Include type information for mypy
+include src/pbjrag/py.typed
+
+# Include documentation directory
+recursive-include docs *.md
+recursive-include docs *.rst
+recursive-include docs *.txt
+recursive-include docs *.png
+recursive-include docs *.jpg
+recursive-include docs *.svg
+
+# Include examples directory
+recursive-include examples *.py
+recursive-include examples *.md
+recursive-include examples *.txt
+recursive-include examples *.json
+recursive-include examples *.yaml
+recursive-include examples *.yml
+
+# Include WebUI assets
+recursive-include webui *.py
+recursive-include webui *.md
+recursive-include webui *.txt
+recursive-include webui *.css
+recursive-include webui *.js
+recursive-include webui *.html
+recursive-include webui *.json
+include webui/requirements.txt
+
+# Include test data (but not test code in sdist)
+recursive-include tests *.json
+recursive-include tests *.yaml
+recursive-include tests *.txt
+recursive-include tests *.md
+
+# Include Docker and deployment files
+include Dockerfile
+include docker-compose.yml
+include .dockerignore
+
+# Include CI/CD configurations
+include .github/workflows/*.yml
+include .gitlab-ci.yml
+include .travis.yml
+
+# Include Git configurations (for reference)
+include .gitignore
+include .gitattributes
+
+# Exclude compiled Python files
+global-exclude *.py[cod]
+global-exclude __pycache__
+global-exclude *.so
+global-exclude *.dylib
+
+# Exclude development and cache directories
+prune .git
+prune .github
+prune .pytest_cache
+prune .mypy_cache
+prune .ruff_cache
+prune .tox
+prune .venv
+prune venv
+prune env
+prune build
+prune dist
+prune *.egg-info
+
+# Exclude editor and IDE files
+global-exclude .DS_Store
+global-exclude Thumbs.db
+global-exclude *.swp
+global-exclude *.swo
+global-exclude *~
+global-exclude .vscode
+global-exclude .idea
+global-exclude *.sublime-*
+
+# Exclude coverage and test reports
+global-exclude .coverage
+global-exclude coverage.xml
+global-exclude htmlcov
+
+# Exclude audit and analysis artifacts
+prune .fcpa_audit
+prune dsc_analysis
+
+# Exclude local configuration
+global-exclude .env
+global-exclude .env.local
+global-exclude *.local
+
+# Exclude backup files
+global-exclude *.bak
+global-exclude *.orig

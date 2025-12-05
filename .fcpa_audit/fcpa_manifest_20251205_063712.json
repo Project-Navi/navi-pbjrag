@@ -1,0 +1,350 @@
+{
+  "manifest_version": "1.6",
+  "repo_name": "navi-pbjrag-baseline",
+  "repo_path": "/home/ndspence/GitHub/navi-pbjrag",
+  "audit_date": "2025-12-05T06:37:12.270484+00:00",
+  "audited_by": "FCPA Audit System v2.0",
+  "lifecycle_decision": "TOSS",
+  "decision_reasoning": "Moderate potential but needs substantial investment - compost for further analysis",
+  "scores": {
+    "forensic": 70,
+    "runability": 57,
+    "conceptual_grade": "B",
+    "blessing_score": 0.675568167477496,
+    "phase": "Stillness",
+    "golden_nugget_count": 9
+  },
+  "forensic_results": {
+    "total_files": 57,
+    "total_directories": 12,
+    "total_loc": 16377,
+    "languages": {
+      "Markdown": 15,
+      "Shell": 3,
+      "YAML": 1,
+      "Python": 34
+    },
+    "file_types": {
+      ".toml": 1,
+      ".md": 15,
+      ".sh": 3,
+      ".yml": 1,
+      ".py": 34,
+      ".txt": 1
+    },
+    "largest_files": [
+      {
+        "path": "src/pbjrag/crown_jewel/pattern_analyzer.py",
+        "lines": 1182
+      },
+      {
+        "path": "docs/webui-spec.md",
+        "lines": 1051
+      },
+      {
+        "path": "src/pbjrag/dsc/chunker.py",
+        "lines": 1049
+      },
+      {
+        "path": "src/pbjrag/crown_jewel/field_container.py",
+        "lines": 848
+      },
+      {
+        "path": "src/pbjrag/dsc/vector_store.py",
+        "lines": 779
+      },
+      {
+        "path": "src/pbjrag/dsc/analyzer.py",
+        "lines": 755
+      },
+      {
+        "path": "docs/DEPLOYMENT.md",
+        "lines": 686
+      },
+      {
+        "path": "src/pbjrag/crown_jewel/orchestrator.py",
+        "lines": 566
+      },
+      {
+        "path": "docs/ARCHITECTURE.md",
+        "lines": 546
+      },
+      {
+        "path": "src/pbjrag/dsc/neo4j_store.py",
+        "lines": 512
+      }
+    ],
+    "orphaned_files": [],
+    "missing_critical": [
+      "requirements.txt"
+    ],
+    "dependencies": {
+      "total": 0,
+      "outdated": 0,
+      "vulnerable": 0,
+      "sources": []
+    },
+    "complexity": {
+      "avg_cyclomatic": 3.9658703071672354,
+      "max_cyclomatic": 23,
+      "avg_nesting": 1.2252559726962458,
+      "max_nesting": 8,
+      "functions_analyzed": 293
+    },
+    "security": {
+      "hardcoded_secrets": 0,
+      "known_vulnerabilities": 0,
+      "auth_endpoints": 0,
+      "patterns_detected": []
+    },
+    "version_control": {
+      "is_git_repo": true,
+      "commit_count": 3,
+      "contributor_count": 2,
+      "last_commit_date": "2025-12-05 00:30:00 -0600",
+      "branch_count": 3
+    },
+    "forensic_score": 70
+  },
+  "conceptual_results": {
+    "semantic": 0.9889937106918238,
+    "emotional": 0.6398305084745762,
+    "ethical": 0.40273037542662116,
+    "temporal": 0.4,
+    "entropic": 0.4,
+    "rhythmic": 0.772233502538071,
+    "contradiction": 0.4,
+    "relational": 0.7,
+    "emergent": 0.3,
+    "blessing_score": 0.675568167477496,
+    "blessing_tier": "\u03a6~",
+    "phase": "Stillness",
+    "epc": 0.6251893891591654,
+    "conceptual_grade": "B"
+  },
+  "practical_results": {
+    "installation": 1,
+    "configuration": 1,
+    "build": 3,
+    "tests": 4,
+    "documentation": 7,
+    "core_functionality": 10,
+    "developer_experience": 2,
+    "production_readiness": 10,
+    "portability": 10,
+    "maintenance": 4,
+    "security": 5,
+    "runability_score": 57,
+    "portability_matrix": {
+      "linux": true,
+      "macos": true,
+      "windows": true,
+      "docker": true,
+      "cloud": true
+    }
+  },
+  "golden_nuggets": [
+    {
+      "nugget_id": "0019aed3a9a7099574f4dfb3847f4",
+      "name": "PhaseManager",
+      "category": "component",
+      "blessing_score": 0.9000000000000001,
+      "phase": "Radiance",
+      "maturity": "VERIFIED",
+      "source": {
+        "file": "src/pbjrag/crown_jewel/phase_manager.py",
+        "lines": [
+          12,
+          165
+        ]
+      },
+      "dependencies": [],
+      "test_coverage": 0.0,
+      "portable_to": [],
+      "reuse_count": 0,
+      "documentation_path": null,
+      "extraction_date": "2025-12-05T06:37:12.176527+00:00"
+    },
+    {
+      "nugget_id": "0019aed3a9a649594564c9dbc4161",
+      "name": "CoreMetrics",
+      "category": "component",
+      "blessing_score": 0.8400000000000001,
+      "phase": "Radiance",
+      "maturity": "VERIFIED",
+      "source": {
+        "file": "src/pbjrag/crown_jewel/metrics.py",
+        "lines": [
+          76,
+          475
+        ]
+      },
+      "dependencies": [],
+      "test_coverage": 0.0,
+      "portable_to": [],
+      "reuse_count": 0,
+      "documentation_path": null,
+      "extraction_date": "2025-12-05T06:37:12.164883+00:00"
+    },
+    {
+      "nugget_id": "0019aed3a9acdd263930667ce49ef",
+      "name": "Adapter Pattern",
+      "category": "pattern",
+      "blessing_score": 0.835,
+      "phase": "Radiance",
+      "maturity": "DRAFT",
+      "source": {
+        "file": "src/pbjrag/dsc/chroma_store.py",
+        "lines": [
+          39,
+          494
+        ]
+      },
+      "dependencies": [],
+      "test_coverage": 0.0,
+      "portable_to": [],
+      "reuse_count": 0,
+      "documentation_path": null,
+      "extraction_date": "2025-12-05T06:37:12.269216+00:00"
+    },
+    {
+      "nugget_id": "0019aed3a9a8d40dfb72ed33c4e50",
+      "name": "Calculator",
+      "category": "component",
+      "blessing_score": 0.8250000000000001,
+      "phase": "Radiance",
+      "maturity": "DRAFT",
+      "source": {
+        "file": "examples/sample_project/calculator.py",
+        "lines": [
+          13,
+          107
+        ]
+      },
+      "dependencies": [],
+      "test_coverage": 0.0,
+      "portable_to": [],
+      "reuse_count": 0,
+      "documentation_path": null,
+      "extraction_date": "2025-12-05T06:37:12.205381+00:00"
+    },
+    {
+      "nugget_id": "0019aed3a9ab478a0ad1849f4414e",
+      "name": "parse_expression",
+      "category": "utility",
+      "blessing_score": 0.75,
+      "phase": "Flow",
+      "maturity": "DRAFT",
+      "source": {
+        "file": "examples/sample_project/utils.py",
+        "lines": [
+          36,
+          76
+        ]
+      },
+      "dependencies": [],
+      "test_coverage": 0.0,
+      "portable_to": [],
+      "reuse_count": 0,
+      "documentation_path": null,
+      "extraction_date": "2025-12-05T06:37:12.244180+00:00"
+    },
+    {
+      "nugget_id": "0019aed3a9ab49224bbfd01ad488b",
+      "name": "is_numeric",
+      "category": "utility",
+      "blessing_score": 0.75,
+      "phase": "Flow",
+      "maturity": "DRAFT",
+      "source": {
+        "file": "examples/sample_project/utils.py",
+        "lines": [
+          99,
+          126
+        ]
+      },
+      "dependencies": [],
+      "test_coverage": 0.0,
+      "portable_to": [],
+      "reuse_count": 0,
+      "documentation_path": null,
+      "extraction_date": "2025-12-05T06:37:12.244614+00:00"
+    },
+    {
+      "nugget_id": "0019aed3a9a78cafaadb57a344f62",
+      "name": "DSCChromaStore",
+      "category": "component",
+      "blessing_score": 0.735,
+      "phase": "Flow",
+      "maturity": "DRAFT",
+      "source": {
+        "file": "src/pbjrag/dsc/chroma_store.py",
+        "lines": [
+          39,
+          494
+        ]
+      },
+      "dependencies": [],
+      "test_coverage": 0.0,
+      "portable_to": [],
+      "reuse_count": 0,
+      "documentation_path": null,
+      "extraction_date": "2025-12-05T06:37:12.184663+00:00"
+    },
+    {
+      "nugget_id": "0019aed3a9a5f6549149874ed4f1a",
+      "name": "FieldContainer",
+      "category": "component",
+      "blessing_score": 0.73,
+      "phase": "Flow",
+      "maturity": "VERIFIED",
+      "source": {
+        "file": "src/pbjrag/crown_jewel/field_container.py",
+        "lines": [
+          19,
+          832
+        ]
+      },
+      "dependencies": [],
+      "test_coverage": 0.0,
+      "portable_to": [],
+      "reuse_count": 0,
+      "documentation_path": null,
+      "extraction_date": "2025-12-05T06:37:12.160077+00:00"
+    },
+    {
+      "nugget_id": "0019aed3a9a8391ded7c9686d42e2",
+      "name": "EmbeddingAdapter",
+      "category": "component",
+      "blessing_score": 0.7200000000000001,
+      "phase": "Flow",
+      "maturity": "DRAFT",
+      "source": {
+        "file": "src/pbjrag/dsc/embedding_adapter.py",
+        "lines": [
+          15,
+          230
+        ]
+      },
+      "dependencies": [],
+      "test_coverage": 0.0,
+      "portable_to": [],
+      "reuse_count": 0,
+      "documentation_path": null,
+      "extraction_date": "2025-12-05T06:37:12.195970+00:00"
+    }
+  ],
+  "recommendations": {
+    "immediate": [
+      "Add missing critical files: requirements.txt"
+    ],
+    "short_term": [
+      "Increase test coverage (current score: 4/10)"
+    ],
+    "long_term": [
+      "Explore innovative patterns and architectural improvements"
+    ]
+  },
+  "next_audit_date": "2026-03-05T06:37:12.270501+00:00",
+  "schema_version": "1.6"
+}

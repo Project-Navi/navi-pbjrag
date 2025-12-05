@@ -1,0 +1,22 @@
+[
+  {
+    "id": "pattern_0",
+    "type": "similarity_group",
+    "fragments": [
+      "/tmp/pytest-of-ndspence/pytest-6/test_analyze_project0/test_project/utils.py",
+      "/tmp/pytest-of-ndspence/pytest-6/test_analyze_project0/test_project/submodule/helper.py"
+    ],
+    "fragment_count": 2,
+    "group_blessing": {
+      "group_coherence": 0.3177,
+      "alignment": 1.0,
+      "resonance": 0.0,
+      "mean_epc": 0.0354,
+      "blessing": "\u03a6-"
+    },
+    "timestamp": "2025-12-05T01:12:23.562946",
+    "dissolution_timestamp": "2025-12-05T01:12:23.563387",
+    "compost_timestamp": "2025-12-05T01:12:23.563392",
+    "compost_reason": "Dissolved during rigid structure dissolution"
+  }
+]

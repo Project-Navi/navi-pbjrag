@@ -1,0 +1,175 @@
+{
+  "success": true,
+  "message": "Orchestration completed successfully",
+  "solution": {
+    "success": false,
+    "message": "No blessed groups available for solution"
+  },
+  "report": {
+    "timestamp": "2025-12-05T01:12:56.177652",
+    "purpose": "coherence",
+    "project_root": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project",
+    "scan_depth": 2,
+    "output_dir": "dsc_analysis/test_project",
+    "top_n": 10,
+    "max_group_size": 3,
+    "field_coherence": 0.05168,
+    "phase_history": [
+      {
+        "phase": "initialization",
+        "timestamp": "2025-12-05T01:12:56.092882"
+      },
+      {
+        "phase": "witness",
+        "timestamp": "2025-12-05T01:12:56.093328"
+      },
+      {
+        "phase": "recognition",
+        "timestamp": "2025-12-05T01:12:56.095796"
+      },
+      {
+        "phase": "compost",
+        "timestamp": "2025-12-05T01:12:56.176142"
+      },
+      {
+        "phase": "emergence",
+        "timestamp": "2025-12-05T01:12:56.176256"
+      },
+      {
+        "phase": "blessing",
+        "timestamp": "2025-12-05T01:12:56.176535"
+      },
+      {
+        "phase": "expression",
+        "timestamp": "2025-12-05T01:12:56.176623"
+      },
+      {
+        "phase": "witness",
+        "timestamp": "2025-12-05T01:12:56.177956"
+      }
+    ],
+    "current_phase": "expression",
+    "fragment_count": 3,
+    "pattern_count": 0,
+    "blessed_group_count": 0,
+    "compost_count": 1,
+    "capacitor_count": 0,
+    "solution": {
+      "success": false,
+      "message": "No blessed groups available for solution"
+    },
+    "state_files": {
+      "fragments": "dsc_analysis/test_project/fragments_20251205_011256.json",
+      "patterns": "dsc_analysis/test_project/patterns_20251205_011256.json",
+      "blessed_groups": "dsc_analysis/test_project/blessed_groups_20251205_011256.json",
+      "compost": "dsc_analysis/test_project/compost_20251205_011256.json",
+      "capacitor": "dsc_analysis/test_project/capacitor_20251205_011256.json",
+      "solutions": "dsc_analysis/test_project/solutions_20251205_011256.json",
+      "field_summary": "dsc_analysis/test_project/field_summary_20251205_011256.json"
+    }
+  },
+  "state_files": {
+    "fragments": "dsc_analysis/test_project/fragments_20251205_011256.json",
+    "patterns": "dsc_analysis/test_project/patterns_20251205_011256.json",
+    "blessed_groups": "dsc_analysis/test_project/blessed_groups_20251205_011256.json",
+    "compost": "dsc_analysis/test_project/compost_20251205_011256.json",
+    "capacitor": "dsc_analysis/test_project/capacitor_20251205_011256.json",
+    "solutions": "dsc_analysis/test_project/solutions_20251205_011256.json",
+    "field_summary": "dsc_analysis/test_project/field_summary_20251205_011256.json"
+  },
+  "dsc_analysis": {
+    "files_analyzed": 3,
+    "total_chunks": 6,
+    "total_patterns": 2,
+    "compost_candidates": [
+      {
+        "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/utils.py",
+        "chunk_type": "function",
+        "provides": [
+          "helper"
+        ],
+        "reason": "Low blessing tier (\u03a6-)"
+      },
+      {
+        "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/main.py",
+        "chunk_type": "function",
+        "provides": [
+          "fibonacci"
+        ],
+        "reason": "Low blessing tier (\u03a6-)"
+      },
+      {
+        "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/main.py",
+        "chunk_type": "class",
+        "provides": [
+          "Calculator",
+          "Calculator.add",
+          "Calculator.multiply"
+        ],
+        "reason": "Low blessing tier (\u03a6-)"
+      },
+      {
+        "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/main.py",
+        "chunk_type": "function",
+        "provides": [
+          "add"
+        ],
+        "reason": "Low blessing tier (\u03a6-)"
+      },
+      {
+        "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/main.py",
+        "chunk_type": "function",
+        "provides": [
+          "multiply"
+        ],
+        "reason": "Low blessing tier (\u03a6-)"
+      },
+      {
+        "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/submodule/helper.py",
+        "chunk_type": "class",
+        "provides": [
+          "Helper"
+        ],
+        "reason": "Low blessing tier (\u03a6-)"
+      }
+    ],
+    "blessing_distribution": {
+      "\u03a6+": 0.0,
+      "\u03a6~": 0.0,
+      "\u03a6-": 1.0
+    },
+    "phase_distribution": {
+      "unknown": 0.3333333333333333,
+      "compost": 0.6666666666666666
+    },
+    "field_coherence": 0.039354545454545455,
+    "fractal_patterns": {
+      "pattern_0": [
+        {
+          "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/utils.py",
+          "provides": [
+            "helper"
+          ]
+        },
+        {
+          "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/main.py",
+          "provides": [
+            "add"
+          ]
+        },
+        {
+          "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/main.py",
+          "provides": [
+            "multiply"
+          ]
+        },
+        {
+          "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/submodule/helper.py",
+          "provides": [
+            "Helper"
+          ]
+        }
+      ]
+    }
+  }
+}

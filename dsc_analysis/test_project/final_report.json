@@ -1,0 +1,59 @@
+{
+  "timestamp": "2025-12-05T01:12:56.177652",
+  "purpose": "coherence",
+  "project_root": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project",
+  "scan_depth": 2,
+  "output_dir": "dsc_analysis/test_project",
+  "top_n": 10,
+  "max_group_size": 3,
+  "field_coherence": 0.05168,
+  "phase_history": [
+    {
+      "phase": "initialization",
+      "timestamp": "2025-12-05T01:12:56.092882"
+    },
+    {
+      "phase": "witness",
+      "timestamp": "2025-12-05T01:12:56.093328"
+    },
+    {
+      "phase": "recognition",
+      "timestamp": "2025-12-05T01:12:56.095796"
+    },
+    {
+      "phase": "compost",
+      "timestamp": "2025-12-05T01:12:56.176142"
+    },
+    {
+      "phase": "emergence",
+      "timestamp": "2025-12-05T01:12:56.176256"
+    },
+    {
+      "phase": "blessing",
+      "timestamp": "2025-12-05T01:12:56.176535"
+    },
+    {
+      "phase": "expression",
+      "timestamp": "2025-12-05T01:12:56.176623"
+    }
+  ],
+  "current_phase": "expression",
+  "fragment_count": 3,
+  "pattern_count": 0,
+  "blessed_group_count": 0,
+  "compost_count": 1,
+  "capacitor_count": 0,
+  "solution": {
+    "success": false,
+    "message": "No blessed groups available for solution"
+  },
+  "state_files": {
+    "fragments": "dsc_analysis/test_project/fragments_20251205_011256.json",
+    "patterns": "dsc_analysis/test_project/patterns_20251205_011256.json",
+    "blessed_groups": "dsc_analysis/test_project/blessed_groups_20251205_011256.json",
+    "compost": "dsc_analysis/test_project/compost_20251205_011256.json",
+    "capacitor": "dsc_analysis/test_project/capacitor_20251205_011256.json",
+    "solutions": "dsc_analysis/test_project/solutions_20251205_011256.json",
+    "field_summary": "dsc_analysis/test_project/field_summary_20251205_011256.json"
+  }
+}

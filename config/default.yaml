@@ -1,0 +1,284 @@
+# PBJRAG v3 Default Configuration
+# This file contains all configurable options with sensible defaults
+# Override via environment variables or custom config files
+
+# =============================================================================
+# CORE SETTINGS
+# =============================================================================
+core:
+  # Version of the PBJRAG system
+  version: "3.0.0"
+
+  # Field dimension for DSC analysis (higher = more granular)
+  # Recommended: 8 for most use cases, 16 for complex codebases
+  field_dim: 8
+
+  # Analysis purpose affects interpretation and recommendations
+  # Options: stability, emergence, coherence, innovation
+  purpose: "coherence"
+
+  # Output directory for analysis results
+  # Can be overridden with PBJRAG_OUTPUT_DIR env var
+  output_dir: "pbjrag_output"
+
+  # Enable detailed logging
+  # Options: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  log_level: "INFO"
+
+  # Enable vector store for semantic search (requires external services)
+  # Set to false for dependency-free operation
+  enable_vector_store: true
+
+  # Enable Neo4j graph store for relationship analysis
+  enable_neo4j: false
+
+  # Enable ChromaDB alternative vector store
+  enable_chroma: false
+
+# =============================================================================
+# VECTOR STORE SETTINGS (Qdrant)
+# =============================================================================
+vector_store:
+  # Qdrant connection settings
+  qdrant:
+    # Qdrant server host
+    # Override with QDRANT_HOST env var
+    host: "localhost"
+
+    # Qdrant server port
+    # Override with QDRANT_PORT env var
+    port: 6333
+
+    # Collection name for storing code embeddings
+    collection_name: "crown_jewel_dsc"
+
+    # Vector distance metric
+    # Options: cosine, euclidean, dot
+    distance: "cosine"
+
+    # Enable HNSW indexing for faster search
+    enable_hnsw: true
+
+  # Infinity embedding service URL
+  # Override with INFINITY_URL env var
+  infinity_url: "http://127.0.0.1:7997"
+
+  # Embedding model to use
+  # Options: jinaai/jina-embeddings-v2-base-code (default),
+  #          all-mpnet-base-v2, sentence-transformers/all-MiniLM-L6-v2
+  embedding_model: "jinaai/jina-embeddings-v2-base-code"
+
+  # Batch size for embedding operations
+  batch_size: 32
+
+  # Maximum chunk size for embeddings (in characters)
+  max_chunk_size: 2048
+
+# =============================================================================
+# CHROMA DB SETTINGS (Alternative Vector Store)
+# =============================================================================
+chroma:
+  # Path to ChromaDB persistence directory
+  # Override with CHROMA_DB_PATH env var
+  path: "/app/chroma_db"
+
+  # Collection name
+  collection_name: "crown_jewel_dsc"
+
+  # Embedding model
+  embedding_model: "all-mpnet-base-v2"
+
+  # Batch size for operations
+  batch_size: 32
+
+# =============================================================================
+# NEO4J GRAPH STORE SETTINGS
+# =============================================================================
+neo4j:
+  # Neo4j connection URI
+  # Override with NEO4J_URI env var
+  uri: "bolt://localhost:7687"
+
+  # Neo4j username
+  # Override with NEO4J_USER env var
+  user: "neo4j"
+
+  # Neo4j password
+  # MUST be set via NEO4J_PASSWORD env var (not stored in config)
+  password: null
+
+  # Database name
+  database: "neo4j"
+
+  # Enable graph algorithms
+  enable_graph_algorithms: true
+
+# =============================================================================
+# EMBEDDING SETTINGS
+# =============================================================================
+embedding:
+  # Embedding adapter type
+  # Options: infinity, sentence_transformers, openai
+  adapter: "infinity"
+
+  # Dimension of embedding vectors
+  # Auto-detected based on model, but can be overridden
+  dimension: null
+
+  # Normalize embeddings
+  normalize: true
+
+  # Cache embeddings to disk for faster re-runs
+  enable_cache: true
+
+  # Cache directory
+  cache_dir: ".pbjrag_cache"
+
+# =============================================================================
+# CHUNKING SETTINGS
+# =============================================================================
+chunking:
+  # AST-aware chunking strategy
+  # Options: function, class, module, auto
+  strategy: "auto"
+
+  # Minimum lines for a chunk
+  min_lines: 5
+
+  # Maximum lines for a chunk
+  max_lines: 100
+
+  # Overlap between chunks (in lines)
+  overlap: 5
+
+  # Include docstrings in chunks
+  include_docstrings: true
+
+  # Include comments in chunks
+  include_comments: true
+
+# =============================================================================
+# ANALYSIS SETTINGS
+# =============================================================================
+analysis:
+  # Field coherence calculation method
+  # Options: standard, weighted, adaptive
+  coherence_method: "standard"
+
+  # Blessing tier thresholds (0.0 to 1.0)
+  blessing_tiers:
+    positive: 0.7    # Φ+ (production-ready)
+    neutral: 0.4     # Φ~ (needs review)
+    # Below neutral is Φ- (technical debt)
+
+  # Enable pattern detection
+  enable_pattern_detection: true
+
+  # Pattern confidence threshold
+  pattern_confidence_threshold: 0.6
+
+  # Enable complexity analysis
+  enable_complexity_analysis: true
+
+  # Maximum cyclomatic complexity before warning
+  complexity_threshold: 10
+
+  # Enable dependency analysis
+  enable_dependency_analysis: true
+
+# =============================================================================
+# PERFORMANCE SETTINGS
+# =============================================================================
+performance:
+  # Number of worker threads for parallel processing
+  # Set to 0 for auto-detection based on CPU cores
+  worker_threads: 0
+
+  # Maximum files to process in parallel
+  max_parallel_files: 4
+
+  # Enable memory optimization (may be slower)
+  memory_optimization: false
+
+  # Maximum memory usage (in MB, 0 = unlimited)
+  max_memory_mb: 0
+
+# =============================================================================
+# WEBUI SETTINGS (Future Feature)
+# =============================================================================
+webui:
+  # Enable web interface
+  enabled: false
+
+  # Web server host
+  host: "127.0.0.1"
+
+  # Web server port
+  port: 8080
+
+  # Enable authentication
+  require_auth: false
+
+# =============================================================================
+# REPORT SETTINGS
+# =============================================================================
+report:
+  # Report format
+  # Options: markdown, json, html, all
+  format: "markdown"
+
+  # Include code snippets in report
+  include_snippets: true
+
+  # Maximum snippet length
+  max_snippet_length: 200
+
+  # Output persona/terminology style
+  # Options: general, devops, scholar
+  persona: "general"
+
+  # Include metrics visualization
+  include_visualizations: false
+
+# =============================================================================
+# FILE FILTERING
+# =============================================================================
+file_filter:
+  # File extensions to include
+  include_extensions:
+    - ".py"
+    - ".pyi"
+
+  # File patterns to exclude (glob patterns)
+  exclude_patterns:
+    - "**/__pycache__/**"
+    - "**/.git/**"
+    - "**/.venv/**"
+    - "**/venv/**"
+    - "**/node_modules/**"
+    - "**/.pytest_cache/**"
+    - "**/build/**"
+    - "**/dist/**"
+    - "**/*.pyc"
+
+  # Maximum file size to process (in KB)
+  max_file_size_kb: 1024
+
+# =============================================================================
+# DEVELOPMENT & DEBUG SETTINGS
+# =============================================================================
+dev:
+  # Enable debug mode (verbose output)
+  debug: false
+
+  # Save intermediate results
+  save_intermediate: false
+
+  # Enable profiling
+  enable_profiling: false
+
+  # Profile output file
+  profile_output: "pbjrag_profile.prof"
+
+  # Enable experimental features
+  enable_experimental: false

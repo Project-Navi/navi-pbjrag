@@ -14,6 +14,26 @@
     ╚══════════════════════════════════════╝
 ```
 
+## ⚡ Quickstart (30 seconds)
+
+```bash
+# Clone and run
+git clone https://github.com/Project-Navi/navi-pbjrag
+cd navi-pbjrag
+./quickstart.sh
+
+# Or with Docker (includes Qdrant vector store)
+docker-compose up
+# Open http://localhost:8501
+```
+
+**That's it!** The WebUI will open at `http://localhost:8501` where you can:
+- 📊 **Analyze** any codebase with one click
+- 🔍 **Explore** chunks with blessing tiers and 9D radar charts
+- 🔎 **Search** semantically across your code (with Qdrant)
+
+---
+
 **PBJRAG** is a semantic code analysis framework that understands code as living, evolving symbolic fields rather than static text. Using Differential Symbolic Calculus (DSC), it maps code into a 9-dimensional field space and calculates "blessing scores" that reveal the true quality and health of your codebase.
 
 ## 🌟 What Makes PBJRAG Special?

@@ -1,5 +1,5 @@
 """
-🔎 Search - Semantic search across analyzed code
+🔎 Search - Semantic search across analyzed code using Qdrant
 """
 
 import streamlit as st
@@ -10,10 +10,17 @@ from pathlib import Path
 parent_dir = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(parent_dir / "src"))
 
+try:
+    from pbjrag import DSCAnalyzer
+    from pbjrag.dsc.vector_store import DSCVectorStore
+    PBJRAG_AVAILABLE = True
+except ImportError as e:
+    PBJRAG_AVAILABLE = False
+
 st.set_page_config(page_title="🔎 Search", page_icon="🔎", layout="wide")
 
 st.title("🔎 Semantic Search")
-st.markdown("Search for code chunks based on meaning and context, not just keywords.")
+st.markdown("Search for code chunks based on meaning and context using vector embeddings.")
 
 # Check if we have analysis results
 if 'analysis_results' not in st.session_state or not st.session_state.analysis_results:
@@ -102,16 +109,109 @@ def keyword_search(query: str, chunks: list, max_results: int, min_score: float)
     return results[:max_results]
 
 def semantic_search(query: str, chunks: list, max_results: int, min_score: float):
-    """Semantic search using embeddings (placeholder - requires Qdrant)."""
-    st.warning("⚠️ Semantic search requires Qdrant vector database integration.")
-    st.info("💡 Falling back to keyword search for now...")
-    return keyword_search(query, chunks, max_results, min_score)
+    """Semantic search using Qdrant vector database."""
+    if not PBJRAG_AVAILABLE:
+        st.warning("⚠️ PBJRAG not available")
+        return keyword_search(query, chunks, max_results, min_score)
+
+    try:
+        # Create analyzer to access vector store
+        analyzer = DSCAnalyzer()
+
+        if not analyzer.vector_store or not analyzer.vector_store.client:
+            st.warning("⚠️ Vector store not connected. Falling back to keyword search.")
+            return keyword_search(query, chunks, max_results, min_score)
+
+        # Check if collection has data
+        info = analyzer.vector_store.client.get_collection(analyzer.vector_store.collection_name)
+        if info.points_count == 0:
+            st.warning("⚠️ No vectors indexed yet. Run analysis first, then search.")
+            return keyword_search(query, chunks, max_results, min_score)
+
+        st.success(f"🔍 Searching {info.points_count} indexed chunks with Snowflake embeddings...")
+
+        # Perform semantic search
+        search_results = analyzer.vector_store.search(
+            query=query,
+            search_mode="content",
+            top_k=max_results
+        )
+
+        # Format results to match expected structure
+        formatted_results = []
+        for i, result in enumerate(search_results):
+            score = result.get('score', 0)
+            if score >= min_score:
+                # Find matching chunk in local chunks by content similarity
+                chunk_data = result.get('payload', {})
+                formatted_results.append({
+                    'chunk_index': i,
+                    'chunk': {
+                        'content': chunk_data.get('content', ''),
+                        'blessing': {
+                            'tier': chunk_data.get('blessing_tier', 'Unknown'),
+                            'epc': chunk_data.get('blessing_epc', 0),
+                            'phase': chunk_data.get('blessing_phase', 'Unknown'),
+                        },
+                        'chunk_type': chunk_data.get('chunk_type', 'unknown'),
+                        'provides': chunk_data.get('provides', []),
+                        'depends_on': chunk_data.get('depends_on', []),
+                    },
+                    'score': score,
+                    'matches': 0  # Semantic doesn't use keyword matches
+                })
+
+        return formatted_results
+
+    except Exception as e:
+        st.error(f"Semantic search error: {e}")
+        return keyword_search(query, chunks, max_results, min_score)
 
 def hybrid_search(query: str, chunks: list, max_results: int, min_score: float):
     """Hybrid search combining keyword and semantic approaches."""
-    # For now, just use keyword search
-    # In production, this would combine keyword and vector similarity scores
-    return keyword_search(query, chunks, max_results, min_score)
+    if not PBJRAG_AVAILABLE:
+        return keyword_search(query, chunks, max_results, min_score)
+
+    try:
+        analyzer = DSCAnalyzer()
+
+        if not analyzer.vector_store or not analyzer.vector_store.client:
+            return keyword_search(query, chunks, max_results, min_score)
+
+        # Use vector store's hybrid search
+        search_results = analyzer.vector_store.search(
+            query=query,
+            search_mode="hybrid",
+            top_k=max_results
+        )
+
+        # Format results
+        formatted_results = []
+        for i, result in enumerate(search_results):
+            score = result.get('score', 0)
+            if score >= min_score:
+                chunk_data = result.get('payload', {})
+                formatted_results.append({
+                    'chunk_index': i,
+                    'chunk': {
+                        'content': chunk_data.get('content', ''),
+                        'blessing': {
+                            'tier': chunk_data.get('blessing_tier', 'Unknown'),
+                            'epc': chunk_data.get('blessing_epc', 0),
+                            'phase': chunk_data.get('blessing_phase', 'Unknown'),
+                        },
+                        'chunk_type': chunk_data.get('chunk_type', 'unknown'),
+                        'provides': chunk_data.get('provides', []),
+                        'depends_on': chunk_data.get('depends_on', []),
+                    },
+                    'score': score,
+                    'matches': 0
+                })
+
+        return formatted_results if formatted_results else keyword_search(query, chunks, max_results, min_score)
+
+    except Exception as e:
+        return keyword_search(query, chunks, max_results, min_score)
 
 # Execute search
 if search_button and query:

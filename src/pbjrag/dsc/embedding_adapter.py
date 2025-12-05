@@ -93,6 +93,14 @@ class EmbeddingAdapter:
                     prompt = f"search_query: {text}"
                 else:
                     prompt = f"{task}: {text}"
+            elif "snowflake" in self.model.lower() or "arctic" in self.model.lower():
+                # Snowflake Arctic Embed2 - best performing, instruction-aware
+                if task == "search_query":
+                    prompt = f"Represent this sentence for searching relevant passages: {text}"
+                elif task == "search_document":
+                    prompt = f"Represent this document for retrieval: {text}"
+                else:
+                    prompt = text
             elif "bge-m3" in self.model.lower():
                 # BGE-M3 can use Instruction format for better performance
                 if task == "search_query":
@@ -106,7 +114,7 @@ class EmbeddingAdapter:
             response = requests.post(
                 f"{self.base_url}/api/embeddings",
                 json={"model": self.model, "prompt": prompt},
-                timeout=2,
+                timeout=30,  # Increased timeout for larger models
             )
 
             if response.status_code == 200:

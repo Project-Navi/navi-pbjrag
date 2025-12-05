@@ -59,15 +59,6 @@ vector_store:
     # Enable HNSW indexing for faster search
     enable_hnsw: true
 
-  # Infinity embedding service URL
-  # Override with INFINITY_URL env var
-  infinity_url: "http://127.0.0.1:7997"
-
-  # Embedding model to use
-  # Options: jinaai/jina-embeddings-v2-base-code (default),
-  #          all-mpnet-base-v2, sentence-transformers/all-MiniLM-L6-v2
-  embedding_model: "jinaai/jina-embeddings-v2-base-code"
-
   # Batch size for embedding operations
   batch_size: 32
 
@@ -117,13 +108,26 @@ neo4j:
 # EMBEDDING SETTINGS
 # =============================================================================
 embedding:
-  # Embedding adapter type
-  # Options: infinity, sentence_transformers, openai
-  adapter: "infinity"
+  # Embedding backend type
+  # Options: ollama, openai, sentence_transformers
+  backend: "ollama"
+
+  # Embedding service URL
+  # Override with EMBEDDING_URL env var
+  # Ollama: http://localhost:11434
+  # LMStudio: http://localhost:1234
+  # OpenAI: https://api.openai.com
+  url: "http://localhost:11434"
+
+  # Embedding model to use
+  # Ollama models: snowflake-arctic-embed2:latest (best), bge-m3:latest, nomic-embed-text:latest
+  # OpenAI models: text-embedding-3-small, text-embedding-3-large
+  model: "snowflake-arctic-embed2:latest"
 
   # Dimension of embedding vectors
-  # Auto-detected based on model, but can be overridden
-  dimension: null
+  # BGE-M3: 1024, nomic-embed-text: 768, OpenAI-small: 1536
+  # Set to null for auto-detection based on model
+  dimension: 1024
 
   # Normalize embeddings
   normalize: true

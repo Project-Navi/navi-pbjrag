@@ -71,8 +71,6 @@ if HAVE_PYDANTIC:
         """Vector store configuration"""
 
         qdrant: QdrantConfig = Field(default_factory=QdrantConfig)
-        infinity_url: str = "http://127.0.0.1:7997"
-        embedding_model: str = "jinaai/jina-embeddings-v2-base-code"
         batch_size: int = Field(default=32, ge=1, le=256)
         max_chunk_size: int = Field(default=2048, ge=256)
 
@@ -96,8 +94,10 @@ if HAVE_PYDANTIC:
     class EmbeddingConfig(BaseModel):
         """Embedding configuration"""
 
-        adapter: str = Field(default="infinity", pattern="^(infinity|sentence_transformers|openai)$")
-        dimension: Optional[int] = Field(default=None, ge=128)
+        backend: str = Field(default="ollama", pattern="^(ollama|openai|sentence_transformers)$")
+        url: str = "http://localhost:11434"
+        model: str = "snowflake-arctic-embed2:latest"
+        dimension: Optional[int] = Field(default=1024, ge=128)
         normalize: bool = True
         enable_cache: bool = True
         cache_dir: str = ".pbjrag_cache"

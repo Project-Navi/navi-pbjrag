@@ -92,5 +92,160 @@ dmypy.json
 # macOS
 .DS_Store
 
-# Project specific
+# ============================================================
+# LOGS & DEVELOPMENT ARTIFACTS
+# ============================================================
 *.log
+*.log.*
+logs/
+*.pid
+*.seed
+*.out
+*.err
+nohup.out
+.nohup
+
+# FCPA Audit outputs
+.fcpa_audit/
+fcpa_output/
+htmlcov/
+
+# PBJRAG analysis outputs
+pbjrag_output/
+dsc_output/
+dsc_analysis/
+*.dsc.json
+
+# Vector store data
+chroma_data/
+qdrant_storage/
+
+# ============================================================
+# SECRETS & SENSITIVE DATA
+# ============================================================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+secrets/
+credentials/
+.secrets/
+.credentials/
+*.secret
+*.secrets
+config/local.yaml
+config/secrets.yaml
+.netrc
+.npmrc
+.pypirc
+
+# API keys and tokens
+**/api_key*
+**/apikey*
+**/*_token*
+**/*_secret*
+
+# ============================================================
+# MARKDOWN - Only allow specific files and docs/ folder
+# ============================================================
+# Exclude all markdown except allowed ones
+*.md
+!README.md
+!readme.md
+!NOTICE.md
+!notice.md
+!LICENSE.md
+!license.md
+!QUICKSTART.md
+!quickstart.md
+!CHANGELOG.md
+!changelog.md
+!CONTRIBUTING.md
+!contributing.md
+!CODE_OF_CONDUCT.md
+!SECURITY.md
+# Allow docs folder markdown
+!docs/
+!docs/**/*.md
+
+# ============================================================
+# DEVELOPMENT & TEMPORARY FILES
+# ============================================================
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.orig
+*~
+.~*
+
+# Editor/IDE specific
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-*
+*.code-workspace
+.project
+.classpath
+.settings/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+.directory
+
+# ============================================================
+# BUILD & CACHE ARTIFACTS
+# ============================================================
+# Python cache (already above but explicit)
+__pycache__/
+*.py[cod]
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+
+# Node (if any frontend)
+node_modules/
+.npm/
+package-lock.json
+yarn.lock
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ============================================================
+# LOCAL DEVELOPMENT
+# ============================================================
+# Local configs
+config/local*.yaml
+config/dev*.yaml
+*.local.yaml
+*.dev.yaml
+
+# Scratch/test files
+scratch/
+test_scratch/
+playground/
+experiments/
+*_test_output/
+
+# Session data
+.streamlit/
+session_data/

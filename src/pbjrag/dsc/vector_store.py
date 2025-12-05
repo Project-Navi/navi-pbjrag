@@ -16,9 +16,9 @@ import numpy as np
 try:
     from qdrant_client import QdrantClient
     from qdrant_client.models import (Distance, FieldCondition, Filter,
-                                      MatchAny, MatchValue,
+                                      MatchAny, MatchValue, NamedVector,
                                       OptimizersConfigDiff, PointStruct, Range,
-                                      VectorParams)
+                                      VectorParams, QueryRequest)
 
     HAVE_QDRANT = True
 except ImportError:
@@ -53,13 +53,28 @@ class DSCVectorStore:
         self,
         qdrant_host: str = "localhost",
         qdrant_port: int = 6333,
-        infinity_url: str = "http://127.0.0.1:7997",
         collection_name: str = "crown_jewel_dsc",
+        embedding_backend: str = "ollama",
+        embedding_url: str = "http://localhost:11434",
+        embedding_model: str = "snowflake-arctic-embed2:latest",
+        embedding_dim: int = 1024,
         field_container: Optional[FieldContainer] = None,
         phase_manager: Optional[PhaseManager] = None,
-        embedding_model: str = "jinaai/jina-embeddings-v2-base-code",
     ):
+        """
+        Initialize DSC Vector Store with Qdrant and embedding support.
 
+        Args:
+            qdrant_host: Qdrant server hostname
+            qdrant_port: Qdrant server port
+            collection_name: Name of Qdrant collection
+            embedding_backend: Backend type (ollama, openai, sentence_transformers)
+            embedding_url: URL for embedding service
+            embedding_model: Model name for embeddings
+            embedding_dim: Embedding vector dimension
+            field_container: Optional FieldContainer for Crown Jewel integration
+            phase_manager: Optional PhaseManager for Crown Jewel integration
+        """
         if not HAVE_QDRANT:
             logger.warning(
                 "Qdrant client not available. Vector storage will be limited."
@@ -70,6 +85,7 @@ class DSCVectorStore:
                 self.client = QdrantClient(host=qdrant_host, port=qdrant_port)
                 # Test connection
                 self.client.get_collections()
+                logger.info(f"Connected to Qdrant at {qdrant_host}:{qdrant_port}")
             except Exception as e:
                 logger.warning(
                     f"Could not connect to Qdrant at {qdrant_host}:{qdrant_port}: {e}"
@@ -77,35 +93,24 @@ class DSCVectorStore:
                 logger.warning("Vector storage will be disabled.")
                 self.client = None
 
-        self.infinity_url = infinity_url
+        self.embedding_url = embedding_url
         self.collection_name = collection_name
         self.embedding_model = embedding_model
+        self.embedding_dim = embedding_dim
 
         # Integration with Crown Jewel Core
         self.field_container = field_container or FieldContainer()
         self.phase_manager = phase_manager or PhaseManager()
         self.metrics = CoreMetrics()
 
-        # Initialize embedding adapter
-        # BGE-M3 uses 1024 dimensions
-        self.embedding_dim = 1024 if "bge" in embedding_model.lower() else 768
-
-        # Detect backend based on URL
-        if "11434" in infinity_url:
-            backend = "ollama"
-        elif "1234" in infinity_url:
-            backend = "openai"  # LMStudio uses OpenAI-compatible API
-        elif "7997" in infinity_url:
-            backend = "openai"  # Infinity uses OpenAI-compatible API
-        else:
-            backend = "openai"
-
+        # Initialize embedding adapter with explicit backend
         self.embedder = EmbeddingAdapter(
-            backend=backend,
+            backend=embedding_backend,
             model=embedding_model,
-            base_url=infinity_url,
-            dimension=self.embedding_dim,
+            base_url=embedding_url,
+            dimension=embedding_dim,
         )
+        logger.info(f"Embedding adapter: {embedding_backend} @ {embedding_url} using {embedding_model}")
 
         # Initialize collection if Qdrant is available
         if self.client:
@@ -378,16 +383,17 @@ class DSCVectorStore:
             # Search across multiple vectors
             return self._hybrid_search(query, filter_query, purpose, top_k)
 
-        # Single vector search
-        results = self.client.search(
+        # Single vector search using query_points (qdrant-client >= 1.7)
+        results = self.client.query_points(
             collection_name=self.collection_name,
-            query_vector=(vector_name, query_embedding),
+            query=query_embedding,
+            using=vector_name,
             query_filter=filter_query,
             limit=top_k,
             with_payload=True,
         )
 
-        return self._format_results(results, purpose)
+        return self._format_results(results.points, purpose)
 
     def _search_field_container(
         self,
@@ -503,15 +509,16 @@ class DSCVectorStore:
         # Collect results from each vector space
         all_results = {}
         for vector_name, embedding, weight in search_configs:
-            results = self.client.search(
+            response = self.client.query_points(
                 collection_name=self.collection_name,
-                query_vector=(vector_name, embedding),
+                query=embedding,
+                using=vector_name,
                 query_filter=filter_query,
                 limit=top_k * 2,  # Get more for merging
                 with_payload=True,
             )
 
-            for result in results:
+            for result in response.points:
                 point_id = result.id
                 if point_id not in all_results:
                     all_results[point_id] = {

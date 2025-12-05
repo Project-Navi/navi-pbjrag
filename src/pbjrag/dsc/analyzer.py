@@ -49,15 +49,19 @@ class DSCAnalyzer:
         self.vector_store = None
         if self.config.get("enable_vector_store", True):  # Default to True
             try:
+                # Get nested config values with defaults
+                vector_store_cfg = self.config.get("vector_store", {})
+                qdrant_cfg = vector_store_cfg.get("qdrant", {})
+                embedding_cfg = self.config.get("embedding", {})
+
                 self.vector_store = DSCVectorStore(
-                    qdrant_host=self.config.get("qdrant_host", "localhost"),
-                    qdrant_port=self.config.get("qdrant_port", 6333),
-                    infinity_url=self.config.get(
-                        "infinity_url", "http://127.0.0.1:7997"
-                    ),
-                    collection_name=self.config.get(
-                        "collection_name", "crown_jewel_dsc"
-                    ),
+                    qdrant_host=qdrant_cfg.get("host", "localhost"),
+                    qdrant_port=qdrant_cfg.get("port", 6333),
+                    collection_name=qdrant_cfg.get("collection_name", "crown_jewel_dsc"),
+                    embedding_backend=embedding_cfg.get("backend", "ollama"),
+                    embedding_url=embedding_cfg.get("url", "http://localhost:11434"),
+                    embedding_model=embedding_cfg.get("model", "snowflake-arctic-embed2:latest"),
+                    embedding_dim=embedding_cfg.get("dimension", 1024),
                     field_container=self.field_container,
                     phase_manager=self.phase_manager,
                 )

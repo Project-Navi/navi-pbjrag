@@ -4,9 +4,10 @@
 A Streamlit-based web interface for visualizing PBJRAG code analysis results.
 """
 
-import streamlit as st
 import sys
 from pathlib import Path
+
+import streamlit as st
 
 # Add parent directory to path for pbjrag imports
 parent_dir = Path(__file__).parent.parent
@@ -14,14 +15,12 @@ sys.path.insert(0, str(parent_dir / "src"))
 
 # Configure page
 st.set_page_config(
-    page_title="🥜🍇 PBJRAG",
-    page_icon="🥜",
-    layout="wide",
-    initial_sidebar_state="expanded"
+    page_title="🥜🍇 PBJRAG", page_icon="🥜", layout="wide", initial_sidebar_state="expanded"
 )
 
 # Custom CSS
-st.markdown("""
+st.markdown(
+    """
 <style>
     .main-header {
         font-size: 3rem;
@@ -52,17 +51,20 @@ st.markdown("""
         border-radius: 4px;
     }
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 # Header
 st.markdown('<div class="main-header">🥜🍇 PBJRAG</div>', unsafe_allow_html=True)
 st.markdown(
     '<div class="subtitle">Differential Symbolic Calculus for Code Analysis</div>',
-    unsafe_allow_html=True
+    unsafe_allow_html=True,
 )
 
 # Introduction
-st.markdown("""
+st.markdown(
+    """
 ## Welcome to PBJRAG v3
 
 PBJRAG (Peanut Butter & Jelly Retrieval-Augmented Generation) is a next-generation
@@ -85,39 +87,47 @@ Use the sidebar to navigate between different analysis modes:
 2. **🔍 Explore**: Browse and filter analyzed chunks
 3. **🔎 Search**: Semantic search across your codebase
 
-""")
+"""
+)
 
 # Sidebar
 with st.sidebar:
     st.header("🎛️ Navigation")
-    st.markdown("""
+    st.markdown(
+        """
     **Pages:**
     - 📊 Analyze - Run code analysis
     - 🔍 Explore - Browse chunks
     - 🔎 Search - Semantic search
 
     **Status:**
-    """)
+    """
+    )
 
     # Check if pbjrag is available
     try:
         from pbjrag import DSCAnalyzer, DSCCodeChunker
         from pbjrag.crown_jewel import CoreMetrics, FieldContainer
+
         st.success("✅ PBJRAG loaded successfully")
     except ImportError as e:
         st.error(f"❌ Error loading PBJRAG: {e}")
         st.info("💡 Make sure to install PBJRAG: `pip install -e .`")
 
     st.markdown("---")
-    st.markdown("""
+    st.markdown(
+        """
     **Version:** 3.0.0
     **Framework:** Streamlit
     **Engine:** DSC (Differential Symbolic Calculus)
-    """)
+    """
+    )
 
     # Clear Session button
     st.markdown("---")
-    if st.button("🔄 Clear Session", help="Reset all analysis data and start fresh", use_container_width=True):
+    if st.button(
+        "🔄 Clear Session", help="Reset all analysis data and start fresh", use_container_width=True
+    ):
         # Clear all session state
         for key in list(st.session_state.keys()):
             del st.session_state[key]
@@ -125,12 +135,12 @@ with st.sidebar:
         st.rerun()
 
 # Quick stats (if session state has data)
-if 'analysis_results' in st.session_state and st.session_state.analysis_results:
+if "analysis_results" in st.session_state and st.session_state.analysis_results:
     st.markdown("---")
     st.subheader("📊 Current Session Stats")
 
     results = st.session_state.analysis_results
-    chunks = results.get('chunks', [])
+    chunks = results.get("chunks", [])
 
     col1, col2, col3, col4 = st.columns(4)
 
@@ -138,22 +148,25 @@ if 'analysis_results' in st.session_state and st.session_state.analysis_results:
         st.metric("Total Chunks", len(chunks))
 
     with col2:
-        phi_plus = sum(1 for c in chunks if c.get('blessing', {}).get('tier') == 'Φ+')
+        phi_plus = sum(1 for c in chunks if c.get("blessing", {}).get("tier") == "Φ+")
         st.metric("Φ+ (Crown)", phi_plus)
 
     with col3:
-        phi_tilde = sum(1 for c in chunks if c.get('blessing', {}).get('tier') == 'Φ~')
+        phi_tilde = sum(1 for c in chunks if c.get("blessing", {}).get("tier") == "Φ~")
         st.metric("Φ~ (Core)", phi_tilde)
 
     with col4:
-        phi_minus = sum(1 for c in chunks if c.get('blessing', {}).get('tier') == 'Φ-')
+        phi_minus = sum(1 for c in chunks if c.get("blessing", {}).get("tier") == "Φ-")
         st.metric("Φ- (Noise)", phi_minus)
 
 # Footer
 st.markdown("---")
-st.markdown("""
+st.markdown(
+    """
 <div style="text-align: center; color: #888;">
     <p>PBJRAG v3 - Differential Symbolic Calculus for Code Analysis</p>
     <p>🥜 Because code is peanut butter, not text 🍇</p>
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)

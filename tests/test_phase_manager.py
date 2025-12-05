@@ -3,6 +3,7 @@ Tests for PhaseManager - 7-phase lifecycle management.
 """
 
 import pytest
+
 from pbjrag import PhaseManager
 
 
@@ -125,7 +126,7 @@ class TestPhaseManager:
         manager = PhaseManager()
 
         # phase_data should be accessible
-        assert hasattr(manager, 'phase_data')
+        assert hasattr(manager, "phase_data")
         assert isinstance(manager.phase_data, dict)
 
     def test_all_phases_are_reachable(self):

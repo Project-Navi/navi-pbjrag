@@ -87,7 +87,9 @@ def apply_discount(total, discount):
     assert len(chunks) > 0, "Should create at least one chunk"
 
     # Check rhythm across all function chunks
-    rhythms = [chunk.field_state.rhythmic.mean() for chunk in chunks if chunk.chunk_type == "function"]
+    rhythms = [
+        chunk.field_state.rhythmic.mean() for chunk in chunks if chunk.chunk_type == "function"
+    ]
     avg_rhythm = sum(rhythms) / len(rhythms) if rhythms else 0
 
     print(f"Rhythmic field values: {rhythms}")
@@ -204,9 +206,9 @@ if __name__ == "__main__":
         test_emergent_field()
         test_all_dimensions()
 
-        print("\n" + "="*50)
+        print("\n" + "=" * 50)
         print("✓ ALL TESTS PASSED")
-        print("="*50)
+        print("=" * 50)
 
     except AssertionError as e:
         print(f"\n✗ TEST FAILED: {e}")
@@ -214,5 +216,6 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n✗ ERROR: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)

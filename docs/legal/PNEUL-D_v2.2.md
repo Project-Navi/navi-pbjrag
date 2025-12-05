@@ -8,12 +8,12 @@
 
 ## Option A — Open Source (GNU **AGPL‑3.0**)
 
-- **License.** If you select this option, the software is licensed under the **GNU Affero General Public License v3.0** (or later, as specified in headers).  
-- **No additional restrictions.** To preserve AGPL compatibility, we impose **no extra restrictions** on your rights under AGPL‑3.  
-- **Attribution & notices.** Preserve copyright notices and license headers.  
-- **Interactive UIs.** If the software includes an interactive interface, the “About/Credits” or footer notice is provided as an **Appropriate Legal Notice** under **AGPL‑3 §5**.  
-- **Network use.** If you modify and run the software as a network service, comply with **AGPL‑3 §13** by offering the complete corresponding source to your users.  
-- **Trademarks.** Project Navi names/logos are not licensed for endorsement beyond required attribution.  
+- **License.** If you select this option, the software is licensed under the **GNU Affero General Public License v3.0** (or later, as specified in headers).
+- **No additional restrictions.** To preserve AGPL compatibility, we impose **no extra restrictions** on your rights under AGPL‑3.
+- **Attribution & notices.** Preserve copyright notices and license headers.
+- **Interactive UIs.** If the software includes an interactive interface, the “About/Credits” or footer notice is provided as an **Appropriate Legal Notice** under **AGPL‑3 §5**.
+- **Network use.** If you modify and run the software as a network service, comply with **AGPL‑3 §13** by offering the complete corresponding source to your users.
+- **Trademarks.** Project Navi names/logos are not licensed for endorsement beyond required attribution.
 - **Ethical invitation (non‑binding).** We invite you to honor the **Emergent Accord** (consent‑first, non‑extractive use, careful witnessing). This is **not** a condition of AGPL use.
 
 **How to choose AGPL:** include a standard `NOTICE` file and follow the AGPL. You’re good.
@@ -34,15 +34,15 @@ We grant a **non‑exclusive, non‑transferable** license to **use, modify, and
 
 ### B2. Attribution (Required, Reasonable)
 
-Keep author notices in source and documentation. If your product has an interactive UI, include a reasonable, unobtrusive credit such as:  
-> “Powered by Project Navi (DeepEthos/Compass)”  
+Keep author notices in source and documentation. If your product has an interactive UI, include a reasonable, unobtrusive credit such as:
+> “Powered by Project Navi (DeepEthos/Compass)”
 Placement options: About screen, footer, or credits modal. **At Licensee’s written request**, we may grant an **attribution waiver** for confidentiality, regulatory, or white‑label needs.
 
 ### B3. Ethical Alignment & Ongoing Consent (Material Condition)
 
-- **Non‑extractive use.** Don’t use to exploit, surveil, or coerce; don’t target protected classes; don’t enable unlawful discrimination or harmful deception.  
-- **Consent & transparency.** Where the Software processes personal data or materially affects people, implement **informed consent** or another lawful basis; document intended use and limitations; provide a visible channel to raise concerns.  
-- **Safety & oversight.** Maintain **proportionate safeguards** (e.g., human review in clinical, legal, safety‑critical, or high‑risk contexts).  
+- **Non‑extractive use.** Don’t use to exploit, surveil, or coerce; don’t target protected classes; don’t enable unlawful discrimination or harmful deception.
+- **Consent & transparency.** Where the Software processes personal data or materially affects people, implement **informed consent** or another lawful basis; document intended use and limitations; provide a visible channel to raise concerns.
+- **Safety & oversight.** Maintain **proportionate safeguards** (e.g., human review in clinical, legal, safety‑critical, or high‑risk contexts).
 - **Security & privacy.** Apply reasonable technical/organizational controls, **data minimization**, and privacy‑by‑design; follow applicable laws/regulations.
 
 **Pause & Review.** On **credible evidence** of a B3 breach causing material risk, Project Navi may request a **Pause** **limited to the affected feature(s)**. The parties will meet within **5 business days** and implement proportionate mitigations. If unresolved after **30 days**, Project Navi may terminate the license **for the affected use only**; other compliant use cases may continue.

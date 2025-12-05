@@ -16,8 +16,7 @@ from typing import Any, Dict, Optional
 from .error_handler import handle_error
 from .field_container import create_field
 from .metrics import CoreMetrics
-from .pattern_analyzer import (analyze_codebase, detect_patterns,
-                               suggest_combinations)
+from .pattern_analyzer import analyze_codebase, detect_patterns, suggest_combinations
 from .phase_manager import PhaseManager
 
 logger = logging.getLogger(__name__)
@@ -76,9 +75,7 @@ class Orchestrator:
         console_handler.setLevel(log_level)
 
         # Create a formatter
-        formatter = logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-        )
+        formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
         file_handler.setFormatter(formatter)
         console_handler.setFormatter(formatter)
 
@@ -213,9 +210,7 @@ class Orchestrator:
                 }
             )
 
-            logger.info(
-                f"Recognition phase complete - {len(patterns)} patterns identified"
-            )
+            logger.info(f"Recognition phase complete - {len(patterns)} patterns identified")
 
         except Exception as e:
             logger.error(f"Error in recognition phase: {str(e)}")
@@ -440,9 +435,7 @@ class Orchestrator:
 
         return report
 
-    def _create_markdown_report(
-        self, report: Dict[str, Any], output_file: Path
-    ) -> None:
+    def _create_markdown_report(self, report: Dict[str, Any], output_file: Path) -> None:
         """
         Create a markdown report.
 
@@ -523,9 +516,7 @@ def main():
     parser.add_argument(
         "--project-root", default=".", help="Root directory of the project to analyze"
     )
-    parser.add_argument(
-        "--scan-depth", type=int, default=2, help="Maximum directory depth to scan"
-    )
+    parser.add_argument("--scan-depth", type=int, default=2, help="Maximum directory depth to scan")
     parser.add_argument(
         "--output-dir", default="spiral_reports", help="Directory for output reports"
     )

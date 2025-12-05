@@ -1,6 +1,6 @@
 # NOTICE
 
-This product includes software developed by **Project Navi** (DeepEthos/Compass).  
+This product includes software developed by **Project Navi** (DeepEthos/Compass).
 Copyright © Project Navi. All rights reserved.
 
 Licensed under either:

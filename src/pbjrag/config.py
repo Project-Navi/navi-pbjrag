@@ -51,7 +51,9 @@ if HAVE_PYDANTIC:
 
         version: str = "3.0.0"
         field_dim: int = Field(default=8, ge=4, le=32)
-        purpose: str = Field(default="coherence", pattern="^(stability|emergence|coherence|innovation)$")
+        purpose: str = Field(
+            default="coherence", pattern="^(stability|emergence|coherence|innovation)$"
+        )
         output_dir: str = "pbjrag_output"
         log_level: str = Field(default="INFO", pattern="^(DEBUG|INFO|WARNING|ERROR|CRITICAL)$")
         enable_vector_store: bool = True
@@ -252,9 +254,7 @@ class ConfigLoader:
     def _load_yaml_config(self, path: Union[str, Path]) -> Dict[str, Any]:
         """Load configuration from YAML file"""
         if not HAVE_YAML:
-            raise ConfigurationError(
-                "YAML support not available. Install with: pip install pyyaml"
-            )
+            raise ConfigurationError("YAML support not available. Install with: pip install pyyaml")
 
         path = Path(path)
         if not path.exists():

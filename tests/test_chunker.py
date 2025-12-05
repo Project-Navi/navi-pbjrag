@@ -2,10 +2,11 @@
 Tests for DSCCodeChunker - Code chunking with field analysis.
 """
 
-import pytest
 import numpy as np
-from pbjrag.dsc import DSCCodeChunker, DSCChunk, FieldState, BlessingState
+import pytest
+
 from pbjrag.crown_jewel import FieldContainer
+from pbjrag.dsc import BlessingState, DSCChunk, DSCCodeChunker, FieldState
 
 
 class TestDSCCodeChunker:

@@ -14,6 +14,7 @@ from typing import Any, Dict, List, Optional
 import numpy as np
 
 from ..crown_jewel.field_container import FieldContainer
+
 # Import from crown_jewel_core
 from ..crown_jewel.metrics import CoreMetrics, create_blessing_vector
 
@@ -117,9 +118,7 @@ class DSCCodeChunker:
     Enhanced DSC chunker integrated with Crown Jewel Core's metrics system.
     """
 
-    def __init__(
-        self, field_dim: int = 8, field_container: Optional[FieldContainer] = None
-    ):
+    def __init__(self, field_dim: int = 8, field_container: Optional[FieldContainer] = None):
         """Initialize with field dimension and optional field container"""
         self.field_dim = field_dim
         self.field_container = field_container or FieldContainer()
@@ -266,9 +265,7 @@ class DSCCodeChunker:
             depends_on=deps,
         )
 
-    def _create_class_chunk(
-        self, node: ast.ClassDef, lines: List[str], tree: ast.AST
-    ) -> DSCChunk:
+    def _create_class_chunk(self, node: ast.ClassDef, lines: List[str], tree: ast.AST) -> DSCChunk:
         """Create a chunk for a class with full DSC analysis"""
         start_line = node.lineno - 1
         end_line = getattr(node, "end_lineno", start_line + 1)
@@ -372,9 +369,7 @@ class DSCCodeChunker:
         )
 
     # Include all the field extraction methods from original PBJRAG-2
-    def _extract_field_state(
-        self, node: ast.AST, content: str, tree: ast.AST
-    ) -> FieldState:
+    def _extract_field_state(self, node: ast.AST, content: str, tree: ast.AST) -> FieldState:
         """Extract multi-dimensional field state from code"""
 
         # Semantic field - what the code means/does
@@ -584,9 +579,7 @@ class DSCCodeChunker:
 
         # Test-like patterns
         test_patterns = ["test_", "assert", "mock", "fixture"]
-        field[4] = sum(1 for p in test_patterns if p in content.lower()) / len(
-            test_patterns
-        )
+        field[4] = sum(1 for p in test_patterns if p in content.lower()) / len(test_patterns)
 
         # Dangerous patterns (negative ethics)
         dangerous = ["exec", "eval", "global", "__dict__"]
@@ -636,21 +629,15 @@ class DSCCodeChunker:
 
         # Version indicators
         version_patterns = ["v1", "v2", "version", "deprecated", "legacy", "new"]
-        field[0] = sum(1 for p in version_patterns if p in content.lower()) / len(
-            version_patterns
-        )
+        field[0] = sum(1 for p in version_patterns if p in content.lower()) / len(version_patterns)
 
         # Change indicators
         change_patterns = ["todo", "fixme", "hack", "refactor", "optimize"]
-        field[1] = sum(1 for p in change_patterns if p in content.lower()) / len(
-            change_patterns
-        )
+        field[1] = sum(1 for p in change_patterns if p in content.lower()) / len(change_patterns)
 
         # Stability indicators (inverse of change)
         stable_patterns = ["stable", "final", "production", "tested"]
-        field[2] = sum(1 for p in stable_patterns if p in content.lower()) / len(
-            stable_patterns
-        )
+        field[2] = sum(1 for p in stable_patterns if p in content.lower()) / len(stable_patterns)
 
         # Import freshness (newer imports suggest evolution)
         modern_imports = ["typing", "dataclasses", "pathlib", "enum"]
@@ -766,10 +753,7 @@ class DSCCodeChunker:
         my_deps = self._get_dependencies(node)
         shared_deps = 0
         for other_node in ast.walk(tree):
-            if (
-                isinstance(other_node, (ast.FunctionDef, ast.ClassDef))
-                and other_node is not node
-            ):
+            if isinstance(other_node, (ast.FunctionDef, ast.ClassDef)) and other_node is not node:
                 other_deps = self._get_dependencies(other_node)
                 shared_deps += len(set(my_deps) & set(other_deps))
 
@@ -893,9 +877,7 @@ class DSCCodeChunker:
         # Heuristic boosts – comments & TODOs increase temporal/change signal
         doc_lines = len(re.findall(r"\b\w+\b", content))
         comment_lines = content.count("#")
-        presence_density = (doc_lines + comment_lines) / max(
-            len(content.split("\n")), 1
-        )
+        presence_density = (doc_lines + comment_lines) / max(len(content.split("\n")), 1)
 
         blessing = BlessingState(
             tier="Φ~",  # Neutral tier, as quality is not yet determined
@@ -1037,24 +1019,18 @@ class DSCCodeChunker:
             field[0] = min(1.0, complexity / 10.0)
 
             # 2. Exception handler complexity
-            exception_handlers = sum(
-                1 for n in ast.walk(node) if isinstance(n, ast.ExceptHandler)
-            )
+            exception_handlers = sum(1 for n in ast.walk(node) if isinstance(n, ast.ExceptHandler))
             field[1] = min(1.0, exception_handlers / 5.0)
 
             # 3. Branch density (control flow statements per line)
-            branches = sum(
-                1 for n in ast.walk(node) if isinstance(n, (ast.If, ast.For, ast.While))
-            )
+            branches = sum(1 for n in ast.walk(node) if isinstance(n, (ast.If, ast.For, ast.While)))
             total_lines = content.count("\n") + 1
             branch_density = branches / max(total_lines, 1)
             field[2] = min(1.0, branch_density * 10)  # Scale up for visibility
 
             # 4. Loop complexity (nested loops increase entropy)
             loop_count = sum(
-                1
-                for n in ast.walk(node)
-                if isinstance(n, (ast.For, ast.While, ast.AsyncFor))
+                1 for n in ast.walk(node) if isinstance(n, (ast.For, ast.While, ast.AsyncFor))
             )
             field[3] = min(1.0, loop_count / 5.0)
 
@@ -1170,9 +1146,7 @@ class DSCCodeChunker:
 
             # 4. Function/method size consistency (shorter functions = more rhythmic)
             func_count = sum(
-                1
-                for n in ast.walk(node)
-                if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
+                1 for n in ast.walk(node) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
             )
             lines_per_func = len(non_empty_lines) / max(func_count, 1)
 
@@ -1207,9 +1181,7 @@ class DSCCodeChunker:
             statement_count = sum(
                 1
                 for n in ast.walk(node)
-                if isinstance(
-                    n, (ast.Assign, ast.AugAssign, ast.Return, ast.Expr, ast.Call)
-                )
+                if isinstance(n, (ast.Assign, ast.AugAssign, ast.Return, ast.Expr, ast.Call))
             )
             statements_per_line = statement_count / max(len(non_empty_lines), 1)
 
@@ -1283,9 +1255,7 @@ class DSCCodeChunker:
 
             # Async/await patterns
             advanced_features += sum(
-                1
-                for n in ast.walk(node)
-                if isinstance(n, (ast.AsyncFunctionDef, ast.Await))
+                1 for n in ast.walk(node) if isinstance(n, (ast.AsyncFunctionDef, ast.Await))
             )
 
             field[1] = min(1.0, advanced_features / 5.0)
@@ -1377,4 +1347,3 @@ class DSCCodeChunker:
             field.fill(0.5)
 
         return field
-

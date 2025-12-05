@@ -58,23 +58,23 @@ This DPA remains in effect while Project Navi processes Personal Data for Client
 
 ## Annex 1 — Details of Processing
 
-**A. Subject matter and duration.** Processing Personal Data to provide Services under the Agreement; duration = term of the Agreement + retention required by law.  
-**B. Nature and purpose.** Consent‑first AI collaboration, including tokenization/minimization into **InsightCards**, Council facilitation, and audit via **hash‑only Gateway receipts**.  
-**C. Categories of data subjects.** Client’s employees, contractors, customers, or end users.  
-**D. Categories of Personal Data.** Contact identifiers (name, email), role/metadata, collaboration metadata; **no raw PII should cross the LLM boundary** (InsightCards only).  
-**E. Special categories.** Not intended; Client will not intentionally submit sensitive categories without lawful basis and safeguards.  
+**A. Subject matter and duration.** Processing Personal Data to provide Services under the Agreement; duration = term of the Agreement + retention required by law.
+**B. Nature and purpose.** Consent‑first AI collaboration, including tokenization/minimization into **InsightCards**, Council facilitation, and audit via **hash‑only Gateway receipts**.
+**C. Categories of data subjects.** Client’s employees, contractors, customers, or end users.
+**D. Categories of Personal Data.** Contact identifiers (name, email), role/metadata, collaboration metadata; **no raw PII should cross the LLM boundary** (InsightCards only).
+**E. Special categories.** Not intended; Client will not intentionally submit sensitive categories without lawful basis and safeguards.
 **F. Retention.** As configured by Client policies and legal requirements; **Gateway receipts store hashes only**.
 
 ## Annex 2 — Security Measures
 
-- **Governance:** Security policy, least privilege, background checks where lawful, mandatory training.  
-- **Access Controls:** Role‑based access, MFA, short‑lived tokens, key rotation.  
-- **Data Minimization:** Only **InsightCards** cross model boundary; raw prompts not persisted; receipts are **hash‑only**.  
-- **Encryption:** TLS in transit; encryption at rest for databases and object storage; secret hashing (API keys stored as prefix + hash).  
-- **Segregation:** Multi‑tenant scoping by **orgId**; optional row‑level security (RLS).  
-- **Logging/Monitoring:** AuditEvent/TelemetryEvent; anomaly alerts; immutable incident logs.  
-- **Redaction & Consent:** Double‑redaction patterns; **ConsentTickets** with TTL; fail‑closed policy checks.  
-- **Business Continuity:** Backups, PITR, disaster recovery testing.  
+- **Governance:** Security policy, least privilege, background checks where lawful, mandatory training.
+- **Access Controls:** Role‑based access, MFA, short‑lived tokens, key rotation.
+- **Data Minimization:** Only **InsightCards** cross model boundary; raw prompts not persisted; receipts are **hash‑only**.
+- **Encryption:** TLS in transit; encryption at rest for databases and object storage; secret hashing (API keys stored as prefix + hash).
+- **Segregation:** Multi‑tenant scoping by **orgId**; optional row‑level security (RLS).
+- **Logging/Monitoring:** AuditEvent/TelemetryEvent; anomaly alerts; immutable incident logs.
+- **Redaction & Consent:** Double‑redaction patterns; **ConsentTickets** with TTL; fail‑closed policy checks.
+- **Business Continuity:** Backups, PITR, disaster recovery testing.
 - **Incident Response:** 24/7 escalation, triage, containment, customer comms, postmortems.
 
 ## Annex 3 — Subprocessors
@@ -83,6 +83,6 @@ This DPA remains in effect while Project Navi processes Personal Data for Client
 |---|---|---|---|---|
 | (add) |  |  |  |  |
 
-**Signatures**  
-Project Navi (Processor): __________________  Date: ____  
+**Signatures**
+Project Navi (Processor): __________________  Date: ____
 Client (Controller): _______________________  Date: ____

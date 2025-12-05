@@ -86,9 +86,7 @@ class DSCAnalyzer:
         # In-memory cache for file contents, as per the "pre-compiled plaintext cache" concept
         self._file_cache: Dict[str, str] = {}
 
-    def _populate_file_cache(
-        self, project_path: str, max_depth: int, file_extensions: List[str]
-    ):
+    def _populate_file_cache(self, project_path: str, max_depth: int, file_extensions: List[str]):
         """Walks the project path and reads all valid files into an in-memory cache."""
         logger.info(f"Witness Phase: Caching files from {project_path}")
         self._file_cache.clear()
@@ -104,9 +102,7 @@ class DSCAnalyzer:
                 if any(file.endswith(ext) for ext in file_extensions):
                     file_path = os.path.join(root, file)
                     try:
-                        with open(
-                            file_path, "r", encoding="utf-8", errors="replace"
-                        ) as f:
+                        with open(file_path, "r", encoding="utf-8", errors="replace") as f:
                             self._file_cache[file_path] = f.read()
                     except Exception as e:
                         logger.error(f"Error reading file {file_path} into cache: {e}")
@@ -235,9 +231,7 @@ class DSCAnalyzer:
         # If orchestration succeeded, enhance with DSC analysis
         if orchestration_result.get("success"):
             # Phase 2: Recognition - Analyze all files from the cache to get raw metrics
-            logger.info(
-                f"Recognition Phase: Analyzing {len(self._file_cache)} cached files."
-            )
+            logger.info(f"Recognition Phase: Analyzing {len(self._file_cache)} cached files.")
             dsc_results = []
             all_chunks = []
             for file_path in self._file_cache.keys():
@@ -260,9 +254,7 @@ class DSCAnalyzer:
                             "reason": "Low blessing tier (Φ-)",
                         }
                     )
-            logger.info(
-                f"Compost Phase Complete: Found {len(compost_candidates)} candidates."
-            )
+            logger.info(f"Compost Phase Complete: Found {len(compost_candidates)} candidates.")
 
             # Aggregate DSC results
             total_chunks = len(all_chunks)
@@ -319,9 +311,7 @@ class DSCAnalyzer:
 
         return self.vector_store.search(query, **kwargs)
 
-    def find_resonance(
-        self, chunk_id: int, min_resonance: float = 0.7
-    ) -> List[Dict[str, Any]]:
+    def find_resonance(self, chunk_id: int, min_resonance: float = 0.7) -> List[Dict[str, Any]]:
         """
         Find chunks that resonate with a given chunk.
 
@@ -440,9 +430,7 @@ class DSCAnalyzer:
                     "type": "blessing_tier_group",
                     "tier": tier,
                     "chunk_count": len(group),
-                    "chunks": [
-                        c.chunk_type + ":" + ",".join(c.provides) for c in group
-                    ],
+                    "chunks": [c.chunk_type + ":" + ",".join(c.provides) for c in group],
                     "mean_epc": sum(c.blessing.epc for c in group) / len(group),
                 }
                 patterns.append(pattern)
@@ -462,11 +450,8 @@ class DSCAnalyzer:
                     "type": "phase_group",
                     "phase": phase,
                     "chunk_count": len(group),
-                    "chunks": [
-                        c.chunk_type + ":" + ",".join(c.provides) for c in group
-                    ],
-                    "mean_resonance": sum(c.blessing.resonance_score for c in group)
-                    / len(group),
+                    "chunks": [c.chunk_type + ":" + ",".join(c.provides) for c in group],
+                    "mean_resonance": sum(c.blessing.resonance_score for c in group) / len(group),
                 }
                 patterns.append(pattern)
 
@@ -693,12 +678,8 @@ class DSCAnalyzer:
             f.write("## Top Blessed Fragments\n\n")
             for i, fragment in enumerate(report["top_blessed_fragments"], 1):
                 blessing = fragment["blessing"]
-                f.write(
-                    f"{i}. **{fragment['chunk_type']}** - {', '.join(fragment['provides'])}\n"
-                )
-                f.write(
-                    f"   - Blessing: {blessing.get('Φ')} (EPC: {blessing.get('epc', 0):.3f})\n"
-                )
+                f.write(f"{i}. **{fragment['chunk_type']}** - {', '.join(fragment['provides'])}\n")
+                f.write(f"   - Blessing: {blessing.get('Φ')} (EPC: {blessing.get('epc', 0):.3f})\n")
             f.write("\n")
 
             f.write("## Recommendations\n\n")
@@ -727,9 +708,7 @@ class DSCAnalyzer:
             try:
                 tree = ast.parse(chunk.get("content", ""))
                 for node in ast.walk(tree):
-                    if isinstance(
-                        node, (ast.If, ast.For, ast.While, ast.Return, ast.Call)
-                    ):
+                    if isinstance(node, (ast.If, ast.For, ast.While, ast.Return, ast.Call)):
                         structure.append(node.__class__.__name__)
                 # Create a hashable signature
                 chunk["structural_signature"] = tuple(sorted(structure))
@@ -749,8 +728,7 @@ class DSCAnalyzer:
                 # Further analysis could be done here (e.g., metric similarity)
                 # For now, structural similarity is the main driver.
                 patterns[pattern_name] = [
-                    {"file_path": c.get("file_path"), "provides": c.get("provides")}
-                    for c in group
+                    {"file_path": c.get("file_path"), "provides": c.get("provides")} for c in group
                 ]
                 pattern_count += 1
 

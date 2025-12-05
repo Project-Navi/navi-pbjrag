@@ -2,8 +2,10 @@
 Tests for DSCAnalyzer - Unified analysis interface.
 """
 
-import pytest
 from pathlib import Path
+
+import pytest
+
 from pbjrag import DSCAnalyzer
 
 
@@ -38,25 +40,25 @@ class TestDSCAnalyzer:
 
         assert result is not None
         assert isinstance(result, dict)
-        assert result.get('success', False)
-        assert 'chunks' in result
-        assert len(result['chunks']) > 0
+        assert result.get("success", False)
+        assert "chunks" in result
+        assert len(result["chunks"]) > 0
 
     def test_analyze_file_with_valid_code(self, sample_python_file, test_config):
         """Test analysis with valid Python code produces chunk dicts."""
         analyzer = DSCAnalyzer(config=test_config)
 
         result = analyzer.analyze_file(str(sample_python_file))
-        chunks = result.get('chunks', [])
+        chunks = result.get("chunks", [])
 
         # Verify chunks have expected keys
         for chunk in chunks:
-            assert 'content' in chunk
-            assert 'start_line' in chunk
-            assert 'end_line' in chunk
-            assert 'field_state' in chunk
-            assert 'blessing' in chunk
-            assert 'chunk_type' in chunk
+            assert "content" in chunk
+            assert "start_line" in chunk
+            assert "end_line" in chunk
+            assert "field_state" in chunk
+            assert "blessing" in chunk
+            assert "chunk_type" in chunk
 
     def test_analyze_nonexistent_file(self, test_config):
         """Test that analyzing a nonexistent file returns error result."""

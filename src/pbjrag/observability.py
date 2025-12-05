@@ -17,7 +17,8 @@ from typing import Any, Callable, Dict, Optional
 
 # Prometheus metrics (optional dependency)
 try:
-    from prometheus_client import Counter, Histogram, Gauge, generate_latest, CONTENT_TYPE_LATEST
+    from prometheus_client import CONTENT_TYPE_LATEST, Counter, Gauge, Histogram, generate_latest
+
     PROMETHEUS_AVAILABLE = True
 except ImportError:
     PROMETHEUS_AVAILABLE = False
@@ -25,30 +26,20 @@ except ImportError:
 # Metrics definitions
 if PROMETHEUS_AVAILABLE:
     REQUEST_COUNT = Counter(
-        'pbjrag_requests_total',
-        'Total number of requests',
-        ['operation', 'status']
+        "pbjrag_requests_total", "Total number of requests", ["operation", "status"]
     )
     REQUEST_DURATION = Histogram(
-        'pbjrag_request_duration_seconds',
-        'Request duration in seconds',
-        ['operation'],
-        buckets=[0.01, 0.05, 0.1, 0.5, 1.0, 2.5, 5.0, 10.0]
+        "pbjrag_request_duration_seconds",
+        "Request duration in seconds",
+        ["operation"],
+        buckets=[0.01, 0.05, 0.1, 0.5, 1.0, 2.5, 5.0, 10.0],
     )
     ERROR_COUNT = Counter(
-        'pbjrag_errors_total',
-        'Total number of errors',
-        ['operation', 'error_type']
+        "pbjrag_errors_total", "Total number of errors", ["operation", "error_type"]
     )
-    ACTIVE_REQUESTS = Gauge(
-        'pbjrag_active_requests',
-        'Number of active requests',
-        ['operation']
-    )
+    ACTIVE_REQUESTS = Gauge("pbjrag_active_requests", "Number of active requests", ["operation"])
     BLESSING_TIER_COUNT = Counter(
-        'pbjrag_blessing_tiers_total',
-        'Count of blessing tier assignments',
-        ['tier']
+        "pbjrag_blessing_tiers_total", "Count of blessing tier assignments", ["tier"]
     )
 
 
@@ -69,7 +60,7 @@ class StructuredLogger:
             "message": message,
             "service": "pbjrag",
             "trace_id": self._trace_id or str(uuid.uuid4())[:8],
-            **kwargs
+            **kwargs,
         }
         return json.dumps(entry)
 
@@ -110,10 +101,12 @@ def trace_operation(operation: str, trace_id: Optional[str] = None):
             REQUEST_COUNT.labels(operation=operation, status="success").inc()
             REQUEST_DURATION.labels(operation=operation).observe(duration)
 
-        logger.info(f"Completed {operation}",
-                   operation=operation,
-                   duration_ms=round(duration * 1000, 2),
-                   status="success")
+        logger.info(
+            f"Completed {operation}",
+            operation=operation,
+            duration_ms=round(duration * 1000, 2),
+            status="success",
+        )
 
     except Exception as e:
         duration = time.time() - start_time
@@ -123,11 +116,13 @@ def trace_operation(operation: str, trace_id: Optional[str] = None):
             ERROR_COUNT.labels(operation=operation, error_type=type(e).__name__).inc()
             REQUEST_DURATION.labels(operation=operation).observe(duration)
 
-        logger.error(f"Failed {operation}",
-                    operation=operation,
-                    duration_ms=round(duration * 1000, 2),
-                    error=str(e),
-                    error_type=type(e).__name__)
+        logger.error(
+            f"Failed {operation}",
+            operation=operation,
+            duration_ms=round(duration * 1000, 2),
+            error=str(e),
+            error_type=type(e).__name__,
+        )
         raise
 
     finally:
@@ -137,12 +132,15 @@ def trace_operation(operation: str, trace_id: Optional[str] = None):
 
 def traced(operation: str):
     """Decorator for tracing function calls."""
+
     def decorator(func: Callable) -> Callable:
         @wraps(func)
         def wrapper(*args, **kwargs):
             with trace_operation(operation):
                 return func(*args, **kwargs)
+
         return wrapper
+
     return decorator
 
 
@@ -161,15 +159,12 @@ def get_metrics() -> bytes:
 
 def health_check() -> Dict[str, Any]:
     """Perform health check and return status."""
-    checks = {
-        "status": "healthy",
-        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
-        "checks": {}
-    }
+    checks = {"status": "healthy", "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"), "checks": {}}
 
     # Check core imports
     try:
         from pbjrag import DSCAnalyzer
+
         checks["checks"]["core_imports"] = "ok"
     except Exception as e:
         checks["checks"]["core_imports"] = f"error: {e}"
@@ -178,6 +173,7 @@ def health_check() -> Dict[str, Any]:
     # Check Qdrant (if configured)
     try:
         from pbjrag.dsc.vector_store import DSCVectorStore
+
         # Just check import, don't actually connect
         checks["checks"]["vector_store"] = "available"
     except ImportError:

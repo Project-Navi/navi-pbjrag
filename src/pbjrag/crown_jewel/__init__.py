@@ -66,8 +66,7 @@ from .error_handler import handle_error, resolve_ambiguity
 from .field_container import FieldContainer, create_field
 from .metrics import CoreMetrics, create_blessing_vector
 from .orchestrator import Orchestrator, run_orchestration
-from .pattern_analyzer import (PatternAnalyzer, analyze_codebase,
-                               detect_patterns)
+from .pattern_analyzer import PatternAnalyzer, analyze_codebase, detect_patterns
 from .phase_manager import PhaseManager
 
 __all__ = [

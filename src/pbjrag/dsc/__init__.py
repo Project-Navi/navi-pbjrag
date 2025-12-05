@@ -5,6 +5,9 @@ The DSC module provides code analysis tools based on field theory mathematics.
 It segments code into chunks, calculates quality metrics, and stores embeddings
 for semantic search and retrieval.
 
+PBJRAG v3 is Qdrant-native - Qdrant is the only actively maintained vector store.
+See docs/adapters/ for legacy adapter templates if you need custom integrations.
+
 What It Does:
     DSC analyzes source code by treating it as symbolic field objects with
     measurable properties. It chunks code intelligently, computes quality
@@ -14,18 +17,21 @@ What It Does:
 Core Components:
     - DSCAnalyzer: Main analysis engine for computing field properties
     - DSCCodeChunker: Segments source code into semantically meaningful chunks
-    - DSCVectorStore: In-memory vector storage for code embeddings
-    - DSCChromaStore: ChromaDB integration for persistent storage (optional)
-    - FieldState: Data class storing code fragment properties (coherence, entropy)
+    - DSCVectorStore: Qdrant-native vector storage with multi-vector support
+    - FieldState: Data class storing code fragment properties (9-dimensional)
     - BlessingState: Data class tracking quality tier and metrics
     - DSCChunk: Container for code chunk with field and blessing states
 
-Measured Properties:
-    - Coherence: Internal consistency and logical structure (0.0-1.0)
-    - Entropy: Complexity and information density (0.0-1.0)
-    - Coupling: Dependencies and interconnections (0.0-1.0)
-    - Efficacy: Functional correctness and effectiveness (0.0-1.0)
-    - Purity: Code cleanliness and best practices adherence (0.0-1.0)
+Measured Properties (9 Dimensions):
+    - Semantic: Pattern complexity and logical structure (0.0-1.0)
+    - Emotional: Affective context and intent (0.0-1.0)
+    - Ethical: Alignment with best practices (0.0-1.0)
+    - Temporal: Time stability and evolution (0.0-1.0)
+    - Entropic: Chaos/order balance (0.0-1.0)
+    - Rhythmic: Structural patterns (0.0-1.0)
+    - Contradiction: Tension points (0.0-1.0)
+    - Relational: Dependency connections (0.0-1.0)
+    - Emergent: Evolution potential (0.0-1.0)
 
 Use Cases:
     - Code quality assessment and monitoring
@@ -37,27 +43,33 @@ Use Cases:
 Example Usage:
     >>> from pbjrag.dsc import DSCAnalyzer, DSCCodeChunker, DSCVectorStore
     >>>
-    >>> # Chunk and analyze code
+    >>> # Chunk code
     >>> chunker = DSCCodeChunker()
-    >>> chunks = chunker.chunk_code(source_code, language="python")
+    >>> chunks = chunker.chunk_code(source_code, filepath="example.py")
     >>>
-    >>> # Compute field properties
-    >>> analyzer = DSCAnalyzer()
+    >>> # Analyze and print blessing info
     >>> for chunk in chunks:
-    ...     field_state = analyzer.compute_field_state(chunk)
-    ...     print(f"Coherence: {field_state.coherence:.3f}")
-    ...     print(f"Entropy: {field_state.entropy:.3f}")
-    ...     print(f"Blessing Tier: {chunk.blessing_state.tier}")
+    ...     print(f"Type: {chunk.chunk_type}")
+    ...     print(f"Blessing Tier: {chunk.blessing.tier}")
+    ...     print(f"Phase: {chunk.blessing.phase}")
     >>>
-    >>> # Store and search embeddings
-    >>> vector_store = DSCVectorStore()
-    >>> vector_store.add_chunks(chunks)
-    >>> similar = vector_store.search("authentication logic", k=5)
+    >>> # Or use DSCAnalyzer for file/project analysis
+    >>> analyzer = DSCAnalyzer()
+    >>> results = analyzer.analyze_file("my_code.py")
+    >>>
+    >>> # With Qdrant vector store
+    >>> vector_store = DSCVectorStore()  # Connects to Qdrant at localhost:6333
+    >>> vector_store.index_chunks(chunks)
+    >>> results = vector_store.search("authentication logic", top_k=5)
 
-Optional Integrations:
-    - ChromaDB: Persistent vector storage (install with chromadb extra)
-    - Neo4j: Graph-based relationship mapping (install with neo4j extra)
-    - Custom embeddings: Pluggable embedding model adapters
+Vector Store:
+    - Primary: Qdrant (localhost:6333) - multi-vector support for 9D fields
+    - Legacy: ChromaDB adapter available in dsc.legacy (not maintained)
+    - Custom: See docs/adapters/CUSTOM_ADAPTER_TEMPLATE.md
+
+Embedding:
+    - Backend: Ollama (snowflake-arctic-embed2)
+    - Dimensions: 1024
 
 Field Theory Background:
     DSC applies differential operators from mathematical field theory:
@@ -71,14 +83,9 @@ from .analyzer import DSCAnalyzer
 from .chunker import BlessingState, DSCChunk, DSCCodeChunker, FieldState
 from .vector_store import DSCEmbeddedChunk, DSCVectorStore
 
-# Optional ChromaDB support
-try:
-    from .chroma_store import DSCChromaStore
-
-    HAVE_CHROMA = True
-except ImportError:
-    DSCChromaStore = None
-    HAVE_CHROMA = False
+# Legacy ChromaDB support (archived - use Qdrant instead)
+# Import from pbjrag.dsc.legacy.chroma_store if needed
+HAVE_CHROMA = False  # Deprecated - Qdrant is now the default
 
 __all__ = [
     "DSCCodeChunker",
@@ -89,7 +96,3 @@ __all__ = [
     "DSCEmbeddedChunk",
     "DSCAnalyzer",
 ]
-
-# Add ChromaDB store if available
-if HAVE_CHROMA:
-    __all__.append("DSCChromaStore")

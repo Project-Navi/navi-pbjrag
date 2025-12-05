@@ -212,9 +212,7 @@ class FieldContainer:
             if conflict.get("id") == conflict_id:
                 self.conflicts[i]["resolved"] = True
                 self.conflicts[i]["resolution"] = resolution
-                self.conflicts[i][
-                    "resolution_timestamp"
-                ] = datetime.datetime.now().isoformat()
+                self.conflicts[i]["resolution_timestamp"] = datetime.datetime.now().isoformat()
                 return True
         return False
 
@@ -376,9 +374,7 @@ class FieldContainer:
 
         self.capacitor.append(item)
 
-    def pulse_check(
-        self, field_context: Optional[Dict[str, Any]] = None
-    ) -> List[Dict[str, Any]]:
+    def pulse_check(self, field_context: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
         """
         Check for items in the capacitor that are ready for release based on field context.
 
@@ -395,9 +391,7 @@ class FieldContainer:
         time_since_pulse = (now - self.last_pulse).total_seconds() / 3600.0  # Hours
 
         # Adjust threshold based on time since last pulse
-        threshold_adjustment = min(
-            0.2, time_since_pulse / 24.0
-        )  # Max 0.2 reduction per day
+        threshold_adjustment = min(0.2, time_since_pulse / 24.0)  # Max 0.2 reduction per day
         current_threshold = max(0.0, self.capacitor_threshold - threshold_adjustment)
 
         ready_items = []
@@ -480,16 +474,10 @@ class FieldContainer:
         - Field coherence value in range [0,1]
         """
         # Extract blessing vectors from patterns and fragments
-        pattern_blessings = [
-            p.get("blessing", {}) for p in self.patterns if "blessing" in p
-        ]
-        fragment_blessings = [
-            f.get("blessing", {}) for f in self.fragments if "blessing" in f
-        ]
+        pattern_blessings = [p.get("blessing", {}) for p in self.patterns if "blessing" in p]
+        fragment_blessings = [f.get("blessing", {}) for f in self.fragments if "blessing" in f]
         group_blessings = [
-            g.get("group_blessing", {})
-            for g in self.blessed_groups
-            if "group_blessing" in g
+            g.get("group_blessing", {}) for g in self.blessed_groups if "group_blessing" in g
         ]
 
         all_blessings = pattern_blessings + fragment_blessings + group_blessings
@@ -508,9 +496,7 @@ class FieldContainer:
         total = len(all_blessings)
 
         # Calculate weighted coherence
-        weighted_coherence = (
-            (phi_plus * 1.0 + phi_tilde * 0.5) / total if total > 0 else 0.0
-        )
+        weighted_coherence = (phi_plus * 1.0 + phi_tilde * 0.5) / total if total > 0 else 0.0
 
         # Combine mean EPC and weighted coherence
         field_coherence = (mean_epc * 0.6) + (weighted_coherence * 0.4)
@@ -529,10 +515,7 @@ class FieldContainer:
 
         for pattern in self.patterns:
             blessing = pattern.get("blessing", {})
-            if (
-                blessing.get("Φ") == "Φ-"
-                or blessing.get("epc", 0.0) < self.decay_threshold
-            ):
+            if blessing.get("Φ") == "Φ-" or blessing.get("epc", 0.0) < self.decay_threshold:
                 pattern["dissolution_timestamp"] = datetime.datetime.now().isoformat()
                 rigid_patterns.append(pattern)
             else:
@@ -540,9 +523,7 @@ class FieldContainer:
 
         # Store rigid patterns in compost
         for pattern in rigid_patterns:
-            self.store_in_compost(
-                pattern, reason="Dissolved during rigid structure dissolution"
-            )
+            self.store_in_compost(pattern, reason="Dissolved during rigid structure dissolution")
 
         # Update patterns list
         self.patterns = flexible_patterns
@@ -565,9 +546,7 @@ class FieldContainer:
             self.add_blessed_group(item)
 
         # Log the emergence
-        logger.info(
-            f"Allowed {len(emerged_items)} patterns to emerge from the capacitor"
-        )
+        logger.info(f"Allowed {len(emerged_items)} patterns to emerge from the capacitor")
 
         return emerged_items
 
@@ -592,9 +571,7 @@ class FieldContainer:
                 if new_blessing["Φ"] != blessing.get("Φ"):
                     pattern["blessing"] = new_blessing
                     pattern["amplified"] = True
-                    pattern["amplification_timestamp"] = (
-                        datetime.datetime.now().isoformat()
-                    )
+                    pattern["amplification_timestamp"] = datetime.datetime.now().isoformat()
                     amplified.append(pattern)
 
         # Log the amplification
@@ -818,14 +795,10 @@ class FieldContainer:
             self.environment = field_summary.get("environment", {})
             self.user_input = field_summary.get("user_input", {})
             self.dependencies = field_summary.get("dependencies", {})
-            self.installed_dependencies = set(
-                field_summary.get("installed_dependencies", [])
-            )
+            self.installed_dependencies = set(field_summary.get("installed_dependencies", []))
 
             # Log the load
-            logger.info(
-                f"Loaded field state from {input_dir} with timestamp {timestamp}"
-            )
+            logger.info(f"Loaded field state from {input_dir} with timestamp {timestamp}")
 
             return True
 

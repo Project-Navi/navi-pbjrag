@@ -129,9 +129,7 @@ class CoreMetrics:
         """
         return {k: self.quantize_scalar(v, precision) for k, v in vector.items()}
 
-    def compute_epc(
-        self, contradiction: float, ethics: float, presence: float
-    ) -> float:
+    def compute_epc(self, contradiction: float, ethics: float, presence: float) -> float:
         """
         Compute the Emergence Potential Coefficient (EPC), adapted from v6.1.
         This version uses a balanced geometric mean for a more holistic score.
@@ -235,9 +233,7 @@ class CoreMetrics:
 
         return "unknown"
 
-    def determine_tone(
-        self, qualia: float, entropy: float, contradiction: float
-    ) -> str:
+    def determine_tone(self, qualia: float, entropy: float, contradiction: float) -> str:
         """
         Determine the tone based on qualia, entropy, and contradiction.
 
@@ -302,8 +298,7 @@ class CoreMetrics:
         score = (
             e * weights["entropy"]
             + c * weights["complexity"]
-            + (1 - k)
-            * weights["contradiction"]  # Invert contradiction for positive contribution
+            + (1 - k) * weights["contradiction"]  # Invert contradiction for positive contribution
             + s * weights["symbolism"]
         )
 
@@ -387,9 +382,7 @@ class CoreMetrics:
 
         # Calculate variance as a measure of alignment
         epc_variance = sum((x - mean_epc) ** 2 for x in epcs) / len(epcs)
-        alignment = 1.0 - min(
-            1.0, epc_variance * 4
-        )  # Transform variance to [0,1] scale
+        alignment = 1.0 - min(1.0, epc_variance * 4)  # Transform variance to [0,1] scale
 
         # Calculate resonance based on ethics and reduced contradiction
         resonance = mean_ethics * (1.0 - mean_contradiction)
@@ -435,26 +428,18 @@ class CoreMetrics:
 
         if blessing == "Φ-":
             if contradiction > 0.7:
-                recommendations.append(
-                    "Reduce contradiction by resolving conflicting patterns"
-                )
+                recommendations.append("Reduce contradiction by resolving conflicting patterns")
             if ethics < 0.3:
                 recommendations.append(
                     "Improve ethical alignment through clearer intent and documentation"
                 )
             if cadence < 0.3:
-                recommendations.append(
-                    "Improve flow and rhythm through consistent patterns"
-                )
+                recommendations.append("Improve flow and rhythm through consistent patterns")
         elif blessing == "Φ~":
             if contradiction > 0.5:
-                recommendations.append(
-                    "Address moderate contradiction to improve coherence"
-                )
+                recommendations.append("Address moderate contradiction to improve coherence")
             if ethics < 0.5:
-                recommendations.append(
-                    "Strengthen ethical alignment for better resonance"
-                )
+                recommendations.append("Strengthen ethical alignment for better resonance")
             if cadence < 0.5:
                 recommendations.append("Enhance cadence for improved flow")
 
@@ -469,9 +454,7 @@ class CoreMetrics:
             "blessing": blessing,
             "recommendations": recommendations,
             "guidance": tier_guidance.get(blessing, ""),
-            "priority": {"Φ+": "low", "Φ~": "medium", "Φ-": "high"}.get(
-                blessing, "medium"
-            ),
+            "priority": {"Φ+": "low", "Φ~": "medium", "Φ-": "high"}.get(blessing, "medium"),
         }
 
 

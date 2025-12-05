@@ -4,10 +4,10 @@ Shared fixtures for PBJRAG test suite.
 
 import tempfile
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
 
-import pytest
 import numpy as np
+import pytest
 
 
 @pytest.fixture
@@ -44,11 +44,11 @@ def sample_python_file(tmp_path: Path, sample_python_code: str) -> Path:
 @pytest.fixture
 def invalid_python_code() -> str:
     """Returns invalid Python code for error testing."""
-    return '''
+    return """
 def broken_function(
     # Missing closing parenthesis
     return "incomplete"
-'''
+"""
 
 
 @pytest.fixture

@@ -55,7 +55,7 @@ class TestAnalysisSLO:
         latencies = []
 
         # Create a temporary file for testing
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
             f.write(SAMPLE_CODE)
             temp_file = f.name
 

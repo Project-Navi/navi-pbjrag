@@ -59,6 +59,7 @@ Version: 3.0.0
 __version__ = "3.0.0"
 
 from .crown_jewel import Orchestrator, PhaseManager
+
 # Import main components for easy access
 from .dsc import DSCAnalyzer, DSCCodeChunker
 

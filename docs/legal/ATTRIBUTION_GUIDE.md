@@ -1,11 +1,11 @@
 # Attribution Guide (Project Navi)
 
-**Default credit (public works):**  
+**Default credit (public works):**
 “Built with Project Navi (DeepEthos/Compass) — project‑navi.ai”
 
-**Where to place it:**  
-- Websites/apps: footer, About/Credits modal, or settings > About.  
-- Docs/reports: title page footer or end matter.  
+**Where to place it:**
+- Websites/apps: footer, About/Credits modal, or settings > About.
+- Docs/reports: title page footer or end matter.
 - Talks/demos: final slide.
 
 **Internal‑only materials:** retain file‑level copyright and license notices; no public credit required.

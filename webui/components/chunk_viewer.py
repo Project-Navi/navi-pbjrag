@@ -5,8 +5,8 @@ Display and interact with code chunks
 
 import streamlit as st
 from pygments import highlight
-from pygments.lexers import get_lexer_by_name, guess_lexer
 from pygments.formatters import HtmlFormatter
+from pygments.lexers import get_lexer_by_name, guess_lexer
 from pygments.util import ClassNotFound
 
 
@@ -120,7 +120,9 @@ def render_chunk_list(chunks, page_size=10):
         )
 
     with col2:
-        st.write(f"Showing {(page-1)*page_size + 1}-{min(page*page_size, total_chunks)} of {total_chunks}")
+        st.write(
+            f"Showing {(page-1)*page_size + 1}-{min(page*page_size, total_chunks)} of {total_chunks}"
+        )
 
     with col3:
         show_code = st.checkbox("Show Code", value=False)
@@ -176,7 +178,9 @@ def render_chunk_details(chunk):
     st.divider()
 
     # Tabbed interface
-    tab1, tab2, tab3, tab4 = st.tabs(["💻 Code", "📊 Field State", "🔗 Dependencies", "🧬 Blessing"])
+    tab1, tab2, tab3, tab4 = st.tabs(
+        ["💻 Code", "📊 Field State", "🔗 Dependencies", "🧬 Blessing"]
+    )
 
     with tab1:
         st.subheader("Code Content")

@@ -2,10 +2,11 @@
 📊 Analyze - Run PBJRAG analysis on code files
 """
 
-import streamlit as st
+import json
 import sys
 from pathlib import Path
-import json
+
+import streamlit as st
 
 # Add parent directory to path for pbjrag imports
 parent_dir = Path(__file__).parent.parent.parent
@@ -14,6 +15,7 @@ sys.path.insert(0, str(parent_dir / "src"))
 try:
     from pbjrag import DSCAnalyzer, DSCCodeChunker
     from pbjrag.crown_jewel import CoreMetrics, FieldContainer
+
     PBJRAG_AVAILABLE = True
 except ImportError as e:
     PBJRAG_AVAILABLE = False
@@ -23,7 +25,7 @@ except ImportError as e:
 components_path = Path(__file__).parent.parent / "components"
 sys.path.insert(0, str(components_path))
 
-from charts import blessing_pie_chart, phase_bar_chart, epc_timeline_chart
+from charts import blessing_pie_chart, epc_timeline_chart, phase_bar_chart
 
 st.set_page_config(page_title="📊 Analyze", page_icon="📊", layout="wide")
 
@@ -37,20 +39,20 @@ with st.sidebar:
     analysis_type = st.radio(
         "Analysis Type",
         ["Single File", "Directory"],
-        help="Choose whether to analyze a single file or entire directory"
+        help="Choose whether to analyze a single file or entire directory",
     )
 
     if analysis_type == "Single File":
         file_path = st.text_input(
             "File Path",
             placeholder="/path/to/your/file.py",
-            help="Enter the absolute path to the file you want to analyze"
+            help="Enter the absolute path to the file you want to analyze",
         )
     else:
         file_path = st.text_input(
             "Directory Path",
             placeholder="/path/to/your/directory",
-            help="Enter the absolute path to the directory you want to analyze"
+            help="Enter the absolute path to the directory you want to analyze",
         )
 
     # Note: PBJRAG uses AST-based semantic chunking, NOT line-based
@@ -62,7 +64,8 @@ with st.sidebar:
     )
 
     with st.expander("📖 How Semantic Chunking Works"):
-        st.markdown("""
+        st.markdown(
+            """
         Unlike traditional RAG systems that chunk by line count, PBJRAG uses
         **coherent semantic boundaries**:
 
@@ -77,17 +80,20 @@ with st.sidebar:
         - `blessing`: Quality tier (Φ+, Φ~, Φ-)
 
         This "adhesion" of context to each chunk is the key differentiator.
-        """)
+        """
+        )
 
     analyze_button = st.button("🚀 Analyze", type="primary", use_container_width=True)
 
     # Clear Analysis button
-    if 'analysis_results' in st.session_state:
+    if "analysis_results" in st.session_state:
         st.markdown("---")
-        if st.button("🗑️ Clear Analysis", help="Remove current analysis results", use_container_width=True):
-            if 'analysis_results' in st.session_state:
+        if st.button(
+            "🗑️ Clear Analysis", help="Remove current analysis results", use_container_width=True
+        ):
+            if "analysis_results" in st.session_state:
                 del st.session_state.analysis_results
-            if 'analyzed_path' in st.session_state:
+            if "analyzed_path" in st.session_state:
                 del st.session_state.analyzed_path
             st.success("✅ Analysis cleared!")
             st.rerun()
@@ -135,14 +141,14 @@ if analyze_button:
                     status_text.text(f"Analyzing: {file.name}")
                     try:
                         file_results = analyzer.analyze_file(str(file))
-                        all_chunks.extend(file_results.get('chunks', []))
+                        all_chunks.extend(file_results.get("chunks", []))
                         file_count += 1
                     except Exception as e:
                         st.warning(f"⚠️ Error analyzing {file.name}: {e}")
 
                     progress_bar.progress((i + 1) / len(python_files))
 
-                results = {'chunks': all_chunks, 'file_count': file_count}
+                results = {"chunks": all_chunks, "file_count": file_count}
                 st.session_state.analysis_results = results
                 st.session_state.analyzed_path = str(path)
 
@@ -156,9 +162,9 @@ if analyze_button:
             st.stop()
 
 # Display results
-if 'analysis_results' in st.session_state and st.session_state.analysis_results:
+if "analysis_results" in st.session_state and st.session_state.analysis_results:
     results = st.session_state.analysis_results
-    chunks = results.get('chunks', [])
+    chunks = results.get("chunks", [])
 
     if not chunks:
         st.warning("⚠️ No chunks found in analysis results")
@@ -174,17 +180,17 @@ if 'analysis_results' in st.session_state and st.session_state.analysis_results:
         st.metric("Total Chunks", len(chunks))
 
     with col2:
-        phi_plus = sum(1 for c in chunks if c.get('blessing', {}).get('tier') == 'Φ+')
+        phi_plus = sum(1 for c in chunks if c.get("blessing", {}).get("tier") == "Φ+")
         percentage = (phi_plus / len(chunks) * 100) if chunks else 0
         st.metric("Φ+ Crown", phi_plus, f"{percentage:.1f}%")
 
     with col3:
-        phi_tilde = sum(1 for c in chunks if c.get('blessing', {}).get('tier') == 'Φ~')
+        phi_tilde = sum(1 for c in chunks if c.get("blessing", {}).get("tier") == "Φ~")
         percentage = (phi_tilde / len(chunks) * 100) if chunks else 0
         st.metric("Φ~ Core", phi_tilde, f"{percentage:.1f}%")
 
     with col4:
-        phi_minus = sum(1 for c in chunks if c.get('blessing', {}).get('tier') == 'Φ-')
+        phi_minus = sum(1 for c in chunks if c.get("blessing", {}).get("tier") == "Φ-")
         percentage = (phi_minus / len(chunks) * 100) if chunks else 0
         st.metric("Φ- Noise", phi_minus, f"{percentage:.1f}%")
 
@@ -228,7 +234,7 @@ if 'analysis_results' in st.session_state and st.session_state.analysis_results:
                 label="⬇️ Download JSON",
                 data=json_data,
                 file_name="pbjrag_analysis.json",
-                mime="application/json"
+                mime="application/json",
             )
 
     with col2:
@@ -247,7 +253,7 @@ Blessing Distribution:
                 label="⬇️ Download Summary",
                 data=summary,
                 file_name="pbjrag_summary.txt",
-                mime="text/plain"
+                mime="text/plain",
             )
 
 else:
@@ -255,7 +261,8 @@ else:
 
     # Example section
     with st.expander("📖 How to use"):
-        st.markdown("""
+        st.markdown(
+            """
         ### Analysis Steps
 
         1. **Choose Analysis Type**: Select whether to analyze a single file or directory
@@ -287,4 +294,5 @@ else:
         - Semantic chunking automatically groups by function/class boundaries
         - Each chunk includes dependency tracking (`provides`, `depends_on`)
         - Export results for integration with vector stores
-        """)
+        """
+        )

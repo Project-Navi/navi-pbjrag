@@ -3,8 +3,8 @@
     "id": "pattern_0",
     "type": "similarity_group",
     "fragments": [
-      "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/utils.py",
-      "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/submodule/helper.py"
+      "/tmp/pytest-of-ndspence/pytest-34/test_analyze_project0/test_project/utils.py",
+      "/tmp/pytest-of-ndspence/pytest-34/test_analyze_project0/test_project/submodule/helper.py"
     ],
     "fragment_count": 2,
     "group_blessing": {
@@ -14,6 +14,6 @@
       "mean_epc": 0.0354,
       "blessing": "\u03a6-"
     },
-    "timestamp": "2025-12-05T01:12:56.175745"
+    "timestamp": "2025-12-05T05:31:12.594549"
   }
 ]

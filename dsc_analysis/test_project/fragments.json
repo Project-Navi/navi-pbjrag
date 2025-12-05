@@ -1,13 +1,13 @@
 [
   {
-    "file": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/utils.py",
+    "file": "/tmp/pytest-of-ndspence/pytest-34/test_analyze_project0/test_project/utils.py",
     "file_name": "utils.py",
     "file_size": 18,
     "line_count": 1,
     "code_lines": 1,
     "comment_lines": 0,
     "comment_ratio": 0.0,
-    "timestamp": "2025-12-05T01:12:56.093378",
+    "timestamp": "2025-12-05T05:31:12.573309",
     "functions": [
       {
         "name": "helper",
@@ -46,14 +46,14 @@
     }
   },
   {
-    "file": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/main.py",
+    "file": "/tmp/pytest-of-ndspence/pytest-34/test_analyze_project0/test_project/main.py",
     "file_name": "main.py",
     "file_size": 356,
     "line_count": 17,
     "code_lines": 13,
     "comment_lines": 0,
     "comment_ratio": 0.0,
-    "timestamp": "2025-12-05T01:12:56.093579",
+    "timestamp": "2025-12-05T05:31:12.573567",
     "functions": [
       {
         "name": "fibonacci",
@@ -119,14 +119,14 @@
     }
   },
   {
-    "file": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/submodule/helper.py",
+    "file": "/tmp/pytest-of-ndspence/pytest-34/test_analyze_project0/test_project/submodule/helper.py",
     "file_name": "helper.py",
     "file_size": 18,
     "line_count": 1,
     "code_lines": 1,
     "comment_lines": 0,
     "comment_ratio": 0.0,
-    "timestamp": "2025-12-05T01:12:56.094300",
+    "timestamp": "2025-12-05T05:31:12.574377",
     "functions": [],
     "function_count": 0,
     "classes": [

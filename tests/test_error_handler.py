@@ -2,8 +2,9 @@
 Tests for error_handler module - Error handling and classification.
 """
 
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
 
 from pbjrag.crown_jewel.error_handler import ErrorHandler, handle_error, resolve_ambiguity
 

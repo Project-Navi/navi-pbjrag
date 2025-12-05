@@ -7,12 +7,8 @@ Simple CLI for running PBJRAG analysis from the command line.
 
 import argparse
 import json
-import logging
 import sys
 from pathlib import Path
-
-# Configure logger
-logger = logging.getLogger(__name__)
 
 
 def main():
@@ -25,7 +21,7 @@ Examples:
   pbjrag analyze file.py           # Analyze a single file
   pbjrag analyze ./project         # Analyze entire project
   pbjrag report                    # Generate analysis report
-  
+
 Translation modes:
   --persona devops                 # DevOps-friendly output
   --persona scholar                # Academic terminology
@@ -38,9 +34,7 @@ Translation modes:
     subparsers = parser.add_subparsers(dest="command", help="Commands")
 
     # Analyze command
-    analyze_parser = subparsers.add_parser(
-        "analyze", help="Analyze code files or projects"
-    )
+    analyze_parser = subparsers.add_parser("analyze", help="Analyze code files or projects")
     analyze_parser.add_argument("path", help="File or directory to analyze")
     analyze_parser.add_argument(
         "--output",
@@ -96,7 +90,7 @@ Translation modes:
         from pbjrag.dsc import DSCAnalyzer
 
         if args.command == "analyze":
-            logger.info(f"🔍 Analyzing {args.path}...")
+            print(f"🔍 Analyzing {args.path}...")
 
             config = {
                 "purpose": args.purpose,
@@ -109,36 +103,36 @@ Translation modes:
             path = Path(args.path)
             if path.is_file():
                 results = analyzer.analyze_file(str(path))
-                logger.info("✓ Analyzed 1 file")
+                print("✓ Analyzed 1 file")
             elif path.is_dir():
                 results = analyzer.analyze_project(str(path))
                 if results.get("success"):
                     dsc = results.get("dsc_analysis", {})
-                    logger.info(f"✓ Analyzed {dsc.get('files_analyzed', 0)} files")
+                    print(f"✓ Analyzed {dsc.get('files_analyzed', 0)} files")
             else:
-                logger.error(f"❌ Path not found: {path}")
+                print(f"❌ Path not found: {path}")
                 return 1
 
             # Generate report
             report = analyzer.generate_report()
-            logger.info(f"📊 Field Coherence: {report['field_coherence']:.3f}")
-            logger.info(f"📁 Results saved to: {args.output}/")
+            print(f"📊 Field Coherence: {report['field_coherence']:.3f}")
+            print(f"📁 Results saved to: {args.output}/")
 
             # Show blessing distribution
             if args.persona == "devops":
-                logger.info("\n🎯 Production Readiness:")
+                print("\n🎯 Production Readiness:")
                 dist = report.get("blessing_distribution", {})
-                logger.info(f"  Production-ready: {dist.get('Φ+', 0):.1%}")
-                logger.info(f"  Needs review: {dist.get('Φ~', 0):.1%}")
-                logger.info(f"  Technical debt: {dist.get('Φ-', 0):.1%}")
+                print(f"  Production-ready: {dist.get('Φ+', 0):.1%}")
+                print(f"  Needs review: {dist.get('Φ~', 0):.1%}")
+                print(f"  Technical debt: {dist.get('Φ-', 0):.1%}")
             else:
-                logger.info("\n✨ Blessing Distribution:")
+                print("\n✨ Blessing Distribution:")
                 dist = report.get("blessing_distribution", {})
                 for tier, pct in dist.items():
-                    logger.info(f"  {tier}: {pct:.1%}")
+                    print(f"  {tier}: {pct:.1%}")
 
         elif args.command == "report":
-            logger.info("📊 Generating report...")
+            print("📊 Generating report...")
 
             config = {
                 "output_dir": args.input,
@@ -150,21 +144,21 @@ Translation modes:
             # Load previous analysis state
             loaded = analyzer.field_container.load_field_state(args.input)
             if not loaded:
-                logger.error(f"❌ No analysis data found in {args.input}")
+                print(f"❌ No analysis data found in {args.input}")
                 return 1
 
             report = analyzer.generate_report()
 
             if args.format == "json":
                 json_path = Path(args.input) / "dsc_analysis_report.json"
-                logger.info(json.dumps(report, indent=2))
-                logger.info(f"📁 Report saved to: {json_path}")
+                print(json.dumps(report, indent=2))
+                print(f"📁 Report saved to: {json_path}")
             elif args.format == "markdown":
                 md_path = Path(args.input) / "dsc_analysis_report.md"
                 if md_path.exists():
-                    logger.info(md_path.read_text())
+                    print(md_path.read_text())
                 else:
-                    logger.error("Markdown report not found")
+                    print("❌ Markdown report not found")
             elif args.format == "html":
                 md_path = Path(args.input) / "dsc_analysis_report.md"
                 html_path = Path(args.input) / "dsc_analysis_report.html"
@@ -178,18 +172,18 @@ Translation modes:
                 else:
                     html_content = "<p>No report available</p>"
                 html_path.write_text(html_content, encoding="utf-8")
-                logger.info(f"📁 HTML report saved to: {html_path}")
+                print(f"📁 HTML report saved to: {html_path}")
             else:
-                logger.error("Unknown format")
+                print("❌ Unknown format")
 
             return 0
 
     except ImportError as e:
-        logger.error(f"❌ Import error: {e}")
-        logger.error("Make sure PBJRAG is installed: pip install -e .")
+        print(f"❌ Import error: {e}")
+        print("Make sure PBJRAG is installed: pip install -e .")
         return 1
     except Exception as e:
-        logger.error(f"❌ Error: {e}")
+        print(f"❌ Error: {e}")
         return 1
 
     return 0

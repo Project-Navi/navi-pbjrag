@@ -42,7 +42,7 @@ This is **NOT** a license restriction:
 - AGPL-3.0 terms remain unmodified and fully enforceable
 - No additional legal obligations beyond standard AGPL
 - Enhanced support is a **voluntary service relationship**
-- Projects can use Neural Forge Bootstrapper under pure AGPL without ethical assessment
+- Projects can use Project Navi - PBJRAG under pure AGPL without ethical assessment
 
 ## Why This Approach?
 

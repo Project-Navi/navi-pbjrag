@@ -3,9 +3,55 @@ Tests for DSCVectorStore module.
 """
 
 from dataclasses import asdict
+from enum import Enum
 from unittest.mock import MagicMock, PropertyMock, patch
 
 import pytest
+
+
+# Mock Qdrant types for tests when qdrant-client isn't installed
+class MockDistance(Enum):
+    COSINE = "Cosine"
+    EUCLID = "Euclid"
+    DOT = "Dot"
+
+
+class MockVectorParams:
+    def __init__(self, size, distance):
+        self.size = size
+        self.distance = distance
+
+
+class MockPointStruct:
+    def __init__(self, id, vector, payload=None):
+        self.id = id
+        self.vector = vector
+        self.payload = payload or {}
+
+
+class MockFilter:
+    def __init__(self, must=None, should=None, must_not=None):
+        self.must = must
+        self.should = should
+        self.must_not = must_not
+
+
+class MockFieldCondition:
+    def __init__(self, key, match=None, range=None):
+        self.key = key
+        self.match = match
+        self.range = range
+
+
+class MockMatchValue:
+    def __init__(self, value):
+        self.value = value
+
+
+class MockRange:
+    def __init__(self, gte=None, lte=None):
+        self.gte = gte
+        self.lte = lte
 
 
 class TestDSCVectorStoreImports:
@@ -83,6 +129,13 @@ class TestDSCVectorStoreInitialization:
         assert store.field_container is not None
         assert store.phase_manager is not None
 
+    @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
+    @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
+    @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
+    @patch("pbjrag.dsc.vector_store.PointStruct", MockPointStruct)
+    @patch("pbjrag.dsc.vector_store.VectorParams", MockVectorParams)
+    @patch("pbjrag.dsc.vector_store.Distance", MockDistance)
     @patch("pbjrag.dsc.vector_store.HAVE_QDRANT", True)
     @patch("pbjrag.dsc.vector_store.QdrantClient")
     def test_init_with_qdrant_connection_failure(self, mock_qdrant):
@@ -94,6 +147,15 @@ class TestDSCVectorStoreInitialization:
         store = DSCVectorStore()
         assert store.client is None  # Falls back gracefully
 
+    @patch("pbjrag.dsc.vector_store.VectorParams", MockVectorParams)
+    @patch("pbjrag.dsc.vector_store.Distance", MockDistance)
+    @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
+    @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
+    @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
+    @patch("pbjrag.dsc.vector_store.PointStruct", MockPointStruct)
+    @patch("pbjrag.dsc.vector_store.VectorParams", MockVectorParams)
+    @patch("pbjrag.dsc.vector_store.Distance", MockDistance)
     @patch("pbjrag.dsc.vector_store.HAVE_QDRANT", True)
     @patch("pbjrag.dsc.vector_store.QdrantClient")
     def test_init_with_qdrant_success(self, mock_qdrant):
@@ -108,6 +170,15 @@ class TestDSCVectorStoreInitialization:
         assert store.client is not None
         assert store.collection_name == "crown_jewel_dsc"
 
+    @patch("pbjrag.dsc.vector_store.VectorParams", MockVectorParams)
+    @patch("pbjrag.dsc.vector_store.Distance", MockDistance)
+    @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
+    @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
+    @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
+    @patch("pbjrag.dsc.vector_store.PointStruct", MockPointStruct)
+    @patch("pbjrag.dsc.vector_store.VectorParams", MockVectorParams)
+    @patch("pbjrag.dsc.vector_store.Distance", MockDistance)
     @patch("pbjrag.dsc.vector_store.HAVE_QDRANT", True)
     @patch("pbjrag.dsc.vector_store.QdrantClient")
     def test_init_with_custom_params(self, mock_qdrant):
@@ -129,6 +200,13 @@ class TestDSCVectorStoreInitialization:
         assert store.collection_name == "custom_collection"
         assert store.embedding_dim == 512
 
+    @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
+    @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
+    @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
+    @patch("pbjrag.dsc.vector_store.PointStruct", MockPointStruct)
+    @patch("pbjrag.dsc.vector_store.VectorParams", MockVectorParams)
+    @patch("pbjrag.dsc.vector_store.Distance", MockDistance)
     @patch("pbjrag.dsc.vector_store.HAVE_QDRANT", True)
     @patch("pbjrag.dsc.vector_store.QdrantClient")
     def test_init_with_existing_collection(self, mock_qdrant):
@@ -251,6 +329,13 @@ class TestDSCVectorStoreIntegration:
 class TestDSCVectorStoreCollectionSetup:
     """Test collection setup functionality."""
 
+    @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
+    @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
+    @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
+    @patch("pbjrag.dsc.vector_store.PointStruct", MockPointStruct)
+    @patch("pbjrag.dsc.vector_store.VectorParams", MockVectorParams)
+    @patch("pbjrag.dsc.vector_store.Distance", MockDistance)
     @patch("pbjrag.dsc.vector_store.HAVE_QDRANT", True)
     @patch("pbjrag.dsc.vector_store.QdrantClient")
     def test_setup_collection_creates_new(self, mock_qdrant):
@@ -266,6 +351,13 @@ class TestDSCVectorStoreCollectionSetup:
         # Collection should be created
         mock_client.create_collection.assert_called_once()
 
+    @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
+    @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
+    @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
+    @patch("pbjrag.dsc.vector_store.PointStruct", MockPointStruct)
+    @patch("pbjrag.dsc.vector_store.VectorParams", MockVectorParams)
+    @patch("pbjrag.dsc.vector_store.Distance", MockDistance)
     @patch("pbjrag.dsc.vector_store.HAVE_QDRANT", True)
     @patch("pbjrag.dsc.vector_store.QdrantClient")
     def test_setup_collection_multi_vector(self, mock_qdrant):
@@ -304,6 +396,13 @@ class TestDSCVectorStoreGracefulFallback:
             assert store.phase_manager is not None
             assert store.embedder is not None
 
+    @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
+    @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
+    @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
+    @patch("pbjrag.dsc.vector_store.PointStruct", MockPointStruct)
+    @patch("pbjrag.dsc.vector_store.VectorParams", MockVectorParams)
+    @patch("pbjrag.dsc.vector_store.Distance", MockDistance)
     @patch("pbjrag.dsc.vector_store.HAVE_QDRANT", True)
     @patch("pbjrag.dsc.vector_store.QdrantClient")
     def test_fallback_on_connection_error(self, mock_qdrant):
@@ -698,6 +797,13 @@ class TestDSCVectorStoreSearch:
         results = store.search("search", top_k=5)
         assert isinstance(results, list)
 
+    @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
+    @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
+    @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
+    @patch("pbjrag.dsc.vector_store.PointStruct", MockPointStruct)
+    @patch("pbjrag.dsc.vector_store.VectorParams", MockVectorParams)
+    @patch("pbjrag.dsc.vector_store.Distance", MockDistance)
     @patch("pbjrag.dsc.vector_store.HAVE_QDRANT", True)
     @patch("pbjrag.dsc.vector_store.QdrantClient")
     def test_search_with_qdrant_content_mode(self, mock_qdrant):
@@ -744,6 +850,13 @@ class TestDSCVectorStoreSearch:
             assert results[0]["content"] == "test content"
             assert results[0]["blessing"]["tier"] == "Φ+"
 
+    @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
+    @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
+    @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
+    @patch("pbjrag.dsc.vector_store.PointStruct", MockPointStruct)
+    @patch("pbjrag.dsc.vector_store.VectorParams", MockVectorParams)
+    @patch("pbjrag.dsc.vector_store.Distance", MockDistance)
     @patch("pbjrag.dsc.vector_store.HAVE_QDRANT", True)
     @patch("pbjrag.dsc.vector_store.QdrantClient")
     def test_search_with_blessing_filter(self, mock_qdrant):
@@ -787,6 +900,13 @@ class TestDSCVectorStoreSearch:
             assert len(results) > 0
             mock_client.query_points.assert_called_once()
 
+    @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
+    @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
+    @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
+    @patch("pbjrag.dsc.vector_store.PointStruct", MockPointStruct)
+    @patch("pbjrag.dsc.vector_store.VectorParams", MockVectorParams)
+    @patch("pbjrag.dsc.vector_store.Distance", MockDistance)
     @patch("pbjrag.dsc.vector_store.HAVE_QDRANT", True)
     @patch("pbjrag.dsc.vector_store.QdrantClient")
     def test_search_with_phase_filter(self, mock_qdrant):
@@ -831,6 +951,13 @@ class TestDSCVectorStoreSearch:
 
             assert len(results) > 0
 
+    @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
+    @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
+    @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
+    @patch("pbjrag.dsc.vector_store.PointStruct", MockPointStruct)
+    @patch("pbjrag.dsc.vector_store.VectorParams", MockVectorParams)
+    @patch("pbjrag.dsc.vector_store.Distance", MockDistance)
     @patch("pbjrag.dsc.vector_store.HAVE_QDRANT", True)
     @patch("pbjrag.dsc.vector_store.QdrantClient")
     def test_search_with_purpose_stability(self, mock_qdrant):
@@ -874,6 +1001,13 @@ class TestDSCVectorStoreSearch:
 
             assert len(results) > 0
 
+    @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
+    @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
+    @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
+    @patch("pbjrag.dsc.vector_store.PointStruct", MockPointStruct)
+    @patch("pbjrag.dsc.vector_store.VectorParams", MockVectorParams)
+    @patch("pbjrag.dsc.vector_store.Distance", MockDistance)
     @patch("pbjrag.dsc.vector_store.HAVE_QDRANT", True)
     @patch("pbjrag.dsc.vector_store.QdrantClient")
     def test_hybrid_search(self, mock_qdrant):
@@ -1012,6 +1146,13 @@ class TestDSCVectorStoreIndexing:
         fragments = store.field_container.get_fragments()
         assert len(fragments) >= 3
 
+    @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
+    @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
+    @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
+    @patch("pbjrag.dsc.vector_store.PointStruct", MockPointStruct)
+    @patch("pbjrag.dsc.vector_store.VectorParams", MockVectorParams)
+    @patch("pbjrag.dsc.vector_store.Distance", MockDistance)
     @patch("pbjrag.dsc.vector_store.HAVE_QDRANT", True)
     @patch("pbjrag.dsc.vector_store.QdrantClient")
     def test_index_chunks_with_qdrant(self, mock_qdrant):
@@ -1089,6 +1230,13 @@ class TestDSCVectorStoreResonance:
         assert isinstance(results, list)
         assert len(results) == 0
 
+    @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
+    @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
+    @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
+    @patch("pbjrag.dsc.vector_store.PointStruct", MockPointStruct)
+    @patch("pbjrag.dsc.vector_store.VectorParams", MockVectorParams)
+    @patch("pbjrag.dsc.vector_store.Distance", MockDistance)
     @patch("pbjrag.dsc.vector_store.HAVE_QDRANT", True)
     @patch("pbjrag.dsc.vector_store.QdrantClient")
     def test_find_resonant_chunks_with_qdrant(self, mock_qdrant):
@@ -1142,6 +1290,13 @@ class TestDSCVectorStorePhaseEvolution:
         assert isinstance(candidates, list)
         assert len(candidates) == 0
 
+    @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
+    @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
+    @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
+    @patch("pbjrag.dsc.vector_store.PointStruct", MockPointStruct)
+    @patch("pbjrag.dsc.vector_store.VectorParams", MockVectorParams)
+    @patch("pbjrag.dsc.vector_store.Distance", MockDistance)
     @patch("pbjrag.dsc.vector_store.HAVE_QDRANT", True)
     @patch("pbjrag.dsc.vector_store.QdrantClient")
     def test_evolve_chunks_by_phase(self, mock_qdrant):
@@ -1174,6 +1329,13 @@ class TestDSCVectorStorePhaseEvolution:
             assert "evolution_readiness" in candidates[0]
             assert "target_phase" in candidates[0]
 
+    @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
+    @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
+    @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
+    @patch("pbjrag.dsc.vector_store.PointStruct", MockPointStruct)
+    @patch("pbjrag.dsc.vector_store.VectorParams", MockVectorParams)
+    @patch("pbjrag.dsc.vector_store.Distance", MockDistance)
     @patch("pbjrag.dsc.vector_store.HAVE_QDRANT", True)
     @patch("pbjrag.dsc.vector_store.QdrantClient")
     def test_calculate_evolution_readiness(self, mock_qdrant):

@@ -7,6 +7,14 @@ from unittest.mock import MagicMock, patch
 import numpy as np
 import pytest
 
+# Check if sentence-transformers is available for direct embedding tests
+try:
+    import sentence_transformers  # noqa: F401
+
+    HAVE_SENTENCE_TRANSFORMERS = True
+except ImportError:
+    HAVE_SENTENCE_TRANSFORMERS = False
+
 
 class TestEmbeddingAdapterInitialization:
     """Test EmbeddingAdapter initialization."""
@@ -478,6 +486,10 @@ class TestEmbeddingAdapterInstructor:
                 assert len(result) == 1024
 
 
+@pytest.mark.skipif(
+    not HAVE_SENTENCE_TRANSFORMERS,
+    reason="sentence-transformers not installed (optional dependency)",
+)
 class TestEmbeddingAdapterDirect:
     """Test direct sentence-transformers functionality."""
 

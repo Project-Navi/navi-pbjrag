@@ -1,46 +1,71 @@
 # Service Level Objectives for PBJRAG
-version: "1.0"
-service: pbjrag
+# Version: 1.0.0
+
+version: "1.0.0"
 
 slos:
-  # Analysis performance
   analysis_latency:
-    description: "File analysis completes within acceptable time"
-    sli:
-      type: latency
-      percentile: 99
-      threshold_ms: 5000
-    objective: 99.0
-
-  search_latency:
-    description: "Semantic search queries are fast"
-    sli:
-      type: latency
-      percentile: 95
-      threshold_ms: 500
-    objective: 95.0
+    description: "Code analysis must complete within acceptable time"
+    target: 0.99
+    thresholds:
+      small_code:
+        p50: 500
+        p95: 2000
+        p99: 5000
+      medium_code:
+        p50: 2000
+        p95: 10000
+        p99: 30000
 
   availability:
-    description: "Service is available and responding"
-    sli:
-      type: availability
-      error_budget_percent: 0.1
-    objective: 99.9
+    description: "Service must be available"
+    target: 0.999
+    measurement_window: "30d"
 
-  throughput:
-    description: "Minimum request handling capacity"
-    sli:
-      type: throughput
-      min_requests_per_second: 10
-    objective: 100
+  error_rate:
+    description: "Error rate must stay below threshold"
+    target: 0.01
+    exclude:
+      - "InvalidInputError"
+      - "RateLimitError"
 
-error_budgets:
-  monthly_downtime_minutes: 43.2  # 99.9% = 43.2 min/month
+  embedding_latency:
+    description: "Embedding generation latency"
+    target: 0.99
+    thresholds:
+      single: 100
+      batch_100: 2000
+
+  vector_search_latency:
+    description: "Vector similarity search latency"
+    target: 0.99
+    thresholds:
+      top_10: 50
+      top_100: 200
 
 rollback_triggers:
-  - condition: "error_rate > 1% for 5 minutes"
+  - name: "high_error_rate"
+    condition: "error_rate > 0.05"
     action: "automatic_rollback"
-  - condition: "p99_latency > 10000ms for 5 minutes"
-    action: "automatic_rollback"
-  - condition: "health_check_failures > 3 in 10 minutes"
+
+  - name: "latency_spike"
+    condition: "p99_latency > 2x baseline"
     action: "alert_and_manual_review"
+
+  - name: "availability_drop"
+    condition: "availability < 0.99"
+    action: "page_oncall"
+
+alerting:
+  channels:
+    - type: "email"
+      recipients: ["dev@projectnavi.ai"]
+
+  rules:
+    - name: "slo_breach"
+      condition: "any slo < target"
+      severity: "warning"
+
+    - name: "rollback_triggered"
+      condition: "rollback executed"
+      severity: "critical"

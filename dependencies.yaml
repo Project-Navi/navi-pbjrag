@@ -1,0 +1,77 @@
+# Dependency Policy for PBJRAG
+# Version: 1.0.0
+# Last reviewed: 2025-12-05
+
+version: "1.0.0"
+last_reviewed: "2025-12-05"
+
+allowed:
+  # Core dependencies
+  core:
+    - numpy
+    - pydantic
+    - pyyaml
+    - typing-extensions
+
+  # Vector store
+  vector:
+    - qdrant-client
+    - httpx
+
+  # Embeddings
+  embedding:
+    - ollama
+    - openai
+    - tiktoken
+
+  # Analysis
+  analysis:
+    - tree-sitter
+    - tree-sitter-python
+    - tree-sitter-javascript
+    - tree-sitter-typescript
+
+  # Web UI
+  webui:
+    - streamlit
+    - plotly
+    - pandas
+
+  # CLI
+  cli:
+    - click
+    - rich
+
+  # Development
+  dev:
+    - pytest
+    - pytest-cov
+    - pytest-asyncio
+    - black
+    - isort
+    - ruff
+    - mypy
+    - pre-commit
+
+  # Optional integrations
+  optional:
+    - neo4j
+    - chromadb
+    - sentence-transformers
+
+denied:
+  # Known vulnerable packages
+  - PyYAML<5.4  # CVE-2020-14343
+  - urllib3<1.26.5  # CVE-2021-33503
+  - requests<2.25.0  # CVE-2020-28363
+
+  # Deprecated packages
+  - sklearn  # Use scikit-learn instead
+
+  # Packages with license issues
+  - gpl-only-package
+
+audit:
+  fail_on_violation: true
+  check_transitive: true
+  ignore_dev_dependencies: false

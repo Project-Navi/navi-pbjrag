@@ -54,6 +54,12 @@ class MockRange:
         self.lte = lte
 
 
+class MockOptimizersConfigDiff:
+    def __init__(self, indexing_threshold=None, memmap_threshold=None):
+        self.indexing_threshold = indexing_threshold
+        self.memmap_threshold = memmap_threshold
+
+
 class TestDSCVectorStoreImports:
     """Test vector store imports and flags."""
 
@@ -130,6 +136,7 @@ class TestDSCVectorStoreInitialization:
         assert store.phase_manager is not None
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -150,6 +157,7 @@ class TestDSCVectorStoreInitialization:
     @patch("pbjrag.dsc.vector_store.VectorParams", MockVectorParams)
     @patch("pbjrag.dsc.vector_store.Distance", MockDistance)
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -173,6 +181,7 @@ class TestDSCVectorStoreInitialization:
     @patch("pbjrag.dsc.vector_store.VectorParams", MockVectorParams)
     @patch("pbjrag.dsc.vector_store.Distance", MockDistance)
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -201,6 +210,7 @@ class TestDSCVectorStoreInitialization:
         assert store.embedding_dim == 512
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -330,6 +340,7 @@ class TestDSCVectorStoreCollectionSetup:
     """Test collection setup functionality."""
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -352,6 +363,7 @@ class TestDSCVectorStoreCollectionSetup:
         mock_client.create_collection.assert_called_once()
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -397,6 +409,7 @@ class TestDSCVectorStoreGracefulFallback:
             assert store.embedder is not None
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -798,6 +811,7 @@ class TestDSCVectorStoreSearch:
         assert isinstance(results, list)
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -851,6 +865,7 @@ class TestDSCVectorStoreSearch:
             assert results[0]["blessing"]["tier"] == "Φ+"
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -901,6 +916,7 @@ class TestDSCVectorStoreSearch:
             mock_client.query_points.assert_called_once()
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -952,6 +968,7 @@ class TestDSCVectorStoreSearch:
             assert len(results) > 0
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -1002,6 +1019,7 @@ class TestDSCVectorStoreSearch:
             assert len(results) > 0
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -1147,6 +1165,7 @@ class TestDSCVectorStoreIndexing:
         assert len(fragments) >= 3
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -1231,6 +1250,7 @@ class TestDSCVectorStoreResonance:
         assert len(results) == 0
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -1291,6 +1311,7 @@ class TestDSCVectorStorePhaseEvolution:
         assert len(candidates) == 0
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)
@@ -1330,6 +1351,7 @@ class TestDSCVectorStorePhaseEvolution:
             assert "target_phase" in candidates[0]
 
     @patch("pbjrag.dsc.vector_store.Range", MockRange)
+    @patch("pbjrag.dsc.vector_store.OptimizersConfigDiff", MockOptimizersConfigDiff)
     @patch("pbjrag.dsc.vector_store.MatchValue", MockMatchValue)
     @patch("pbjrag.dsc.vector_store.FieldCondition", MockFieldCondition)
     @patch("pbjrag.dsc.vector_store.Filter", MockFilter)

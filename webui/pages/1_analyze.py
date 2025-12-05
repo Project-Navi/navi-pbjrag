@@ -53,23 +53,31 @@ with st.sidebar:
             help="Enter the absolute path to the directory you want to analyze"
         )
 
-    chunk_size = st.slider(
-        "Chunk Size (lines)",
-        min_value=10,
-        max_value=200,
-        value=50,
-        step=10,
-        help="Number of lines per chunk"
+    # Note: PBJRAG uses AST-based semantic chunking, NOT line-based
+    # Chunks are created at function/class/module boundaries automatically
+    st.info(
+        "🧠 **Semantic Chunking**: PBJRAG chunks code by AST boundaries "
+        "(functions, classes, modules) - not arbitrary line counts. "
+        "Each chunk includes its dependencies and provides metadata."
     )
 
-    overlap = st.slider(
-        "Overlap (lines)",
-        min_value=0,
-        max_value=50,
-        value=10,
-        step=5,
-        help="Number of overlapping lines between chunks"
-    )
+    with st.expander("📖 How Semantic Chunking Works"):
+        st.markdown("""
+        Unlike traditional RAG systems that chunk by line count, PBJRAG uses
+        **coherent semantic boundaries**:
+
+        - **Functions** → Each function becomes a chunk with its dependencies tracked
+        - **Classes** → Each class becomes a chunk with its methods listed in `provides`
+        - **Module-level** → Imports and constants grouped separately
+
+        Each chunk includes:
+        - `provides`: What this code offers (function names, class names)
+        - `depends_on`: What this code needs (imported names, called functions)
+        - `field_state`: 9-dimensional quality vector
+        - `blessing`: Quality tier (Φ+, Φ~, Φ-)
+
+        This "adhesion" of context to each chunk is the key differentiator.
+        """)
 
     analyze_button = st.button("🚀 Analyze", type="primary", use_container_width=True)
 
@@ -241,19 +249,31 @@ else:
 
         1. **Choose Analysis Type**: Select whether to analyze a single file or directory
         2. **Enter Path**: Provide the absolute path to your code
-        3. **Configure Settings**: Adjust chunk size and overlap if needed
-        4. **Run Analysis**: Click the "🚀 Analyze" button
-        5. **View Results**: Explore the visualizations and metrics
+        3. **Run Analysis**: Click the "🚀 Analyze" button
+        4. **View Results**: Explore the visualizations and metrics
 
         ### Understanding Results
 
-        - **Φ+ (Crown)**: High-quality, well-structured code
-        - **Φ~ (Core)**: Average quality, functional code
-        - **Φ- (Noise)**: Low-quality code needing improvement
+        - **Φ+ (Crown)**: High-quality, well-structured code with good documentation, type hints, error handling
+        - **Φ~ (Core)**: Average quality, functional code that works but could be improved
+        - **Φ- (Noise)**: Low-quality code needing improvement (high complexity, poor documentation)
+
+        ### The 9 Field Dimensions
+
+        Each chunk is analyzed across 9 dimensions:
+        1. **Semantic** - What the code means and does
+        2. **Emotional** - Developer intent and naming sentiment
+        3. **Ethical** - Code quality and best practices
+        4. **Temporal** - Evolution and change patterns
+        5. **Entropic** - Chaos and unpredictability
+        6. **Rhythmic** - Cadence and flow
+        7. **Contradiction** - Internal tensions and complexity
+        8. **Relational** - Dependencies and connections
+        9. **Emergent** - Novelty and surprise
 
         ### Tips
 
-        - Use smaller chunk sizes for more granular analysis
-        - Increase overlap to capture cross-chunk patterns
-        - Export results for further processing
+        - Semantic chunking automatically groups by function/class boundaries
+        - Each chunk includes dependency tracking (`provides`, `depends_on`)
+        - Export results for integration with vector stores
         """)

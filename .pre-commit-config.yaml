@@ -15,11 +15,12 @@ repos:
         language_version: python3
         args: [--line-length=100]
 
-  - repo: https://github.com/pycqa/isort
-    rev: 5.13.2
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.7.4
     hooks:
-      - id: isort
-        args: [--profile=black, --line-length=100]
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+        types_or: [python, pyi]
 
   - repo: https://github.com/pycqa/flake8
     rev: 7.0.0

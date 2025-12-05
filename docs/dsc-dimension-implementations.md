@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document describes the implementation of three critical DSC (Dynamic Semantic Chunking) field dimensions in the navi-pbjrag chunker. These dimensions measure different aspects of code quality and characteristics to enable sophisticated code analysis.
+This document describes the implementation of three critical DSC (Differential Symbolic Calculus) field dimensions in the navi-pbjrag chunker. These dimensions measure different aspects of code quality and characteristics to enable sophisticated code analysis.
 
 ## Implemented Dimensions
 

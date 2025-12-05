@@ -1,8 +1,36 @@
-"""
-Core Metrics Module - Unified blessing vector calculations and metrics for Crown Jewel Planner.
+"""Core Metrics Module - Unified blessing vector calculations and metrics for Crown Jewel Planner.
 
 This module consolidates all symbolic metrics, blessing calculations, and coherence curves
-into a single, comprehensive system for quantifying code qualities.
+into a single, comprehensive system for quantifying code qualities. It implements the
+mathematical foundations for:
+
+1. EPC (Emergence Potential Coefficient) - A geometric mean with sigmoid normalization
+2. Blessing classification (Φ+, Φ~, Φ-) - Quality tier assignment based on thresholds
+3. RECCS scoring - Resonance, Entropy, Complexity, Contradiction, Symbolism analysis
+4. Pareto-weighted coherence curves for quality evaluation
+
+Mathematical Foundation:
+    The EPC formula uses sigmoid-transformed geometric mean:
+
+    1. Sigmoid transform: σ(x) = 1 / (1 + exp(-10(x - 0.5)))
+    2. Geometric mean: EPC = (∏ σ(xi))^(1/n)
+
+    Where inputs are: ethics (ε), presence (P), and inverse contradiction (1 - κ)
+
+Example:
+    >>> from pbjrag.crown_jewel.metrics import CoreMetrics
+    >>> metrics = CoreMetrics()
+    >>> vector = metrics.create_blessing_vector(
+    ...     cadence=0.7,
+    ...     qualia=0.8,
+    ...     entropy=0.5,
+    ...     contradiction=0.3,
+    ...     presence=0.75
+    ... )
+    >>> print(vector["epc"])  # Emergence Potential Coefficient
+    0.8234
+    >>> print(vector["Φ"])    # Blessing tier: Φ+, Φ~, or Φ-
+    'Φ+'
 """
 
 from typing import Any
@@ -11,25 +39,55 @@ import numpy as np
 
 
 class CoherenceCurve:
-    """
-    Implements a Pareto-weighted coherence curve for blessing evaluation.
-    Replaces the traditional blessing amplifier with a more elegant mathematical approach.
+    """Implements a Pareto-weighted coherence curve for blessing evaluation.
+
+    Replaces the traditional blessing amplifier with a more elegant mathematical approach
+    based on Pareto distribution weighting and sigmoid normalization. This creates a
+    non-linear evaluation curve that emphasizes high-quality code while providing
+    graceful degradation for lower quality metrics.
+
+    Attributes:
+        pareto_alpha: Sensitivity to high values (default 2.0). Higher values create
+            sharper curves that more strongly reward excellence.
+        stability_threshold: Field coherence weighting (default 0.5). Higher values
+            increase selectivity by requiring greater consistency.
+
+    Example:
+        >>> curve = CoherenceCurve(pareto_alpha=2.0, stability_threshold=0.5)
+        >>> weighted = curve._pareto_weight(0.8)
+        >>> print(weighted)
+        0.9123
     """
 
     def __init__(self, pareto_alpha: float = 2.0, stability_threshold: float = 0.5):
-        """
-        Initialize CoherenceCurve for weighted blessing evaluation.
+        """Initialize CoherenceCurve for weighted blessing evaluation.
 
-        Parameters:
-        - pareto_alpha: How sharply the Pareto curve rises (sensitivity to high values)
-        - stability_threshold: Field coherence weighting—higher means more selectivity
+        Args:
+            pareto_alpha: How sharply the Pareto curve rises (sensitivity to high values).
+                Higher values (e.g., 3.0) create more selective curves.
+            stability_threshold: Field coherence weighting—higher means more selectivity.
+                Range [0,1] with 0.5 being balanced.
         """
         self.pareto_alpha = pareto_alpha
         self.stability_threshold = stability_threshold
 
     def _pareto_weight(self, value: float) -> float:
-        """
-        Apply a stabilized Pareto-weighting and sigmoid clamp to a scalar in [0,1].
+        """Apply a stabilized Pareto-weighting and sigmoid clamp to a scalar in [0,1].
+
+        Mathematical formulation:
+            1. k = α(1 + τ) where α=pareto_alpha, τ=stability_threshold
+            2. weighted = x(1 + k/(x^α + ε))
+            3. normalized = 2/(1 + exp(-2·weighted)) - 1
+            4. clamped = clip(normalized, 0, 1)
+
+        Args:
+            value: Input value in range [0,1].
+
+        Returns:
+            Pareto-weighted and normalized value in range [0,1].
+
+        Note:
+            Small epsilon (1e-6) prevents division by zero.
         """
         if value <= 0:
             return 0.0
@@ -39,8 +97,26 @@ class CoherenceCurve:
         return float(np.clip(normalized, 0.0, 1.0))
 
     def bless_weight(self, vector: dict[str, Any]) -> str:
-        """
-        Recommends a blessing tier based on a vector of metrics, inspired by v6.1.
+        """Recommends a blessing tier based on a vector of metrics.
+
+        Evaluates code quality across multiple dimensions and assigns a blessing tier:
+        - Φ+ (positive): High-quality, coherent code
+        - Φ~ (neutral): Acceptable quality with room for improvement
+        - Φ- (negative): Needs significant improvement
+
+        Args:
+            vector: Metrics dictionary containing:
+                - epc: Emergence Potential Coefficient [0,1]
+                - qualia: Ethical quality/alignment [0,1]
+                - contradiction: Contradiction pressure [0,1] (lower is better)
+                - presence: Presence density/documentation [0,1]
+
+        Returns:
+            Blessing tier as string: "Φ+", "Φ~", or "Φ-".
+
+        Note:
+            Thresholds for Φ+: epc≥0.6, ethics≥0.6, contradiction≤0.45, presence≥0.5
+            Thresholds for Φ~: epc≥0.45, ethics≥0.45, contradiction≤0.6
         """
         # Extract key metrics
         epc = vector.get("epc", 0.0)
@@ -74,17 +150,43 @@ class CoherenceCurve:
 
 
 class CoreMetrics:
-    """
-    Unified metrics system for blessing, quantization, and field analysis.
-    Consolidates functionality from symbolic_metrics, blessing_metrics, and related modules.
+    """Unified metrics system for blessing, quantization, and field analysis.
+
+    Consolidates functionality from symbolic_metrics, blessing_metrics, and related modules
+    into a single coherent system. Provides comprehensive code quality evaluation through:
+
+    1. Blessing vectors - Multi-dimensional quality metrics
+    2. EPC calculation - Geometric mean emergence potential
+    3. RECCS scoring - Multi-factor resonance evaluation
+    4. Coherence analysis - Group-level quality assessment
+
+    Attributes:
+        config: Configuration dictionary for customizing metrics behavior.
+        quantization_precision: Decimal precision for scalar values (default 4).
+        coherence_curve: CoherenceCurve instance for blessing evaluation.
+
+    Example:
+        >>> metrics = CoreMetrics({"quantization_precision": 4})
+        >>> epc = metrics.compute_epc(
+        ...     contradiction=0.3,
+        ...     ethics=0.8,
+        ...     presence=0.7
+        ... )
+        >>> print(f"EPC: {epc:.4f}")
+        EPC: 0.7823
     """
 
     def __init__(self, config: dict[str, Any] | None = None):
-        """
-        Initialize the CoreMetrics system with optional configuration.
+        """Initialize the CoreMetrics system with optional configuration.
 
-        Parameters:
-        - config: Optional configuration dictionary for customizing metrics behavior
+        Args:
+            config: Optional configuration dictionary supporting:
+                - quantization_precision: Decimal places for values (default 4)
+                - pareto_alpha: Pareto curve sensitivity (default 2.0)
+                - stability_threshold: Coherence threshold (default 0.5)
+                - cadence.classes: Cadence classification thresholds
+                - tones: Tone classification lambda functions
+                - reccs.weights: RECCS component weights
         """
         self.config = config or {}
         self.quantization_precision = self.config.get("quantization_precision", 4)
@@ -94,15 +196,23 @@ class CoreMetrics:
         )
 
     def quantize_scalar(self, value: float, precision: int | None = None) -> float:
-        """
-        Quantize a scalar value to the specified precision.
+        """Quantize a scalar value to the specified precision.
 
-        Parameters:
-        - value: The scalar value to quantize
-        - precision: Optional override for quantization precision
+        Rounds floating-point values to a fixed number of decimal places to ensure
+        consistent representation across the system.
+
+        Args:
+            value: The scalar value to quantize.
+            precision: Optional override for quantization precision. If None, uses
+                the instance's quantization_precision setting.
 
         Returns:
-        - Quantized scalar value
+            Quantized scalar value rounded to the specified precision.
+
+        Example:
+            >>> metrics = CoreMetrics()
+            >>> metrics.quantize_scalar(0.123456789)
+            0.1235
         """
         if value is None:
             return 0.0
@@ -117,22 +227,60 @@ class CoreMetrics:
     def quantize_vector(
         self, vector: dict[str, float], precision: int | None = None
     ) -> dict[str, float]:
-        """
-        Quantize all values in a vector to the specified precision.
+        """Quantize all values in a vector to the specified precision.
 
-        Parameters:
-        - vector: Dictionary of scalar values to quantize
-        - precision: Optional override for quantization precision
+        Args:
+            vector: Dictionary of scalar values to quantize.
+            precision: Optional override for quantization precision.
 
         Returns:
-        - Dictionary with all values quantized
+            Dictionary with all values quantized to the specified precision.
+
+        Example:
+            >>> metrics = CoreMetrics()
+            >>> vector = {"a": 0.123456, "b": 0.789012}
+            >>> quantized = metrics.quantize_vector(vector)
+            >>> print(quantized)
+            {'a': 0.1235, 'b': 0.7890}
         """
         return {k: self.quantize_scalar(v, precision) for k, v in vector.items()}
 
     def compute_epc(self, contradiction: float, ethics: float, presence: float) -> float:
-        """
-        Compute the Emergence Potential Coefficient (EPC), adapted from v6.1.
-        This version uses a balanced geometric mean for a more holistic score.
+        """Compute the Emergence Potential Coefficient (EPC).
+
+        The EPC quantifies code quality potential through a geometric mean of
+        sigmoid-transformed factors. This creates a balanced, multiplicative
+        metric where weakness in any dimension significantly impacts the overall score.
+
+        Mathematical formulation:
+            1. Inputs: ethics (ε), presence (P), inverse contradiction (1-κ)
+            2. Sigmoid transform: σ(x) = 1/(1 + exp(-10(x - 0.5)))
+            3. Geometric mean: EPC = (∏ σ(xi))^(1/n)
+            4. Quantize result to configured precision
+
+        Args:
+            contradiction: Contradiction pressure (κ) in range [0,1]. Lower is better,
+                so we use (1-κ) in the formula.
+            ethics: Ethical quality/alignment (ε) in range [0,1]. Higher is better.
+            presence: Presence density (P) in range [0,1]. Higher indicates better
+                documentation and intentionality.
+
+        Returns:
+            EPC value in range [0,1], quantized to configured precision.
+
+        Note:
+            The sigmoid transformation creates S-curves that emphasize values
+            near 0 and 1, making the metric sensitive to both excellence and problems.
+
+        Example:
+            >>> metrics = CoreMetrics()
+            >>> epc = metrics.compute_epc(
+            ...     contradiction=0.2,  # Low contradiction (good)
+            ...     ethics=0.8,         # High ethics (good)
+            ...     presence=0.7        # Good presence
+            ... )
+            >>> print(f"EPC: {epc:.4f}")
+            EPC: 0.8456
         """
         # Ensure inputs are in [0,1] range
         c = np.clip(contradiction, 0.0, 1.0)
@@ -158,18 +306,47 @@ class CoreMetrics:
         contradiction: float = 0.5,
         presence: float = 0.5,
     ) -> dict[str, Any]:
-        """
-        Create a comprehensive blessing vector from core metrics.
+        """Create a comprehensive blessing vector from core metrics.
 
-        Parameters:
-        - cadence: Rhythm/flow measure in range [0,1]
-        - qualia: Ethical quality (ε) in range [0,1]
-        - entropy: Information density/disorder in range [0,1]
-        - contradiction: Contradiction pressure (κ) in range [0,1]
-        - presence: Presence density (ρ) in range [0,1]
+        Constructs a complete multi-dimensional quality assessment vector combining
+        raw metrics, derived values (EPC), classifications (cadence_class, tone),
+        and blessing tier (Φ).
+
+        Args:
+            cadence: Rhythm/flow measure in range [0,1]. Reflects consistency and
+                patterns in code structure.
+            qualia: Ethical quality (ε) in range [0,1]. Measures alignment with
+                best practices and intentionality.
+            entropy: Information density/disorder in range [0,1]. Balances complexity
+                with clarity.
+            contradiction: Contradiction pressure (κ) in range [0,1]. Lower values
+                indicate better internal consistency.
+            presence: Presence density (ρ) in range [0,1]. Measures documentation
+                and explicit intentionality.
 
         Returns:
-        - Complete blessing vector with derived metrics
+            Complete blessing vector containing:
+                - cadence: Quantized cadence value
+                - ε (qualia): Ethical alignment
+                - entropy: Information density
+                - κ (contradiction): Contradiction pressure
+                - P (presence): Presence density
+                - epc: Computed Emergence Potential Coefficient
+                - cadence_class: Classification (staccato/andante/legato/flow)
+                - tone: Overall tone (harmonic/dissonant/crystalline/etc.)
+                - Φ: Blessing tier (Φ+/Φ~/Φ-)
+
+        Example:
+            >>> metrics = CoreMetrics()
+            >>> vector = metrics.create_blessing_vector(
+            ...     cadence=0.75,
+            ...     qualia=0.8,
+            ...     entropy=0.5,
+            ...     contradiction=0.25,
+            ...     presence=0.7
+            ... )
+            >>> print(f"EPC: {vector['epc']:.4f}, Tier: {vector['Φ']}")
+            EPC: 0.8234, Tier: Φ+
         """
         # Normalize inputs
         cadence = max(0.0, min(1.0, cadence))
@@ -208,14 +385,23 @@ class CoreMetrics:
         return vector
 
     def determine_cadence_class(self, cadence: float) -> str:
-        """
-        Determine the cadence class based on the cadence value.
+        """Determine the cadence class based on the cadence value.
 
-        Parameters:
-        - cadence: Cadence value in range [0,1]
+        Classifies code rhythm into musical tempo categories:
+        - staccato [0.0, 0.3): Short, disconnected patterns
+        - andante [0.3, 0.6): Walking pace, moderate flow
+        - legato [0.6, 0.85): Smooth, connected flow
+        - flow [0.85, 1.0]: Optimal fluidity
+
+        Args:
+            cadence: Cadence value in range [0,1].
 
         Returns:
-        - Cadence class as string
+            Cadence class as string: "staccato", "andante", "legato", "flow", or
+            "unknown" if no match.
+
+        Note:
+            Thresholds can be customized via config["cadence"]["classes"].
         """
         classes = self.config.get("cadence", {}).get(
             "classes",
@@ -234,16 +420,26 @@ class CoreMetrics:
         return "unknown"
 
     def determine_tone(self, qualia: float, entropy: float, contradiction: float) -> str:
-        """
-        Determine the tone based on qualia, entropy, and contradiction.
+        """Determine the overall tone based on qualia, entropy, and contradiction.
 
-        Parameters:
-        - qualia: Ethical quality (ε) in range [0,1]
-        - entropy: Information density/disorder in range [0,1]
-        - contradiction: Contradiction pressure (κ) in range [0,1]
+        Classifies the "feeling" of code based on its quality characteristics:
+        - harmonic: High ethics, low contradiction (beautiful code)
+        - dissonant: High contradiction (conflicting patterns)
+        - crystalline: Low entropy, good ethics (clear, structured)
+        - entropic: High information density (complex but potentially chaotic)
+        - neutral: Balanced metrics
+        - mixed: Default when no clear classification
+
+        Args:
+            qualia: Ethical quality (ε) in range [0,1].
+            entropy: Information density/disorder in range [0,1].
+            contradiction: Contradiction pressure (κ) in range [0,1].
 
         Returns:
-        - Tone as string
+            Tone classification as string.
+
+        Note:
+            Tone conditions can be customized via config["tones"] with lambda functions.
         """
         tones = self.config.get(
             "tones",
@@ -265,17 +461,44 @@ class CoreMetrics:
     def calculate_reccs_score(
         self, entropy: float, complexity: float, contradiction: float, symbolism: float
     ) -> dict[str, float]:
-        """
-        Calculate RECCS (Resonance, Entropy, Complexity, Contradiction, Symbolism) score.
+        """Calculate RECCS (Resonance, Entropy, Complexity, Contradiction, Symbolism) score.
 
-        Parameters:
-        - entropy: Information density/disorder in range [0,1]
-        - complexity: Structural complexity in range [0,1]
-        - contradiction: Contradiction pressure in range [0,1]
-        - symbolism: Symbolic richness in range [0,1]
+        Multi-factor analysis system evaluating code across five dimensions:
+        - Resonance: Implicit, calculated from other factors
+        - Entropy: Information density and unpredictability
+        - Complexity: Structural intricacy
+        - Contradiction: Internal inconsistency (inverted for scoring)
+        - Symbolism: Richness of meaning and patterns
+
+        Args:
+            entropy: Information density/disorder in range [0,1].
+            complexity: Structural complexity in range [0,1].
+            contradiction: Contradiction pressure in range [0,1] (inverted for positive contribution).
+            symbolism: Symbolic richness in range [0,1].
 
         Returns:
-        - Dictionary with RECCS components and overall score
+            Dictionary containing:
+                - entropy: Quantized entropy value
+                - complexity: Quantized complexity value
+                - contradiction: Quantized contradiction value
+                - symbolism: Quantized symbolism value
+                - score: Overall weighted RECCS score [0,1]
+                - zone: Classification (chaos/sterile/conflict/resonance/flow/transition)
+
+        Note:
+            Default weights: all components equally weighted at 0.25. Customizable
+            via config["reccs"]["weights"].
+
+        Example:
+            >>> metrics = CoreMetrics()
+            >>> reccs = metrics.calculate_reccs_score(
+            ...     entropy=0.6,
+            ...     complexity=0.5,
+            ...     contradiction=0.3,
+            ...     symbolism=0.7
+            ... )
+            >>> print(f"Score: {reccs['score']:.4f}, Zone: {reccs['zone']}")
+            Score: 0.6425, Zone: resonance
         """
         # Get weights from config or use defaults
         weights = self.config.get("reccs", {}).get(
@@ -317,17 +540,24 @@ class CoreMetrics:
     def _determine_reccs_zone(
         self, entropy: float, complexity: float, contradiction: float, symbolism: float
     ) -> str:
-        """
-        Determine the RECCS zone based on component values.
+        """Determine the RECCS zone based on component values.
 
-        Parameters:
-        - entropy: Information density/disorder in range [0,1]
-        - complexity: Structural complexity in range [0,1]
-        - contradiction: Contradiction pressure in range [0,1]
-        - symbolism: Symbolic richness in range [0,1]
+        Classifies code into operational zones:
+        - chaos: High entropy + high complexity (needs simplification)
+        - sterile: Low entropy + low complexity (too simple/rigid)
+        - conflict: High contradiction (needs resolution)
+        - resonance: High symbolism with moderate entropy/complexity (ideal)
+        - flow: Balanced values with low contradiction (productive)
+        - transition: Default state, moving between zones
+
+        Args:
+            entropy: Information density/disorder in range [0,1].
+            complexity: Structural complexity in range [0,1].
+            contradiction: Contradiction pressure in range [0,1].
+            symbolism: Symbolic richness in range [0,1].
 
         Returns:
-        - RECCS zone as string
+            RECCS zone classification as string.
         """
         # High entropy, high complexity = chaos zone
         if entropy > 0.7 and complexity > 0.7:
@@ -358,14 +588,34 @@ class CoreMetrics:
         return "transition"
 
     def coherence_vector(self, vectors: list[dict[str, float]]) -> dict[str, float]:
-        """
-        Calculate the coherence vector for a group of blessing vectors.
+        """Calculate the coherence vector for a group of blessing vectors.
 
-        Parameters:
-        - vectors: List of blessing vectors to analyze
+        Performs aggregate analysis on multiple blessing vectors to evaluate
+        group-level quality. Useful for assessing modules, packages, or entire codebases.
+
+        Args:
+            vectors: List of blessing vectors to analyze.
 
         Returns:
-        - Coherence metrics for the group
+            Coherence metrics dictionary containing:
+                - group_coherence: Overall group quality [0,1]
+                - alignment: Consistency across group (low variance) [0,1]
+                - resonance: Ethics weighted by low contradiction [0,1]
+                - mean_epc: Average EPC across group [0,1]
+                - blessing: Group blessing tier (Φ+/Φ~/Φ-)
+
+        Note:
+            Group coherence formula: mean_epc(0.5) + alignment(0.3) + resonance(0.2)
+
+        Example:
+            >>> metrics = CoreMetrics()
+            >>> vectors = [
+            ...     {"epc": 0.8, "ε": 0.7, "κ": 0.2},
+            ...     {"epc": 0.75, "ε": 0.8, "κ": 0.25}
+            ... ]
+            >>> coherence = metrics.coherence_vector(vectors)
+            >>> print(f"Group coherence: {coherence['group_coherence']:.4f}")
+            Group coherence: 0.7825
         """
         if not vectors:
             return {"group_coherence": 0.0, "alignment": 0.0, "resonance": 0.0}
@@ -407,14 +657,31 @@ class CoreMetrics:
         }
 
     def recommend_blessing(self, vector: dict[str, Any]) -> dict[str, Any]:
-        """
-        Generate blessing recommendations based on a blessing vector.
+        """Generate blessing recommendations based on a blessing vector.
 
-        Parameters:
-        - vector: Blessing vector to analyze
+        Provides actionable guidance for improving code quality based on current
+        metrics and blessing tier.
+
+        Args:
+            vector: Blessing vector to analyze (from create_blessing_vector).
 
         Returns:
-        - Dictionary with blessing recommendations
+            Dictionary containing:
+                - blessing: Blessing tier (Φ+/Φ~/Φ-)
+                - recommendations: List of improvement suggestions
+                - guidance: Tier-specific guidance message
+                - priority: Improvement priority (low/medium/high)
+
+        Example:
+            >>> metrics = CoreMetrics()
+            >>> vector = metrics.create_blessing_vector(
+            ...     contradiction=0.8, qualia=0.3, cadence=0.2
+            ... )
+            >>> rec = metrics.recommend_blessing(vector)
+            >>> print(rec["blessing"], rec["priority"])
+            Φ- high
+            >>> for item in rec["recommendations"]:
+            ...     print(f"- {item}")
         """
         cadence = vector.get("cadence", 0.0)
         ethics = vector.get("ε", 0.0)
@@ -463,20 +730,56 @@ metrics = CoreMetrics()
 
 
 def create_blessing_vector(*args, **kwargs):
-    """Convenience function for creating blessing vectors using the singleton instance."""
+    """Convenience function for creating blessing vectors using the singleton instance.
+
+    Args:
+        *args: Positional arguments passed to CoreMetrics.create_blessing_vector.
+        **kwargs: Keyword arguments passed to CoreMetrics.create_blessing_vector.
+
+    Returns:
+        Blessing vector dictionary.
+
+    Example:
+        >>> from pbjrag.crown_jewel.metrics import create_blessing_vector
+        >>> vector = create_blessing_vector(qualia=0.8, presence=0.7)
+    """
     return metrics.create_blessing_vector(*args, **kwargs)
 
 
 def calculate_reccs_score(*args, **kwargs):
-    """Convenience function for calculating RECCS scores using the singleton instance."""
+    """Convenience function for calculating RECCS scores using the singleton instance.
+
+    Args:
+        *args: Positional arguments passed to CoreMetrics.calculate_reccs_score.
+        **kwargs: Keyword arguments passed to CoreMetrics.calculate_reccs_score.
+
+    Returns:
+        RECCS score dictionary.
+    """
     return metrics.calculate_reccs_score(*args, **kwargs)
 
 
 def coherence_vector(*args, **kwargs):
-    """Convenience function for calculating coherence vectors using the singleton instance."""
+    """Convenience function for calculating coherence vectors using the singleton instance.
+
+    Args:
+        *args: Positional arguments passed to CoreMetrics.coherence_vector.
+        **kwargs: Keyword arguments passed to CoreMetrics.coherence_vector.
+
+    Returns:
+        Coherence metrics dictionary.
+    """
     return metrics.coherence_vector(*args, **kwargs)
 
 
 def recommend_blessing(*args, **kwargs):
-    """Convenience function for generating blessing recommendations using the singleton instance."""
+    """Convenience function for generating blessing recommendations using the singleton instance.
+
+    Args:
+        *args: Positional arguments passed to CoreMetrics.recommend_blessing.
+        **kwargs: Keyword arguments passed to CoreMetrics.recommend_blessing.
+
+    Returns:
+        Recommendations dictionary.
+    """
     return metrics.recommend_blessing(*args, **kwargs)

@@ -29,6 +29,26 @@ slos:
       - "InvalidInputError"
       - "RateLimitError"
 
+  throughput:
+    description: "Minimum requests per second supported"
+    target: 100
+    measurement_window: "1m"
+    thresholds:
+      analysis: 10
+      search: 50
+      health: 100
+
+  error_budget:
+    description: "Monthly error budget allocation"
+    monthly_budget: 0.001  # 0.1% of requests can fail
+    burn_rate_alerts:
+      - threshold: 2.0
+        window: "1h"
+        severity: "warning"
+      - threshold: 10.0
+        window: "5m"
+        severity: "critical"
+
   embedding_latency:
     description: "Embedding generation latency"
     target: 0.99

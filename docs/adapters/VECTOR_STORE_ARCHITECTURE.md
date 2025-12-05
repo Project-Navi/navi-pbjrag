@@ -25,7 +25,7 @@ embedding:
 
 ### 1. Multi-Vector Support
 
-DSC (Dynamic Semantic Coherence) chunks have **9-dimensional field states**:
+DSC (Differential Symbolic Calculus) chunks have **9-dimensional field states**:
 
 ```
 FieldState:

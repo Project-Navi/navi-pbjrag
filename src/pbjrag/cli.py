@@ -1,8 +1,34 @@
 #!/usr/bin/env python3
-"""
-PBJRAG Command Line Interface
+"""PBJRAG Command Line Interface.
 
-Simple CLI for running PBJRAG analysis from the command line.
+This module provides a command-line interface for running PBJRAG (Differential Symbolic
+Calculus for Code Analysis). It supports analyzing code files and projects, generating
+reports in multiple formats, and customizing output for different user personas.
+
+The CLI provides two main commands:
+    - analyze: Analyze code files or entire projects
+    - report: Generate reports from previously analyzed results
+
+Example:
+    Basic file analysis::
+
+        $ pbjrag analyze myfile.py
+
+    Project analysis with custom output directory::
+
+        $ pbjrag analyze ./myproject --output results --purpose stability
+
+    Generate report from previous analysis::
+
+        $ pbjrag report --input results --format json
+
+Available Personas:
+    - general: Default balanced output with standard terminology
+    - devops: Production-focused output with deployment metrics
+    - scholar: Academic terminology with theoretical foundations
+
+Attributes:
+    None: This module contains only functions and command definitions.
 """
 
 import argparse
@@ -12,7 +38,52 @@ import sys
 
 
 def main():
-    """Main CLI entry point"""
+    """Main CLI entry point for PBJRAG.
+
+    Parses command-line arguments and executes the appropriate analysis or
+    reporting command. Supports two main subcommands: 'analyze' and 'report'.
+
+    The function sets up argument parsing with comprehensive help text,
+    processes the command, and handles errors gracefully with user-friendly
+    messages.
+
+    Returns:
+        int: Exit code (0 for success, 1 for error)
+
+    Raises:
+        ImportError: If pbjrag package is not properly installed
+        Exception: For other runtime errors during analysis or reporting
+
+    Examples:
+        Analyze a single file::
+
+            $ pbjrag analyze file.py
+            🔍 Analyzing file.py...
+            ✓ Analyzed 1 file
+            📊 Field Coherence: 0.845
+            📁 Results saved to: pbjrag_output/
+
+        Analyze with DevOps persona::
+
+            $ pbjrag analyze ./project --persona devops
+            🔍 Analyzing ./project...
+            ✓ Analyzed 42 files
+            📊 Field Coherence: 0.892
+
+            🎯 Production Readiness:
+              Production-ready: 78.5%
+              Needs review: 15.2%
+              Technical debt: 6.3%
+
+        Generate JSON report::
+
+            $ pbjrag report --format json
+            📊 Generating report...
+            {
+              "field_coherence": 0.892,
+              "blessing_distribution": {...}
+            }
+    """
     parser = argparse.ArgumentParser(
         description="PBJRAG - Differential Symbolic Calculus for Code Analysis",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -34,49 +105,75 @@ Translation modes:
     subparsers = parser.add_subparsers(dest="command", help="Commands")
 
     # Analyze command
-    analyze_parser = subparsers.add_parser("analyze", help="Analyze code files or projects")
-    analyze_parser.add_argument("path", help="File or directory to analyze")
+    analyze_parser = subparsers.add_parser(
+        "analyze",
+        help="Analyze code files or projects for field coherence and structural patterns",
+    )
+    analyze_parser.add_argument(
+        "path",
+        help="Path to file or directory to analyze (supports Python, JavaScript, etc.)",
+    )
     analyze_parser.add_argument(
         "--output",
         "-o",
         default="pbjrag_output",
-        help="Output directory (default: pbjrag_output)",
+        help="Output directory for analysis results and reports (default: pbjrag_output)",
     )
     analyze_parser.add_argument(
         "--purpose",
         "-p",
         choices=["stability", "emergence", "coherence", "innovation"],
         default="coherence",
-        help="Analysis purpose (default: coherence)",
+        help=(
+            "Analysis purpose: "
+            "stability (find reliable patterns), "
+            "emergence (discover new patterns), "
+            "coherence (overall structure), "
+            "innovation (highlight novel approaches). "
+            "Default: coherence"
+        ),
     )
     analyze_parser.add_argument(
         "--no-vector",
         action="store_true",
-        help="Disable vector store (no external dependencies)",
+        help="Disable vector store integration (faster, no external dependencies required)",
     )
     analyze_parser.add_argument(
         "--persona",
         choices=["devops", "scholar", "general"],
         default="general",
-        help="Output terminology style (default: general)",
+        help=(
+            "Output terminology style: "
+            "devops (production metrics), "
+            "scholar (academic terms), "
+            "general (balanced). "
+            "Default: general"
+        ),
     )
 
     # Report command
     report_parser = subparsers.add_parser(
-        "report", help="Generate analysis report from existing results"
+        "report",
+        help="Generate analysis report from previously saved results",
     )
     report_parser.add_argument(
         "--input",
         "-i",
         default="pbjrag_output",
-        help="Input directory with analysis results",
+        help="Input directory containing previous analysis results (default: pbjrag_output)",
     )
     report_parser.add_argument(
         "--format",
         "-f",
         choices=["json", "markdown", "html"],
         default="markdown",
-        help="Report format (default: markdown)",
+        help=(
+            "Report output format: "
+            "json (machine-readable), "
+            "markdown (human-readable), "
+            "html (formatted). "
+            "Default: markdown"
+        ),
     )
 
     args = parser.parse_args()

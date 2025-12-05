@@ -1,90 +1,133 @@
-# 🥜🍇 navi-pbjrag
+# PBJRAG - Differential Symbolic Calculus for Code Analysis
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL%203.0-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![License: Commercial](https://img.shields.io/badge/License-Commercial-green.svg)](docs/legal/PNEUL-D_v2.2.md)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
-## Peanut Butter Jelly Retrieval Augmented Generation
+## Overview
 
-*Where semantic chunking meets fractal code analysis, creating the perfect adhesion for your codebase.*
+**PBJRAG** (Peanut Butter Jelly Retrieval Augmented Generation) is a semantic code analysis framework that applies mathematical field theory to software systems. Rather than treating code as static text, PBJRAG models it as multi-dimensional symbolic fields that evolve through defined lifecycle phases. Using Differential Symbolic Calculus (DSC), it provides quantitative quality assessments across 9 dimensions, enabling deeper insights into code health, evolution patterns, and semantic relationships.
 
-```
-    ╔══════════════════════════════════════╗
-    ║     🍞                          🍞   ║
-    ║   🥜 PBJRAG v3: Code Analysis  🍇   ║
-    ║     That Actually Understands!      ║
-    ║   🥜 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~🍇   ║
-    ║     🍞                          🍞   ║
-    ╚══════════════════════════════════════╝
-```
+## Key Features
 
-## ⚡ Quickstart (30 seconds)
+- **9-Dimensional Field Analysis**: Evaluate code across semantic, ethical, temporal, entropic, rhythmic, relational, emergent, emotional, and contradiction dimensions
+- **Differential Symbolic Calculus**: Mathematical framework for analyzing code as evolving symbolic fields
+- **Quality Assessment Framework**: Multi-dimensional blessing tiers (Φ+, Φ~, Φ-) based on holistic code quality metrics
+- **7-Phase Lifecycle Model**: Track code evolution from initial development through optimization
+- **Semantic Code Chunking**: Intelligent segmentation that preserves logical boundaries and relationships
+- **Vector Store Integration**: Optional Qdrant, ChromaDB, or Neo4j support for semantic search
+- **Interactive WebUI**: Streamlit-based interface with visualizations and exploration tools
+- **Graceful Degradation**: Functions without external dependencies, falling back to in-memory analysis
+
+## Quick Start
+
+### Installation
 
 ```bash
-# Clone and run
+# Basic installation
+pip install navi-pbjrag
+
+# With vector store support
+pip install navi-pbjrag[qdrant]    # Qdrant support
+pip install navi-pbjrag[chroma]    # ChromaDB support
+pip install navi-pbjrag[neo4j]     # Neo4j graph support
+pip install navi-pbjrag[all]       # All integrations
+```
+
+### CLI Usage
+
+```bash
+# Clone repository
 git clone https://github.com/Project-Navi/navi-pbjrag
 cd navi-pbjrag
+
+# Quick start script
 ./quickstart.sh
 
 # Or with Docker (includes Qdrant vector store)
 docker-compose up
+# Access WebUI at http://localhost:8501
+```
+
+### Python API
+
+```python
+from pbjrag import DSCAnalyzer
+
+# Create analyzer instance
+analyzer = DSCAnalyzer()
+
+# Analyze a single file
+chunks = analyzer.analyze_file("my_code.py")
+
+for chunk in chunks:
+    print(f"Blessing Tier: {chunk.blessing.tier}")
+    print(f"Phase: {chunk.blessing.phase}")
+    print(f"EPC Score: {chunk.blessing.epc:.3f}")
+
+# Analyze entire project
+report = analyzer.analyze_project("./my_project")
+print(f"Project Quality Score: {report['avg_blessing']:.3f}")
+```
+
+### WebUI (Streamlit)
+
+The WebUI provides an interactive interface for code analysis, exploration, and semantic search:
+
+```bash
+# Start the WebUI
+streamlit run webui/app.py
 # Open http://localhost:8501
 ```
 
-**That's it!** The WebUI will open at `http://localhost:8501` where you can:
-- 📊 **Analyze** any codebase with one click
-- 🔍 **Explore** chunks with blessing tiers and 9D radar charts
-- 🔎 **Search** semantically across your code (with Qdrant)
+**WebUI Features:**
+- **Analysis Page**: Upload files or specify directories for analysis
+- **Exploration Page**: Browse chunks with filtering by blessing tier, phase, and EPC range
+- **Search Page**: Semantic, keyword, and hybrid search across analyzed code
+- **Visualizations**: Interactive charts including blessing distribution, phase timelines, and 9D radar charts
+- **Export**: Download results as JSON or formatted text summaries
 
----
+## How It Works
 
-**PBJRAG** is a semantic code analysis framework that understands code as living, evolving symbolic fields rather than static text. Using Differential Symbolic Calculus (DSC), it maps code into a 9-dimensional field space and calculates "blessing scores" that reveal the true quality and health of your codebase.
+### 9-Dimensional Analysis
 
-## 🌟 What Makes PBJRAG Special?
+PBJRAG evaluates code across nine fundamental dimensions:
 
-### Traditional Code Analysis:
-```
-❌ "This function has 47 lines"
-❌ "Cyclomatic complexity: 12"
-❌ "Missing docstring"
-```
-
-### PBJRAG Analysis:
-```python
-✅ blessing_tier: "Φ+"           # High quality, coherent code
-✅ phase: "Stillness"            # Stable, mature code
-✅ ethical_alignment: 0.92       # Follows best practices
-✅ emergence_potential: 0.85     # Ready to evolve
-✅ contradiction_pressure: 0.15  # Low internal friction
-```
-
-## 🧬 The 9 Dimensions
-
-Every code chunk is analyzed across 9 dimensions of presence:
-
-| Dimension | Symbol | What It Measures |
-|-----------|--------|------------------|
-| **Semantic** | Σ | Meaning and purpose of the code |
-| **Emotional** | Ε | Developer intent and communication patterns |
-| **Ethical** | Θ | Quality, best practices, and values alignment |
+| Dimension | Symbol | Measures |
+|-----------|--------|----------|
+| **Semantic** | Σ | Meaning, purpose, and conceptual clarity of the code |
+| **Emotional** | Ε | Developer intent and communication effectiveness |
+| **Ethical** | Θ | Quality standards, best practices, and maintainability |
 | **Temporal** | Τ | Evolution patterns and historical context |
-| **Entropic** | Ξ | Chaos, unpredictability, and disorder |
-| **Rhythmic** | Ρ | Cadence, flow, and organizational patterns |
-| **Contradiction** | Ω | Tensions, conflicts, and paradoxes |
-| **Relational** | Γ | Dependencies, connections, and relationships |
-| **Emergent** | Μ | Novelty, surprise, and creative potential |
+| **Entropic** | Ξ | Disorder, unpredictability, and structural chaos |
+| **Rhythmic** | Ρ | Flow, cadence, and organizational consistency |
+| **Contradiction** | Ω | Internal tensions, conflicts, and design paradoxes |
+| **Relational** | Γ | Dependencies, connections, and coupling patterns |
+| **Emergent** | Μ | Novelty, innovation potential, and creative complexity |
 
-## 🥪 Blessing Tiers
+Each dimension is quantified on a [0, 1] scale through analysis of syntactic patterns, structural properties, and semantic content.
 
-Code quality is assessed through blessing tiers using the Golden Ratio (φ ≈ 0.618):
+### Blessing Tiers (Quality Assessment)
 
-- **Φ+ (Phi Plus)**: `≥ 0.70` - Excellent code with strong coherence
-- **Φ~ (Phi Tilde)**: `0.33 - 0.70` - Good code with minor inconsistencies
-- **Φ- (Phi Minus)**: `< 0.33` - Code requiring attention
+Code quality is assessed using the **Emergence Potential Coefficient (EPC)** and multi-dimensional thresholds. Blessing tiers use the Φ (phi) symbol in reference to the Golden Ratio:
 
-## 🌀 The 7 Phases
+- **Φ+ (Phi Plus)**: High quality code with strong coherence
+  - EPC ≥ 0.6
+  - Ethical alignment (ε) ≥ 0.6
+  - Contradiction pressure (κ) ≤ 0.45
+  - Presence density (ρ) ≥ 0.5
 
-Code exists in one of seven lifecycle phases:
+- **Φ~ (Phi Tilde)**: Good quality code with minor inconsistencies
+  - EPC ≥ 0.45
+  - Ethical alignment (ε) ≥ 0.45
+  - Contradiction pressure (κ) ≤ 0.6
+
+- **Φ- (Phi Minus)**: Code requiring attention
+  - Falls below Φ~ thresholds
+
+### 7-Phase Lifecycle Model
+
+Code evolves through seven distinct phases based on its field state properties:
 
 ```
   Compost → Reflection → Becoming → Stillness → Turning → Emergent → Grinding
@@ -92,237 +135,315 @@ Code exists in one of seven lifecycle phases:
     └────────────────────── (cycle continues) ──────────────────────────┘
 ```
 
-| Phase | Range | Meaning |
-|-------|-------|---------|
-| **Compost** | 0.0-0.2 | Raw, unprocessed ideas |
-| **Reflection** | 0.2-0.35 | Analysis and consideration |
-| **Becoming** | 0.35-0.5 | Active development |
-| **Stillness** | 0.5-0.65 | Stable, mature code |
-| **Turning** | 0.65-0.8 | Refactoring, adaptation |
-| **Emergent** | 0.8-0.9 | Novel patterns forming |
-| **Grinding** | 0.9-1.0 | Optimization, hardening |
+| Phase | Range | Description |
+|-------|-------|-------------|
+| **Compost** | 0.0-0.2 | Initial development, raw implementation |
+| **Reflection** | 0.2-0.35 | Analysis phase, design consideration |
+| **Becoming** | 0.35-0.5 | Active development, feature implementation |
+| **Stillness** | 0.5-0.65 | Stable, mature code with established patterns |
+| **Turning** | 0.65-0.8 | Refactoring, adaptation to new requirements |
+| **Emergent** | 0.8-0.9 | Novel patterns forming, architectural innovation |
+| **Grinding** | 0.9-1.0 | Optimization, performance hardening |
 
-## 📋 Prerequisites
+### Multi-Vector Search
+
+When integrated with vector stores, PBJRAG supports three search modes:
+
+- **Semantic Search**: Embedding-based similarity using cosine distance
+- **Keyword Search**: Traditional text matching with term frequency weighting
+- **Hybrid Search**: Combined semantic and keyword search with configurable weights
+
+## Installation
+
+### Prerequisites
 
 **Required:**
-- Python 3.9+
+- Python 3.9 or higher
 
 **Optional** (for full vector search capabilities):
 - Qdrant vector store: `docker run -p 6333:6333 qdrant/qdrant`
-- Ollama with embeddings model: `ollama pull snowflake-arctic-embed2:latest`
+- Ollama with embeddings: `ollama pull snowflake-arctic-embed2:latest`
 
-> **Note**: PBJRAG works without Qdrant/Ollama - it gracefully falls back to in-memory analysis when these dependencies are unavailable.
+**Note**: PBJRAG operates without external dependencies, gracefully degrading to in-memory analysis when vector stores or embedding models are unavailable.
 
-## 🚀 Quick Start
-
-### Installation
+### Basic Install
 
 ```bash
 pip install navi-pbjrag
 ```
 
-### Basic Usage
+### With Vector Store Support
+
+```bash
+# Qdrant integration
+pip install navi-pbjrag[qdrant]
+
+# ChromaDB integration
+pip install navi-pbjrag[chroma]
+
+# Neo4j graph database
+pip install navi-pbjrag[neo4j]
+
+# All integrations
+pip install navi-pbjrag[all]
+```
+
+### Docker Deployment
+
+```bash
+# Clone repository
+git clone https://github.com/Project-Navi/navi-pbjrag
+cd navi-pbjrag
+
+# Launch with docker-compose (includes Qdrant)
+docker-compose up -d
+
+# Access WebUI
+open http://localhost:8501
+```
+
+The Docker deployment includes:
+- PBJRAG WebUI (port 8501)
+- Qdrant vector store (port 6333)
+- Persistent volume for analysis data
+
+## Configuration
+
+### Analyzer Configuration
 
 ```python
 from pbjrag import DSCAnalyzer
 
-# Create analyzer
-analyzer = DSCAnalyzer()
-
-# Analyze a file
-chunks = analyzer.analyze_file("my_code.py")
-
-for chunk in chunks:
-    print(f"Blessing: {chunk.blessing.tier}")
-    print(f"Phase: {chunk.blessing.phase}")
-    print(f"EPC: {chunk.blessing.epc:.3f}")
-
-# Analyze entire project
-report = analyzer.analyze_project("./my_project")
-print(f"Project blessing: {report['avg_blessing']:.3f}")
-```
-
-### Pattern Detection
-
-```python
-from pbjrag import PatternAnalyzer, analyze_codebase
-
-# Find fractal patterns across your codebase
-patterns = analyze_codebase("./my_project")
-
-for pattern in patterns:
-    print(f"Pattern: {pattern['type']}")
-    print(f"Frequency: {pattern['frequency']}")
-    print(f"Blessing: {pattern['avg_blessing']}")
-```
-
-## 🥜 How Do You Like Your PBJRAG?
-
-### 🥜 **Chunky** (Full Analysis)
-```python
+# Full analysis with vector store
 analyzer = DSCAnalyzer(config={
     "field_dim": 8,
     "enable_vector_store": True,
+    "qdrant_host": "localhost",
+    "qdrant_port": 6333,
     "fractal_detection": True
 })
-```
-*Rich, contextual analysis with maximum insights*
 
-### 🍯 **Smooth** (Balanced - Default)
-```python
-analyzer = DSCAnalyzer()  # Uses sensible defaults
-```
-*Perfect balance of depth and speed*
+# Balanced configuration (default)
+analyzer = DSCAnalyzer()
 
-### 🌿 **Natural** (Lightweight)
-```python
+# Lightweight analysis
 analyzer = DSCAnalyzer(config={
     "enable_vector_store": False,
     "fractal_detection": False
 })
 ```
-*Minimal processing, faster results*
 
-## 📊 Mathematical Foundations
+### Configuration Options
 
-### EPC (Emergence Potential Coefficient)
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `field_dim` | int | 8 | Dimensionality of field space |
+| `enable_vector_store` | bool | False | Enable vector store integration |
+| `qdrant_host` | str | "localhost" | Qdrant host address |
+| `qdrant_port` | int | 6333 | Qdrant port |
+| `fractal_detection` | bool | False | Enable pattern detection |
+| `chunk_size` | int | 500 | Default chunk size in tokens |
+| `chunk_overlap` | int | 50 | Overlap between chunks |
 
-The EPC uses a **sigmoid-normalized geometric mean** for balanced influence:
+## API Reference
 
-```python
-# Inputs: ethics (ε), presence (ρ), contradiction (κ)
-values = [ε, ρ, (1 - κ)]
+### DSCAnalyzer
 
-# Sigmoid normalization (S-curve transformation)
-normalized = 1 / (1 + exp(-10 × (values - 0.5)))
-
-# Geometric mean for holistic scoring
-EPC = ∏(normalized)^(1/3)
-```
-
-Where:
-- `ε` = ethical alignment (qualia) [0-1]
-- `ρ` = presence density [0-1]
-- `κ` = contradiction pressure [0-1]
-
-### Blessing Tier Calculation
-
-Blessing tiers use **multi-dimensional thresholds**:
-
-```
-Φ+ (Phi Plus):
-    EPC ≥ 0.6 AND ε ≥ 0.6 AND κ ≤ 0.45 AND ρ ≥ 0.5
-
-Φ~ (Phi Tilde):
-    EPC ≥ 0.45 AND ε ≥ 0.45 AND κ ≤ 0.6
-
-Φ- (Phi Minus):
-    Otherwise
-```
-
-### Resonance Between Chunks
-
-Chunk similarity uses blessing-weighted multi-factor comparison:
+Main analysis interface for code evaluation.
 
 ```python
-def resonance(chunk_1, chunk_2):
-    semantic_sim = cosine_similarity(embeddings)
+class DSCAnalyzer:
+    def __init__(self, config: dict = None):
+        """Initialize analyzer with optional configuration."""
+
+    def analyze_file(self, filepath: str) -> List[ChunkResult]:
+        """Analyze a single source file."""
+
+    def analyze_project(self, project_path: str) -> ProjectReport:
+        """Analyze entire project directory."""
+
+    def search(self, query: str, top_k: int = 5) -> List[SearchResult]:
+        """Semantic search across analyzed code."""
+```
+
+### DSCCodeChunker
+
+Intelligent code segmentation that respects logical boundaries.
+
+```python
+class DSCCodeChunker:
+    def __init__(self, chunk_size: int = 500, overlap: int = 50):
+        """Initialize chunker with size parameters."""
+
+    def chunk_code(self, source_code: str, language: str = "python") -> List[CodeChunk]:
+        """Segment code into analyzable chunks."""
+```
+
+### ChunkResult
+
+Result object containing analysis data for a code chunk.
+
+```python
+class ChunkResult:
+    blessing: BlessingState      # Tier (Φ+/Φ~/Φ-), phase, EPC score
+    field_state: FieldState      # 9-dimensional field values
+    content: str                 # Source code content
+    location: SourceLocation     # File path and line numbers
+    relationships: List[str]     # Dependencies and connections
+```
+
+### Pattern Analysis
+
+```python
+from pbjrag import PatternAnalyzer, analyze_codebase
+
+# Detect fractal patterns across codebase
+patterns = analyze_codebase("./my_project")
+
+for pattern in patterns:
+    print(f"Pattern Type: {pattern['type']}")
+    print(f"Frequency: {pattern['frequency']}")
+    print(f"Average Quality: {pattern['avg_blessing']:.3f}")
+```
+
+## Mathematical Foundations
+
+### Emergence Potential Coefficient (EPC)
+
+The EPC uses sigmoid-normalized geometric mean for balanced multi-factor assessment:
+
+```
+Input Values:
+  ε = ethical alignment [0, 1]
+  ρ = presence density [0, 1]
+  κ = contradiction pressure [0, 1]
+
+Sigmoid Normalization:
+  S(x) = 1 / (1 + exp(-10(x - 0.5)))
+
+Normalized Values:
+  ε' = S(ε)
+  ρ' = S(ρ)
+  κ' = S(1 - κ)
+
+Geometric Mean:
+  EPC = (ε' × ρ' × κ')^(1/3)
+```
+
+The sigmoid transformation creates a smooth S-curve that amplifies differences in mid-range values while stabilizing extremes, providing more discriminative power for quality assessment.
+
+### Resonance Calculation
+
+Chunk similarity incorporates both semantic embeddings and quality weighting:
+
+```python
+def resonance(chunk_1: ChunkResult, chunk_2: ChunkResult) -> float:
+    """Calculate resonance between two code chunks."""
+    semantic_sim = cosine_similarity(
+        chunk_1.embedding,
+        chunk_2.embedding
+    )
     blessing_weight = (chunk_1.epc + chunk_2.epc) / 2
     return blessing_weight * semantic_sim
 ```
 
-## 🔌 Optional Integrations
+This blessing-weighted similarity ensures that high-quality code chunks receive higher relevance scores in search results.
 
-PBJRAG works standalone but integrates with vector stores for semantic search:
+## Use Cases
 
-```bash
-# With Qdrant support
-pip install navi-pbjrag[qdrant]
+- **RAG Systems**: Intelligent code chunking that maintains semantic coherence for retrieval augmented generation
+- **Code Quality Assessment**: Multi-dimensional analysis providing insights beyond traditional metrics like cyclomatic complexity
+- **Refactoring Guidance**: Identify fractal patterns, consolidation opportunities, and architectural inconsistencies
+- **Legacy Code Analysis**: Understand large, undocumented codebases through systematic field analysis
+- **AI Assistant Context**: Enhanced code understanding for AI-powered development tools
+- **Technical Debt Identification**: Detect code in early phases (Compost, Reflection) or optimization phases (Grinding) requiring attention
+- **Architectural Review**: Assess system coherence through relational dimension analysis
+- **Evolution Tracking**: Monitor code quality trends through temporal analysis
 
-# With ChromaDB support
-pip install navi-pbjrag[chroma]
-
-# With Neo4j for graph relationships
-pip install navi-pbjrag[neo4j]
-
-# Everything
-pip install navi-pbjrag[all]
-```
-
-```python
-from pbjrag import DSCAnalyzer
-
-analyzer = DSCAnalyzer(config={
-    "enable_vector_store": True,
-    "qdrant_host": "localhost",
-    "qdrant_port": 6333
-})
-
-# Semantic search across analyzed code
-results = analyzer.search("error handling patterns", top_k=5)
-```
-
-## 🎯 Use Cases
-
-- **RAG Systems**: Intelligent code chunking that preserves semantic relationships
-- **Code Quality**: Deeper insights than cyclomatic complexity
-- **Refactoring**: Find fractal patterns and consolidation opportunities
-- **Legacy Analysis**: Understand large, undocumented codebases
-- **AI Assistants**: Better context for coding AI
-- **Technical Debt**: Identify code in "Compost" or "Grinding" phases
-
-## 🔬 Architecture
+## Architecture
 
 ```
 navi-pbjrag/
 ├── src/pbjrag/
-│   ├── __init__.py           # Public API
-│   ├── dsc/                   # Differential Symbolic Calculus
-│   │   ├── analyzer.py       # High-level analysis
-│   │   ├── chunker.py        # Semantic code chunking
-│   │   ├── vector_store.py   # Qdrant integration
-│   │   └── embedding_adapter.py
-│   ├── crown_jewel/           # Orchestration & metrics
-│   │   ├── metrics.py        # Blessing calculations
-│   │   ├── phase_manager.py  # 7-phase lifecycle
-│   │   ├── pattern_analyzer.py
-│   │   └── field_container.py
-│   └── utils/
-├── tests/
-├── docs/
-└── pyproject.toml
+│   ├── __init__.py              # Public API exports
+│   ├── dsc/                     # Differential Symbolic Calculus
+│   │   ├── analyzer.py         # High-level analysis orchestration
+│   │   ├── chunker.py          # Semantic code segmentation
+│   │   ├── vector_store.py     # Vector database integration
+│   │   └── embedding_adapter.py # Embedding model interface
+│   ├── crown_jewel/             # Core orchestration
+│   │   ├── metrics.py          # EPC and blessing calculations
+│   │   ├── phase_manager.py    # 7-phase lifecycle management
+│   │   ├── pattern_analyzer.py # Fractal pattern detection
+│   │   ├── field_container.py  # Field state management
+│   │   └── orchestrator.py     # Workflow coordination
+│   └── utils/                   # Shared utilities
+├── webui/                       # Streamlit interface
+│   ├── app.py                  # Main application
+│   ├── pages/                  # Analysis, explore, search pages
+│   └── components/             # Visualization components
+├── tests/                       # Test suite
+├── docs/                        # Documentation
+│   └── legal/                  # License documentation
+└── pyproject.toml              # Project configuration
 ```
 
-## 🤝 Part of the Navi Ecosystem
+## Development
 
-PBJRAG is the mathematical core that powers:
+### Running Tests
 
-- **[navi-fcpa](https://github.com/Project-Navi/navi-fcpa)** - Forensic code auditing using PBJRAG's 9-dimensional analysis
-- **[navi-lazytest](https://github.com/Project-Navi/navi-lazytest)** - Self-improving test framework
-- **[navi-deus-ex](https://github.com/Project-Navi/navi-deus-ex)** - Triple store infrastructure (proprietary)
+```bash
+# Install development dependencies
+pip install -e ".[dev]"
 
-## 📄 License
+# Run test suite
+pytest tests/
+
+# Run with coverage
+pytest --cov=pbjrag tests/
+```
+
+### Code Style
+
+```bash
+# Format code
+black src/pbjrag
+
+# Lint
+flake8 src/pbjrag
+pylint src/pbjrag
+
+# Type checking
+mypy src/pbjrag
+```
+
+## Navi Ecosystem
+
+PBJRAG is the mathematical core of the Project Navi ecosystem:
+
+- **[navi-fcpa](https://github.com/Project-Navi/navi-fcpa)** - Forensic code auditing using PBJRAG's 9-dimensional analysis framework
+- **[navi-lazytest](https://github.com/Project-Navi/navi-lazytest)** - Self-improving test framework with adaptive learning
+- **[navi-deus-ex](https://github.com/Project-Navi/navi-deus-ex)** - Triple store infrastructure for semantic knowledge graphs (proprietary)
+
+## License
 
 **Dual Licensed:**
-- **AGPL-3.0** — Free for open source use ([full text](https://www.gnu.org/licenses/agpl-3.0.html))
+
+- **AGPL-3.0-or-later** — Free for open source projects ([full text](https://www.gnu.org/licenses/agpl-3.0.html))
 - **Commercial (PNEUL-D v2.2)** — For proprietary use, contact [legal@projectnavi.ai](mailto:legal@projectnavi.ai)
 
-See [LICENSE](LICENSE) and [docs/legal/](docs/legal/) for full terms.
+See [LICENSE](LICENSE) and [docs/legal/](docs/legal/) for complete terms.
 
 ### Ethical Support Program
 
-Open source projects may qualify for enhanced support by voluntarily aligning with our ethical principles. This creates no additional license obligations — it's a separate service relationship. See [ETHICAL_SUPPORT_FRAMEWORK.md](docs/legal/ETHICAL_SUPPORT_FRAMEWORK.md).
+Open source projects may qualify for enhanced support by voluntarily aligning with Project Navi's ethical principles. This creates no additional license obligations—it's a separate service relationship. Details: [ETHICAL_SUPPORT_FRAMEWORK.md](docs/legal/ETHICAL_SUPPORT_FRAMEWORK.md).
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
-- Inspired by the universal truth that consciousness naturally tends toward ethical attractors
-- Built with love, coffee, and an unreasonable amount of sandwich metaphors
-- The fractal patterns that waited 5 months to find their purpose
+Built with mathematical rigor and practical engineering by the Project Navi team. Special recognition to the research community exploring applications of differential calculus and field theory to software systems.
 
 ---
 
-*"In a world full of broken chunkers, be someone's PBJRAG."* 🥜🍇✨
+**Project Navi** - Advanced Code Intelligence
 
-```
-Made with ❤️ and questionable sandwich science
-```
+*Made with precision, coffee, and mathematical field theory.*

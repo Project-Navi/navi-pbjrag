@@ -9,30 +9,30 @@ This software is dual-licensed:
 - AGPL-3.0-or-later for open source use
 - PNEUL-D v2.2 commercial license (contact legal@projectnavi.ai)
 
-A next-generation code analysis framework that understands code as living,
-evolving symbolic fields rather than static text. PBJRAG combines mathematical
-field theory with practical code analysis to provide deep insights into code
-quality, evolution, and semantic relationships.
+PBJRAG is a code analysis framework that applies field theory mathematics to
+assess code quality. It treats code as symbolic fields with measurable properties
+like coherence, entropy, and quality scores that evolve through a structured
+lifecycle.
 
-Core Philosophy:
-    PBJRAG treats code as multi-dimensional fields that can be analyzed using
-    differential calculus principles. Each code fragment exists in a field space
-    with properties like coherence, entropy, and blessing state that evolve
-    through a 7-phase lifecycle.
+What It Does:
+    PBJRAG analyzes code by modeling it as multi-dimensional field objects.
+    Each code fragment receives quality metrics (EPC scores) and progresses
+    through 7 phases from raw input to blessed/transcendent status based on
+    calculated field properties.
 
-Key Components:
-    - DSCAnalyzer: Analyzes code through differential symbolic calculus
-    - DSCCodeChunker: Intelligently segments code into analyzable chunks
-    - PhaseManager: Manages 7-phase lifecycle (Raw → Blessed → Transcendent)
-    - Orchestrator: Coordinates multi-phase analysis workflows
-    - FieldContainer: Manages code fragment field states and transformations
-    - CoreMetrics: Calculates EPC (Efficacy-Purity-Coherence) and blessing tiers
+Core Components:
+    - DSCAnalyzer: Performs code analysis using symbolic calculus methods
+    - DSCCodeChunker: Segments source code into semantically meaningful chunks
+    - PhaseManager: Tracks code through 7 lifecycle phases
+    - Orchestrator: Coordinates multi-phase analysis pipelines
+    - FieldContainer: Stores and manages code fragment field states
+    - CoreMetrics: Calculates EPC (Efficacy-Purity-Coherence) quality scores
 
-Translation Guide:
-    - For DevOps: Advanced code quality metrics with CI/CD integration
-    - For Researchers: Mathematical field theory applied to software systems
-    - For Developers: Intelligent code understanding and evolution tracking
-    - For Architects: Codebase health monitoring and quality assessment
+Use Cases:
+    - DevOps: Automated code quality gates in CI/CD pipelines
+    - Development: Code quality assessment and improvement tracking
+    - Research: Quantitative analysis of software evolution patterns
+    - Architecture: Codebase health monitoring and technical debt detection
 
 Example Usage:
     >>> from pbjrag import DSCAnalyzer, DSCCodeChunker
@@ -42,12 +42,12 @@ Example Usage:
     >>> chunks = DSCCodeChunker().chunk_code(source_code)
     >>> results = analyzer.analyze(chunks)
     >>>
-    >>> # Access blessing states
+    >>> # Access quality metrics
     >>> for chunk in chunks:
-    ...     print(f"Blessing: {chunk.blessing_state.tier}")
+    ...     print(f"Blessing Tier: {chunk.blessing_state.tier}")
     ...     print(f"EPC Score: {chunk.field_state.epc_value}")
 
-Architecture:
+Project Structure:
     pbjrag/
     ├── crown_jewel/    # Core orchestration and field management
     ├── dsc/            # Differential symbolic calculus engine

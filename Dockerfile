@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Copy package files
-COPY pyproject.toml setup.py setup.cfg README.md ./
+COPY pyproject.toml setup.cfg README.md ./
 COPY src/ ./src/
 
 # Install PBJRAG package and dependencies
@@ -24,7 +24,7 @@ RUN pip install --no-cache-dir -e . && \
     plotly==5.24.1 \
     pandas==2.2.3 \
     qdrant-client==1.12.1 \
-    watchdog==6.0.0
+    watchdog==5.0.3
 
 # Copy WebUI application
 COPY webui/ ./webui/

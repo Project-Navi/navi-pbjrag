@@ -997,53 +997,384 @@ class DSCCodeChunker:
         """
         Extract entropic field as vector.
 
-        Analyzes chaos, unpredictability, and disorder in the code:
-        - Exception and error handling complexity
-        - Unpredictable branching paths
-        - Unexpected dependencies
-        - Non-deterministic behavior indicators
+        Analyzes chaos, unpredictability, and disorder in the code by calculating:
+        - McCabe cyclomatic complexity from AST
+        - Exception handler count (try/except blocks)
+        - Branch count (if/elif/else, for, while)
+        - Loop complexity
+        - Boolean operator complexity (and/or)
 
         The entropic field measures how much "chaos" or uncertainty exists
-        in the code's behavior and structure.
+        in the code's behavior and structure. Higher entropy indicates more
+        complex and unpredictable control flow.
 
-        Returns a vector representing entropic characteristics (currently stub).
+        Returns a vector [0.0-1.0] representing entropic characteristics.
         """
         field = np.zeros(self.field_dim)
+
+        try:
+            # 1. McCabe Cyclomatic Complexity
+            # Count decision points: each if, for, while, and, or adds complexity
+            complexity = 1  # Base complexity
+            for child in ast.walk(node):
+                if isinstance(
+                    child,
+                    (
+                        ast.If,
+                        ast.For,
+                        ast.While,
+                        ast.And,
+                        ast.Or,
+                        ast.ExceptHandler,
+                        ast.With,
+                        ast.AsyncFor,
+                        ast.AsyncWith,
+                    ),
+                ):
+                    complexity += 1
+
+            # Normalize complexity (10 is considered high complexity)
+            field[0] = min(1.0, complexity / 10.0)
+
+            # 2. Exception handler complexity
+            exception_handlers = sum(
+                1 for n in ast.walk(node) if isinstance(n, ast.ExceptHandler)
+            )
+            field[1] = min(1.0, exception_handlers / 5.0)
+
+            # 3. Branch density (control flow statements per line)
+            branches = sum(
+                1 for n in ast.walk(node) if isinstance(n, (ast.If, ast.For, ast.While))
+            )
+            total_lines = content.count("\n") + 1
+            branch_density = branches / max(total_lines, 1)
+            field[2] = min(1.0, branch_density * 10)  # Scale up for visibility
+
+            # 4. Loop complexity (nested loops increase entropy)
+            loop_count = sum(
+                1
+                for n in ast.walk(node)
+                if isinstance(n, (ast.For, ast.While, ast.AsyncFor))
+            )
+            field[3] = min(1.0, loop_count / 5.0)
+
+            # 5. Boolean complexity (complex conditions)
+            bool_ops = sum(1 for n in ast.walk(node) if isinstance(n, (ast.And, ast.Or)))
+            field[4] = min(1.0, bool_ops / 8.0)
+
+            # 6. Try block nesting (nested error handling)
+            try_blocks = sum(1 for n in ast.walk(node) if isinstance(n, ast.Try))
+            field[5] = min(1.0, try_blocks / 3.0)
+
+            # 7. Raise statement count (exception flow)
+            raise_count = sum(1 for n in ast.walk(node) if isinstance(n, ast.Raise))
+            if self.field_dim > 6:
+                field[6] = min(1.0, raise_count / 5.0)
+
+            # 8. Overall entropy score (weighted average)
+            if self.field_dim > 7:
+                field[7] = (
+                    field[0] * 0.3  # Cyclomatic complexity
+                    + field[1] * 0.2  # Exception handlers
+                    + field[2] * 0.15  # Branch density
+                    + field[3] * 0.15  # Loops
+                    + field[4] * 0.1  # Boolean ops
+                    + field[5] * 0.05  # Try blocks
+                    + field[6] * 0.05  # Raises
+                )
+
+        except Exception:
+            # On any error, return neutral entropy (0.5)
+            field.fill(0.5)
+
         return field
 
     def _extract_rhythmic_field(self, node: ast.AST, content: str) -> np.ndarray:
         """
         Extract rhythmic field as vector.
 
-        Analyzes code flow, cadence, and organizational patterns:
-        - Code structure regularity
+        Analyzes code flow, cadence, and organizational patterns by measuring:
+        - Naming convention consistency (snake_case vs camelCase)
+        - Indentation consistency
+        - Line length variance (consistent vs erratic)
         - Function size consistency
-        - Naming convention adherence
-        - Indentation and formatting patterns
+        - Whitespace rhythm
+        - Statement regularity
 
         The rhythmic field measures the "flow" and "beat" of how code
-        is organized and how consistently patterns are applied.
+        is organized and how consistently patterns are applied. Higher
+        rhythm indicates more consistent, predictable formatting.
 
-        Returns a vector representing rhythmic/flow characteristics (currently stub).
+        Returns a vector [0.0-1.0] representing rhythmic/flow characteristics.
         """
         field = np.zeros(self.field_dim)
+
+        try:
+            lines = content.split("\n")
+            non_empty_lines = [line for line in lines if line.strip()]
+
+            # 1. Naming convention consistency
+            names = []
+            for child in ast.walk(node):
+                if hasattr(child, "name"):
+                    names.append(child.name)
+                elif isinstance(child, ast.Name):
+                    names.append(child.id)
+
+            if names:
+                # Check snake_case consistency
+                snake_case_count = sum(1 for name in names if "_" in name and name.islower())
+                camel_case_count = sum(
+                    1 for name in names if name[0].islower() and any(c.isupper() for c in name)
+                )
+                total_names = len(names)
+
+                # Higher score if one convention dominates
+                dominant_ratio = max(snake_case_count, camel_case_count) / total_names
+                field[0] = dominant_ratio
+            else:
+                field[0] = 0.5  # Neutral if no names
+
+            # 2. Indentation consistency
+            if non_empty_lines:
+                indents = []
+                for line in non_empty_lines:
+                    stripped = line.lstrip()
+                    if stripped:
+                        indent = len(line) - len(stripped)
+                        indents.append(indent)
+
+                if len(indents) > 1:
+                    # Check if indentation follows consistent pattern (multiples of 4 or 2)
+                    indent_set = set(indents)
+                    # Check for 4-space rhythm
+                    four_space_rhythm = sum(1 for i in indent_set if i % 4 == 0)
+                    consistency = four_space_rhythm / len(indent_set)
+                    field[1] = consistency
+                else:
+                    field[1] = 0.8  # Single indent level is consistent
+
+            # 3. Line length variance (lower variance = more rhythmic)
+            if non_empty_lines:
+                line_lengths = [len(line) for line in non_empty_lines]
+                mean_length = np.mean(line_lengths)
+                std_length = np.std(line_lengths)
+
+                # Convert variance to consistency score (lower std = higher rhythm)
+                if mean_length > 0:
+                    coefficient_of_variation = std_length / mean_length
+                    # Lower CoV means more consistent line lengths
+                    field[2] = max(0.0, 1.0 - min(1.0, coefficient_of_variation))
+                else:
+                    field[2] = 0.5
+
+            # 4. Function/method size consistency (shorter functions = more rhythmic)
+            func_count = sum(
+                1
+                for n in ast.walk(node)
+                if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
+            )
+            lines_per_func = len(non_empty_lines) / max(func_count, 1)
+
+            # Ideal function size is 10-20 lines
+            if 10 <= lines_per_func <= 20:
+                field[3] = 1.0
+            elif lines_per_func < 10:
+                field[3] = 0.8  # Short functions are good
+            else:
+                # Penalty for long functions
+                field[3] = max(0.0, 1.0 - (lines_per_func - 20) / 100)
+
+            # 5. Whitespace rhythm (consistent blank line usage)
+            blank_line_pattern = []
+            consecutive_blanks = 0
+            for line in lines:
+                if not line.strip():
+                    consecutive_blanks += 1
+                else:
+                    if consecutive_blanks > 0:
+                        blank_line_pattern.append(consecutive_blanks)
+                    consecutive_blanks = 0
+
+            if blank_line_pattern:
+                # Most consistent is 1-2 blank lines between sections
+                consistent_blanks = sum(1 for b in blank_line_pattern if 1 <= b <= 2)
+                field[4] = consistent_blanks / len(blank_line_pattern)
+            else:
+                field[4] = 0.7  # No blank lines is okay
+
+            # 6. Statement density rhythm (statements per line)
+            statement_count = sum(
+                1
+                for n in ast.walk(node)
+                if isinstance(
+                    n, (ast.Assign, ast.AugAssign, ast.Return, ast.Expr, ast.Call)
+                )
+            )
+            statements_per_line = statement_count / max(len(non_empty_lines), 1)
+
+            # Ideal is around 1 statement per line
+            if 0.8 <= statements_per_line <= 1.2:
+                field[5] = 1.0
+            else:
+                field[5] = max(0.0, 1.0 - abs(statements_per_line - 1.0))
+
+            # 7. Overall rhythmic consistency
+            if self.field_dim > 6:
+                field[6] = np.mean(field[:6])
+
+            # 8. Code "flow" score (combination of all rhythm factors)
+            if self.field_dim > 7:
+                field[7] = (
+                    field[0] * 0.25  # Naming consistency
+                    + field[1] * 0.20  # Indentation
+                    + field[2] * 0.15  # Line length
+                    + field[3] * 0.15  # Function size
+                    + field[4] * 0.10  # Whitespace
+                    + field[5] * 0.15  # Statement density
+                )
+
+        except Exception:
+            # On any error, return neutral rhythm (0.5)
+            field.fill(0.5)
+
         return field
 
     def _extract_emergent_field(self, node: ast.AST, content: str) -> np.ndarray:
         """
         Extract emergent field as vector.
 
-        Analyzes novelty, creativity, and unexpected patterns:
-        - Novel design patterns
-        - Creative implementations
-        - Surprising optimizations
-        - Unique solutions to common problems
+        Analyzes novelty, creativity, and unexpected patterns by detecting:
+        - Rare AST patterns (decorators, metaclasses, context managers)
+        - Advanced Python features (walrus operator, match statements)
+        - Pattern diversity (variety of language constructs used)
+        - Creative implementations (generators, comprehensions, lambda)
+        - Metaprogramming indicators (getattr, setattr, __dict__)
 
         The emergent field captures "surprise" and "novelty" - patterns
         that go beyond standard conventions and represent creative solutions.
+        Higher emergence indicates more novel, sophisticated patterns.
 
-        Returns a vector representing emergent/novel characteristics (currently stub).
+        Returns a vector [0.0-1.0] representing emergent/novel characteristics.
         """
         field = np.zeros(self.field_dim)
+
+        try:
+            # 1. Decorator usage (creative pattern)
+            decorator_count = 0
+            for child in ast.walk(node):
+                if isinstance(child, (ast.FunctionDef, ast.ClassDef)):
+                    decorator_count += len(child.decorator_list)
+            field[0] = min(1.0, decorator_count / 3.0)
+
+            # 2. Advanced Python features
+            advanced_features = 0
+
+            # Walrus operator (Python 3.8+)
+            advanced_features += sum(1 for n in ast.walk(node) if isinstance(n, ast.NamedExpr))
+
+            # Match statements (Python 3.10+)
+            advanced_features += sum(1 for n in ast.walk(node) if isinstance(n, ast.Match))
+
+            # Context managers (with statements)
+            advanced_features += sum(
+                1 for n in ast.walk(node) if isinstance(n, (ast.With, ast.AsyncWith))
+            )
+
+            # Async/await patterns
+            advanced_features += sum(
+                1
+                for n in ast.walk(node)
+                if isinstance(n, (ast.AsyncFunctionDef, ast.Await))
+            )
+
+            field[1] = min(1.0, advanced_features / 5.0)
+
+            # 3. Metaprogramming indicators
+            metaprogramming_score = 0
+            content_lower = content.lower()
+
+            # Check for metaprogramming keywords
+            meta_patterns = [
+                "__dict__",
+                "__class__",
+                "getattr",
+                "setattr",
+                "hasattr",
+                "type(",
+                "metaclass",
+                "__new__",
+                "__init_subclass__",
+            ]
+            metaprogramming_score = sum(1 for pattern in meta_patterns if pattern in content_lower)
+            field[2] = min(1.0, metaprogramming_score / len(meta_patterns))
+
+            # 4. Generator and comprehension usage (creative iteration)
+            generator_count = sum(
+                1
+                for n in ast.walk(node)
+                if isinstance(
+                    n,
+                    (
+                        ast.GeneratorExp,
+                        ast.ListComp,
+                        ast.SetComp,
+                        ast.DictComp,
+                        ast.Yield,
+                        ast.YieldFrom,
+                    ),
+                )
+            )
+            field[3] = min(1.0, generator_count / 5.0)
+
+            # 5. Lambda and functional patterns
+            functional_count = sum(
+                1 for n in ast.walk(node) if isinstance(n, (ast.Lambda, ast.FunctionDef))
+            )
+            # Check for functional programming keywords
+            functional_keywords = ["map", "filter", "reduce", "lambda", "partial"]
+            functional_keyword_count = sum(
+                1 for keyword in functional_keywords if keyword in content_lower
+            )
+            functional_score = (functional_count / 10.0 + functional_keyword_count / 5.0) / 2
+            field[4] = min(1.0, functional_score)
+
+            # 6. Pattern diversity (variety of constructs)
+            pattern_types = set()
+            for child in ast.walk(node):
+                pattern_types.add(type(child).__name__)
+
+            # More diverse patterns indicate creative code
+            diversity_score = len(pattern_types) / 30.0  # 30+ types is very diverse
+            field[5] = min(1.0, diversity_score)
+
+            # 7. Special methods and operator overloading
+            special_method_count = 0
+            for child in ast.walk(node):
+                if isinstance(child, ast.FunctionDef):
+                    if child.name.startswith("__") and child.name.endswith("__"):
+                        # Exclude common ones like __init__
+                        if child.name not in ["__init__", "__new__", "__del__"]:
+                            special_method_count += 1
+
+            if self.field_dim > 6:
+                field[6] = min(1.0, special_method_count / 3.0)
+
+            # 8. Overall emergence score (weighted combination)
+            if self.field_dim > 7:
+                field[7] = (
+                    field[0] * 0.20  # Decorators
+                    + field[1] * 0.20  # Advanced features
+                    + field[2] * 0.15  # Metaprogramming
+                    + field[3] * 0.15  # Generators/comprehensions
+                    + field[4] * 0.10  # Functional patterns
+                    + field[5] * 0.10  # Pattern diversity
+                    + field[6] * 0.10  # Special methods
+                )
+
+        except Exception:
+            # On any error, return neutral emergence (0.5)
+            field.fill(0.5)
+
         return field
 

@@ -1,55 +1,65 @@
 """
-Crown Jewel Core - Orchestration and Field Management
+Crown Jewel - Core Orchestration Module
 
-The Crown Jewel module provides the mathematical foundation and orchestration
-layer for PBJRAG's code analysis system. It manages field states, phase
-transitions, and blessing calculations using field theory principles.
+The Crown Jewel module manages the analysis pipeline for code quality assessment.
+It coordinates phase transitions, calculates quality scores, and orchestrates
+multi-stage analysis workflows.
 
-Core Concepts:
-    - Field Container: Manages code fragments as field objects with properties
-      like coherence, entropy, and coupling strength
-    - Phase Manager: Orchestrates 7-phase lifecycle transitions:
+What It Does:
+    Crown Jewel orchestrates PBJRAG's code analysis lifecycle. It tracks code
+    fragments through 7 phases, calculates EPC quality scores, assigns blessing
+    tiers, and coordinates analysis workflows. It also manages field states,
+    detects architectural patterns, and handles error recovery.
+
+Core Components:
+    - FieldContainer: Stores and manages code fragment field states
+    - PhaseManager: Tracks code through 7 lifecycle phases:
       Raw → Analyzed → Chunked → Vectorized → Retrieved → Blessed → Transcendent
-    - Orchestrator: Coordinates multi-agent analysis workflows across phases
-    - Core Metrics: Calculates EPC (Efficacy-Purity-Coherence) scores and
-      determines blessing tiers (Mundane → Blessed → Sacred → Transcendent)
-
-Key Components:
-    - FieldContainer: Container for code field states and transformations
-    - PhaseManager: Manages phase transitions and lifecycle coordination
-    - Orchestrator: High-level workflow orchestration and multi-phase analysis
-    - CoreMetrics: EPC calculation, blessing tier assignment, quality scoring
+    - Orchestrator: Coordinates multi-phase analysis workflows
+    - CoreMetrics: Calculates EPC scores and assigns blessing tiers:
+      Mundane (0-0.5) → Blessed (0.5-0.7) → Sacred (0.7-0.9) → Transcendent (>0.9)
     - PatternAnalyzer: Detects architectural patterns and code structures
     - ErrorHandler: Manages ambiguity resolution and error recovery
 
-Translation Guide:
-    - For DevOps: CI/CD pipeline for code quality with automated assessments
-    - For Researchers: Phase-based field evolution with mathematical rigor
-    - For Developers: Automated code quality gates and improvement guidance
-    - For Architects: System-level quality orchestration and monitoring
+Use Cases:
+    - Automated code quality gates in CI/CD pipelines
+    - Multi-phase code analysis workflow orchestration
+    - Quality trend tracking and reporting
+    - Architectural pattern detection
+    - Technical debt monitoring
 
 Example Usage:
     >>> from pbjrag.crown_jewel import Orchestrator, PhaseManager, CoreMetrics
     >>>
-    >>> # Orchestrate full analysis
+    >>> # Run complete analysis workflow
     >>> orchestrator = Orchestrator()
     >>> results = orchestrator.run_full_analysis(codebase_path)
     >>>
-    >>> # Manage phases manually
+    >>> # Manage lifecycle phases manually
     >>> phase_mgr = PhaseManager()
     >>> phase_mgr.transition_to_phase("ANALYZED")
+    >>> print(f"Current phase: {phase_mgr.current_phase}")
     >>>
-    >>> # Calculate blessing metrics
+    >>> # Calculate quality metrics
     >>> metrics = CoreMetrics()
     >>> epc_score = metrics.calculate_epc(field_state)
     >>> blessing_tier = metrics.assign_blessing_tier(epc_score)
-    >>> print(f"Blessing: {blessing_tier}, EPC: {epc_score:.3f}")
+    >>> print(f"Blessing Tier: {blessing_tier}, EPC: {epc_score:.3f}")
 
-Mathematical Foundation:
-    The Crown Jewel system uses field theory to model code quality:
-    - EPC = √((E² + P² + C²) / 3)  where E=Efficacy, P=Purity, C=Coherence
-    - Blessing tiers based on EPC thresholds: <0.5, 0.5-0.7, 0.7-0.9, >0.9
-    - Field coupling strength measures inter-component dependencies
+Quality Scoring:
+    EPC (Efficacy-Purity-Coherence) is calculated as:
+    EPC = √((E² + P² + C²) / 3)
+
+    Where E, P, C are normalized scores (0.0-1.0) for:
+    - Efficacy: Functional correctness and effectiveness
+    - Purity: Code cleanliness and best practices
+    - Coherence: Internal consistency and logical structure
+
+    Blessing tiers are assigned based on EPC thresholds:
+    - Mundane: EPC < 0.5
+    - Blessed: 0.5 ≤ EPC < 0.7
+    - Sacred: 0.7 ≤ EPC < 0.9
+    - Transcendent: EPC ≥ 0.9
 """
 
 from .error_handler import handle_error, resolve_ambiguity

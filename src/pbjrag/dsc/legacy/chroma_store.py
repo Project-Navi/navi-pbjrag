@@ -15,9 +15,9 @@ import numpy as np
 # ChromaDB imports
 try:
     import chromadb
-    import torch
     from chromadb.config import Settings
     from chromadb.utils import embedding_functions
+    import torch
 
     HAVE_CHROMA = True
 except ImportError:

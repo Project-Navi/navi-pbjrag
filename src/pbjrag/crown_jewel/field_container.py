@@ -5,10 +5,10 @@ This module consolidates functionality from setup_field, sdk_compost_engine, and
 potential_capacitor into a single, comprehensive system for managing field state.
 """
 
+from collections.abc import Callable
 import datetime
 import json
 import logging
-from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 

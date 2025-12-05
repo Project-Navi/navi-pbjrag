@@ -7,8 +7,8 @@ Crown Jewel Core's coherence curves and field management.
 """
 
 import ast
-import re
 from dataclasses import dataclass
+import re
 from typing import Any
 
 import numpy as np

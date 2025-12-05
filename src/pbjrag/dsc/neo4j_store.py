@@ -4,16 +4,16 @@ Neo4j Graph Store for PBJRAG v3
 Stores code relationships, patterns, and DSC field states as a knowledge graph
 """
 
+from datetime import datetime
 import hashlib
 import json
 import logging
 import os
-from datetime import datetime
 from typing import Any
 
 try:
-    import networkx as nx
     from neo4j import GraphDatabase
+    import networkx as nx
 
     HAVE_NEO4J = True
 except ImportError:

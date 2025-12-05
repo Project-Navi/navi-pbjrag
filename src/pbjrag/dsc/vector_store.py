@@ -6,8 +6,8 @@ This integrates the vector storage capabilities with Crown Jewel's field managem
 and phase-aware retrieval.
 """
 
-import logging
 from dataclasses import dataclass
+import logging
 from typing import Any
 
 import numpy as np
@@ -15,8 +15,6 @@ import numpy as np
 # Optional dependencies with graceful fallback
 try:
     from qdrant_client import QdrantClient
-    from qdrant_client.models import NamedVector  # noqa: F401
-    from qdrant_client.models import QueryRequest  # noqa: F401
     from qdrant_client.models import (
         Distance,
         FieldCondition,

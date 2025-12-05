@@ -7,8 +7,8 @@ Simple CLI for running PBJRAG analysis from the command line.
 
 import argparse
 import json
-import sys
 from pathlib import Path
+import sys
 
 
 def main():

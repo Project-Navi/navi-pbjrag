@@ -7,10 +7,10 @@ and Crown Jewel's orchestration capabilities.
 """
 
 import ast
+from collections import defaultdict
 import json
 import logging
 import os
-from collections import defaultdict
 from pathlib import Path
 from typing import Any
 

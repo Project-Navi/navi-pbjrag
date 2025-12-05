@@ -9,8 +9,8 @@ pipeline that manages the flow of analysis, blessing, and integration.
 import datetime
 import json
 import logging
-import sys
 from pathlib import Path
+import sys
 from typing import Any
 
 from .error_handler import handle_error

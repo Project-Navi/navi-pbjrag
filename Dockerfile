@@ -13,12 +13,15 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
-# Copy package files
+# Copy package files and lockfiles
 COPY pyproject.toml setup.cfg README.md ./
+COPY requirements.lock ./
 COPY src/ ./src/
 
-# Install PBJRAG package and dependencies
-RUN pip install --no-cache-dir -e . && \
+# Install pip-tools and PBJRAG package with pinned dependencies
+RUN pip install --no-cache-dir pip-tools && \
+    pip-sync requirements.lock && \
+    pip install --no-cache-dir -e . && \
     pip install --no-cache-dir \
     streamlit==1.40.0 \
     plotly==5.24.1 \

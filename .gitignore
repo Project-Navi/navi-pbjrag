@@ -105,6 +105,11 @@ logs/
 nohup.out
 .nohup
 
+# Deployment and rollback backups
+backups/
+*.backup
+rollback_*.tar.gz
+
 # FCPA Audit outputs
 .fcpa_audit/
 fcpa_output/
@@ -168,6 +173,7 @@ config/secrets.yaml
 !contributing.md
 !CODE_OF_CONDUCT.md
 !SECURITY.md
+!RELEASE_CHECKLIST.md
 # Allow docs folder markdown
 !docs/
 !docs/**/*.md

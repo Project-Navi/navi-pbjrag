@@ -1,0 +1,46 @@
+# Service Level Objectives for PBJRAG
+version: "1.0"
+service: pbjrag
+
+slos:
+  # Analysis performance
+  analysis_latency:
+    description: "File analysis completes within acceptable time"
+    sli:
+      type: latency
+      percentile: 99
+      threshold_ms: 5000
+    objective: 99.0
+
+  search_latency:
+    description: "Semantic search queries are fast"
+    sli:
+      type: latency
+      percentile: 95
+      threshold_ms: 500
+    objective: 95.0
+
+  availability:
+    description: "Service is available and responding"
+    sli:
+      type: availability
+      error_budget_percent: 0.1
+    objective: 99.9
+
+  throughput:
+    description: "Minimum request handling capacity"
+    sli:
+      type: throughput
+      min_requests_per_second: 10
+    objective: 100
+
+error_budgets:
+  monthly_downtime_minutes: 43.2  # 99.9% = 43.2 min/month
+
+rollback_triggers:
+  - condition: "error_rate > 1% for 5 minutes"
+    action: "automatic_rollback"
+  - condition: "p99_latency > 10000ms for 5 minutes"
+    action: "automatic_rollback"
+  - condition: "health_check_failures > 3 in 10 minutes"
+    action: "alert_and_manual_review"

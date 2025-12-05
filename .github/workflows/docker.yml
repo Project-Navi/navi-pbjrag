@@ -84,9 +84,9 @@ jobs:
         run: |
           docker run --rm pbjrag:test python -c "from pbjrag import DSCAnalyzer; print('Import successful')"
 
-      - name: Start services with docker-compose
+      - name: Start services with docker compose
         run: |
-          docker-compose up -d
+          docker compose up -d
           sleep 30
 
       - name: Health check
@@ -95,4 +95,4 @@ jobs:
           curl -f http://localhost:6333/healthz || exit 1
 
       - name: Stop services
-        run: docker-compose down -v
+        run: docker compose down -v

@@ -2,7 +2,7 @@
 
 ## Open Source + Ethical Alignment Program
 
-While Neural Forge Bootstrapper is available under standard dual licensing (AGPL-3.0 or Commercial PNEUL-D), we offer enhanced support and collaboration opportunities for projects that voluntarily align with our ethical principles.
+While Project Navi - PBJRAG is available under standard dual licensing (AGPL-3.0 or Commercial PNEUL-D), we offer enhanced support and collaboration opportunities for projects that voluntarily align with our ethical principles.
 
 ## How It Works
 
@@ -22,7 +22,7 @@ Available to open source projects that voluntarily commit to PNEUL ethical princ
 
 ## PNEUL Alignment for Open Source
 
-To qualify for enhanced support, open source projects using Neural Forge Bootstrapper under AGPL-3.0 may voluntarily commit to:
+To qualify for enhanced support, open source projects using Project Navi - PBJRAG under AGPL-3.0 may voluntarily commit to:
 
 ### Core Principles
 - **Non-extractive use** - Don't exploit, surveil, or coerce users

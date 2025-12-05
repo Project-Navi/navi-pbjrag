@@ -12,13 +12,14 @@ import logging
 import os
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
-from ..crown_jewel.field_container import FieldContainer
-from ..crown_jewel.metrics import CoreMetrics
-from ..crown_jewel.orchestrator import Orchestrator
-from ..crown_jewel.pattern_analyzer import PatternAnalyzer
-from ..crown_jewel.phase_manager import PhaseManager
+from pbjrag.crown_jewel.field_container import FieldContainer
+from pbjrag.crown_jewel.metrics import CoreMetrics
+from pbjrag.crown_jewel.orchestrator import Orchestrator
+from pbjrag.crown_jewel.pattern_analyzer import PatternAnalyzer
+from pbjrag.crown_jewel.phase_manager import PhaseManager
+
 from .chunker import DSCChunk, DSCCodeChunker
 from .vector_store import DSCVectorStore
 
@@ -30,7 +31,7 @@ class DSCAnalyzer:
     Unified analyzer that integrates DSC capabilities with Crown Jewel orchestration.
     """
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config: dict[str, Any] | None = None):
         """Initialize the DSC analyzer with optional configuration"""
         self.config = config or {}
 
@@ -84,9 +85,9 @@ class DSCAnalyzer:
         self.output_dir.mkdir(exist_ok=True, parents=True)
 
         # In-memory cache for file contents, as per the "pre-compiled plaintext cache" concept
-        self._file_cache: Dict[str, str] = {}
+        self._file_cache: dict[str, str] = {}
 
-    def _populate_file_cache(self, project_path: str, max_depth: int, file_extensions: List[str]):
+    def _populate_file_cache(self, project_path: str, max_depth: int, file_extensions: list[str]):
         """Walks the project path and reads all valid files into an in-memory cache."""
         logger.info(f"Witness Phase: Caching files from {project_path}")
         self._file_cache.clear()
@@ -100,15 +101,15 @@ class DSCAnalyzer:
 
             for file in files:
                 if any(file.endswith(ext) for ext in file_extensions):
-                    file_path = os.path.join(root, file)
+                    file_path = Path(root) / file
                     try:
-                        with open(file_path, "r", encoding="utf-8", errors="replace") as f:
-                            self._file_cache[file_path] = f.read()
+                        with file_path.open(encoding="utf-8", errors="replace") as f:
+                            self._file_cache[str(file_path)] = f.read()
                     except Exception as e:
                         logger.error(f"Error reading file {file_path} into cache: {e}")
         logger.info(f"Witness Phase Complete: Cached {len(self._file_cache)} files.")
 
-    def analyze_file(self, file_path: str) -> Dict[str, Any]:
+    def analyze_file(self, file_path: str) -> dict[str, Any]:
         """
         Analyze a single file using DSC chunking and Crown Jewel metrics.
 
@@ -124,7 +125,7 @@ class DSCAnalyzer:
         content = self._file_cache.get(file_path)
         if content is None:
             try:
-                with open(file_path, "r", encoding="utf-8", errors="replace") as f:
+                with Path(file_path).open(encoding="utf-8", errors="replace") as f:
                     content = f.read()
                     self._file_cache[file_path] = content  # Add to cache if not there
             except Exception as e:
@@ -183,8 +184,8 @@ class DSCAnalyzer:
         self,
         project_path: str,
         max_depth: int = 2,
-        file_extensions: Optional[List[str]] = None,
-    ) -> Dict[str, Any]:
+        file_extensions: list[str] | None = None,
+    ) -> dict[str, Any]:
         """
         Analyze an entire project using DSC and Crown Jewel orchestration.
 
@@ -234,7 +235,7 @@ class DSCAnalyzer:
             logger.info(f"Recognition Phase: Analyzing {len(self._file_cache)} cached files.")
             dsc_results = []
             all_chunks = []
-            for file_path in self._file_cache.keys():
+            for file_path in self._file_cache:
                 result = self.analyze_file(file_path)
                 dsc_results.append(result)
                 # Collect all chunks for later phases
@@ -287,14 +288,14 @@ class DSCAnalyzer:
 
             # Save enhanced results
             results_file = project_output_dir / "dsc_project_analysis.json"
-            with open(results_file, "w", encoding="utf-8") as f:
+            with results_file.open("w", encoding="utf-8") as f:
                 json.dump(orchestration_result, f, indent=2)
 
             logger.info(f"Project analysis complete. Results saved to {results_file}")
 
         return orchestration_result
 
-    def search(self, query: str, **kwargs) -> List[Dict[str, Any]]:
+    def search(self, query: str, **kwargs) -> list[dict[str, Any]]:
         """
         Search analyzed chunks using vector store.
 
@@ -311,7 +312,7 @@ class DSCAnalyzer:
 
         return self.vector_store.search(query, **kwargs)
 
-    def find_resonance(self, chunk_id: int, min_resonance: float = 0.7) -> List[Dict[str, Any]]:
+    def find_resonance(self, chunk_id: int, min_resonance: float = 0.7) -> list[dict[str, Any]]:
         """
         Find chunks that resonate with a given chunk.
 
@@ -328,7 +329,7 @@ class DSCAnalyzer:
 
         return self.vector_store.find_resonant_chunks(chunk_id, min_resonance)
 
-    def evolve_by_phase(self, target_phase: str) -> List[Dict[str, Any]]:
+    def evolve_by_phase(self, target_phase: str) -> list[dict[str, Any]]:
         """
         Find chunks ready to evolve to a target phase.
 
@@ -344,7 +345,7 @@ class DSCAnalyzer:
 
         return self.vector_store.evolve_chunks_by_phase(target_phase)
 
-    def _chunk_to_dict(self, chunk: DSCChunk) -> Dict[str, Any]:
+    def _chunk_to_dict(self, chunk: DSCChunk) -> dict[str, Any]:
         """Convert a DSCChunk to a dictionary for JSON serialization"""
         return {
             "content": chunk.content,
@@ -359,8 +360,8 @@ class DSCAnalyzer:
         }
 
     def _calculate_file_metrics(
-        self, chunks: List[DSCChunk], file_analysis: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, chunks: list[DSCChunk], file_analysis: dict[str, Any]
+    ) -> dict[str, Any]:
         """Calculate aggregated metrics for a file"""
 
         if not chunks:
@@ -409,7 +410,7 @@ class DSCAnalyzer:
             "crown_jewel_metrics": file_analysis.get("blessing", {}),
         }
 
-    def _detect_chunk_patterns(self, chunks: List[DSCChunk]) -> List[Dict[str, Any]]:
+    def _detect_chunk_patterns(self, chunks: list[DSCChunk]) -> list[dict[str, Any]]:
         """Detect patterns across chunks"""
         patterns = []
 
@@ -457,7 +458,7 @@ class DSCAnalyzer:
 
         # Detect high-resonance pairs
         for i, chunk1 in enumerate(chunks):
-            for j, chunk2 in enumerate(chunks[i + 1 :], i + 1):
+            for _j, chunk2 in enumerate(chunks[i + 1 :], i + 1):
                 resonance = self.chunker.calculate_chunk_resonance(chunk1, chunk2)
                 if resonance > 0.8:
                     pattern = {
@@ -470,7 +471,7 @@ class DSCAnalyzer:
 
         return patterns
 
-    def _calculate_blessing_distribution(self) -> Dict[str, float]:
+    def _calculate_blessing_distribution(self) -> dict[str, float]:
         """Calculate blessing distribution across all analyzed code"""
         fragments = self.field_container.get_fragments()
 
@@ -490,7 +491,7 @@ class DSCAnalyzer:
         total = len(fragments)
         return {tier: count / total for tier, count in counts.items()}
 
-    def _calculate_phase_distribution(self) -> Dict[str, float]:
+    def _calculate_phase_distribution(self) -> dict[str, float]:
         """Calculate phase distribution across all analyzed code"""
         fragments = self.field_container.get_fragments()
 
@@ -506,18 +507,18 @@ class DSCAnalyzer:
         total = len(fragments)
         return {phase: count / total for phase, count in phase_counts.items()}
 
-    def _save_file_results(self, file_path: str, results: Dict[str, Any]):
+    def _save_file_results(self, file_path: str, results: dict[str, Any]):
         """Save analysis results for a file"""
         # Create safe filename
         safe_name = Path(file_path).stem.replace("/", "_").replace("\\", "_")
         results_file = self.output_dir / f"{safe_name}_analysis.json"
 
-        with open(results_file, "w", encoding="utf-8") as f:
+        with results_file.open("w", encoding="utf-8") as f:
             json.dump(results, f, indent=2)
 
         logger.info(f"Saved analysis results to {results_file}")
 
-    def generate_report(self) -> Dict[str, Any]:
+    def generate_report(self) -> dict[str, Any]:
         """Generate a comprehensive analysis report"""
 
         # Calculate field coherence
@@ -559,7 +560,7 @@ class DSCAnalyzer:
 
         # Save report
         report_file = self.output_dir / "dsc_analysis_report.json"
-        with open(report_file, "w", encoding="utf-8") as f:
+        with report_file.open("w", encoding="utf-8") as f:
             json.dump(report, f, indent=2)
 
         # Create markdown report
@@ -567,7 +568,7 @@ class DSCAnalyzer:
 
         return report
 
-    def _get_top_blessed_fragments(self, n: int) -> List[Dict[str, Any]]:
+    def _get_top_blessed_fragments(self, n: int) -> list[dict[str, Any]]:
         """Get top N blessed fragments"""
         fragments = self.field_container.get_fragments()
 
@@ -586,7 +587,7 @@ class DSCAnalyzer:
             for f in sorted_fragments[:n]
         ]
 
-    def _get_emerging_patterns(self, n: int) -> List[Dict[str, Any]]:
+    def _get_emerging_patterns(self, n: int) -> list[dict[str, Any]]:
         """Get top N emerging patterns"""
         patterns = self.field_container.get_patterns()
 
@@ -602,7 +603,7 @@ class DSCAnalyzer:
 
         return emerging[:n]
 
-    def _generate_recommendations(self) -> List[str]:
+    def _generate_recommendations(self) -> list[str]:
         """Generate recommendations based on analysis"""
         recommendations = []
 
@@ -647,11 +648,11 @@ class DSCAnalyzer:
 
         return recommendations
 
-    def _create_markdown_report(self, report: Dict[str, Any]):
+    def _create_markdown_report(self, report: dict[str, Any]):
         """Create a markdown version of the report"""
         md_file = self.output_dir / "dsc_analysis_report.md"
 
-        with open(md_file, "w", encoding="utf-8") as f:
+        with md_file.open("w", encoding="utf-8") as f:
             f.write("# DSC Analysis Report\n\n")
             f.write(f"**Generated:** {report['timestamp']}\n")
             f.write(f"**Field Coherence:** {report['field_coherence']:.3f}\n")
@@ -694,8 +695,8 @@ class DSCAnalyzer:
         logger.info(f"Created markdown report: {md_file}")
 
     def _identify_fractal_patterns(
-        self, all_chunks: List[Dict[str, Any]]
-    ) -> Dict[str, List[Dict[str, Any]]]:
+        self, all_chunks: list[dict[str, Any]]
+    ) -> dict[str, list[dict[str, Any]]]:
         """
         Identifies fractal patterns by clustering chunks based on structural
         and metric similarity, inspired by code_fractal_detector.py.
@@ -713,7 +714,7 @@ class DSCAnalyzer:
                 # Create a hashable signature
                 chunk["structural_signature"] = tuple(sorted(structure))
             except SyntaxError:
-                chunk["structural_signature"] = tuple()
+                chunk["structural_signature"] = ()
 
         # Group chunks by their structural signature
         groups = defaultdict(list)
@@ -722,7 +723,7 @@ class DSCAnalyzer:
 
         # Refine groups into patterns if they have multiple members
         pattern_count = 0
-        for signature, group in groups.items():
+        for _signature, group in groups.items():
             if len(group) > 1:
                 pattern_name = f"pattern_{pattern_count}"
                 # Further analysis could be done here (e.g., metric similarity)

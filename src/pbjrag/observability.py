@@ -11,13 +11,14 @@ import json
 import logging
 import time
 import uuid
+from collections.abc import Callable
 from contextlib import contextmanager
 from functools import wraps
-from typing import Any, Callable, Dict, Optional
+from typing import Any
 
 # Prometheus metrics (optional dependency)
 try:
-    from prometheus_client import CONTENT_TYPE_LATEST, Counter, Gauge, Histogram, generate_latest
+    from prometheus_client import Counter, Gauge, Histogram, generate_latest
 
     PROMETHEUS_AVAILABLE = True
 except ImportError:
@@ -48,7 +49,7 @@ class StructuredLogger:
 
     def __init__(self, name: str = "pbjrag"):
         self.logger = logging.getLogger(name)
-        self._trace_id: Optional[str] = None
+        self._trace_id: str | None = None
 
     def set_trace_id(self, trace_id: str):
         self._trace_id = trace_id
@@ -82,7 +83,7 @@ logger = StructuredLogger()
 
 
 @contextmanager
-def trace_operation(operation: str, trace_id: Optional[str] = None):
+def trace_operation(operation: str, trace_id: str | None = None):
     """Context manager for tracing operations with metrics."""
     trace_id = trace_id or str(uuid.uuid4())[:8]
     logger.set_trace_id(trace_id)
@@ -157,13 +158,12 @@ def get_metrics() -> bytes:
     return b"# Prometheus client not installed\n"
 
 
-def health_check() -> Dict[str, Any]:
+def health_check() -> dict[str, Any]:
     """Perform health check and return status."""
     checks = {"status": "healthy", "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"), "checks": {}}
 
     # Check core imports
     try:
-        from pbjrag import DSCAnalyzer
 
         checks["checks"]["core_imports"] = "ok"
     except Exception as e:
@@ -172,7 +172,7 @@ def health_check() -> Dict[str, Any]:
 
     # Check Qdrant (if configured)
     try:
-        from pbjrag.dsc.vector_store import DSCVectorStore
+        from pbjrag.dsc.vector_store import DSCVectorStore  # noqa: F401
 
         # Just check import, don't actually connect
         checks["checks"]["vector_store"] = "available"

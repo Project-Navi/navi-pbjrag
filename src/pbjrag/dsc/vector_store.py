@@ -8,23 +8,23 @@ and phase-aware retrieval.
 
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import numpy as np
 
 # Optional dependencies with graceful fallback
 try:
     from qdrant_client import QdrantClient
+    from qdrant_client.models import NamedVector  # noqa: F401
+    from qdrant_client.models import QueryRequest  # noqa: F401
     from qdrant_client.models import (
         Distance,
         FieldCondition,
         Filter,
         MatchAny,
         MatchValue,
-        NamedVector,
         OptimizersConfigDiff,
         PointStruct,
-        QueryRequest,
         Range,
         VectorParams,
     )
@@ -33,11 +33,14 @@ try:
 except ImportError:
     HAVE_QDRANT = False
     QdrantClient = None  # type: ignore
-    Distance = VectorParams = PointStruct = Filter = FieldCondition = Range = MatchValue = MatchAny = OptimizersConfigDiff = object  # type: ignore
+    # type: ignore
+    Distance = VectorParams = PointStruct = Filter = object
+    FieldCondition = Range = MatchValue = MatchAny = OptimizersConfigDiff = object
 
-from ..crown_jewel.field_container import FieldContainer
-from ..crown_jewel.phase_manager import PhaseManager
-from ..metrics import CoreMetrics
+from pbjrag.crown_jewel.field_container import FieldContainer
+from pbjrag.crown_jewel.phase_manager import PhaseManager
+from pbjrag.metrics import CoreMetrics
+
 from .chunker import DSCChunk
 from .embedding_adapter import EmbeddingAdapter
 
@@ -49,8 +52,8 @@ class DSCEmbeddedChunk:
     """A DSC chunk with embeddings"""
 
     chunk: DSCChunk
-    embedding: List[float]
-    field_embeddings: Dict[str, List[float]]  # Separate embeddings per field
+    embedding: list[float]
+    field_embeddings: dict[str, list[float]]  # Separate embeddings per field
 
 
 class DSCVectorStore:
@@ -67,8 +70,8 @@ class DSCVectorStore:
         embedding_url: str = "http://localhost:11434",
         embedding_model: str = "snowflake-arctic-embed2:latest",
         embedding_dim: int = 1024,
-        field_container: Optional[FieldContainer] = None,
-        phase_manager: Optional[PhaseManager] = None,
+        field_container: FieldContainer | None = None,
+        phase_manager: PhaseManager | None = None,
     ):
         """
         Initialize DSC Vector Store with Qdrant and embedding support.
@@ -195,7 +198,7 @@ class DSCVectorStore:
                 f"complexity:{chunk.field_state.semantic[1]:.2f} "
                 f"documented:{chunk.field_state.semantic[2]:.2f}"
             )
-        elif field_name == "ethical":
+        if field_name == "ethical":
             return (
                 f"ethical_alignment:{chunk.blessing.ethical_alignment:.2f} "
                 f"error_handling:{chunk.field_state.ethical[0]:.2f} "
@@ -203,14 +206,13 @@ class DSCVectorStore:
                 f"type_hints:{chunk.field_state.ethical[2]:.2f} "
                 f"blessing:{chunk.blessing.tier}"
             )
-        elif field_name == "relational":
+        if field_name == "relational":
             return (
                 f"depends_on:{' '.join(chunk.depends_on)} "
                 f"provides:{' '.join(chunk.provides)} "
                 f"coupling:{chunk.field_state.relational[2]:.2f}"
             )
-        else:
-            return chunk.content[:200]  # Fallback
+        return chunk.content[:200]  # Fallback
 
     def _phase_to_text(self, chunk: DSCChunk) -> str:
         """Convert phase information to searchable text"""
@@ -221,7 +223,7 @@ class DSCVectorStore:
             f"tier:{chunk.blessing.tier}"
         )
 
-    def index_chunks(self, chunks: List[DSCChunk], batch_size: int = 100):
+    def index_chunks(self, chunks: list[DSCChunk], batch_size: int = 100):
         """Index DSC chunks with Crown Jewel integration"""
         logger.info(f"Indexing {len(chunks)} chunks...")
 
@@ -312,11 +314,11 @@ class DSCVectorStore:
         self,
         query: str,
         search_mode: str = "hybrid",
-        blessing_filter: Optional[str] = None,
-        phase_filter: Optional[List[str]] = None,
-        purpose: Optional[str] = None,
+        blessing_filter: str | None = None,
+        phase_filter: list[str] | None = None,
+        purpose: str | None = None,
         top_k: int = 10,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Enhanced search with Crown Jewel phase and purpose awareness.
 
@@ -395,10 +397,10 @@ class DSCVectorStore:
     def _search_field_container(
         self,
         query: str,
-        blessing_filter: Optional[str],
-        phase_filter: Optional[List[str]],
+        blessing_filter: str | None,
+        phase_filter: list[str] | None,
         top_k: int,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Fallback search in field container when Qdrant is not available"""
         fragments = self.field_container.get_fragments()
 
@@ -449,10 +451,10 @@ class DSCVectorStore:
     def _hybrid_search(
         self,
         query: str,
-        filter_query: Optional[Filter],
-        purpose: Optional[str],
+        filter_query: Filter | None,
+        purpose: str | None,
         top_k: int,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Hybrid search with purpose-aware weighting"""
 
         # Get embeddings for different aspects
@@ -556,7 +558,7 @@ class DSCVectorStore:
 
         return formatted
 
-    def _format_results(self, results, purpose: Optional[str] = None) -> List[Dict[str, Any]]:
+    def _format_results(self, results, purpose: str | None = None) -> list[dict[str, Any]]:
         """Format search results with purpose-aware enhancements"""
         formatted = []
 
@@ -595,7 +597,7 @@ class DSCVectorStore:
 
         return formatted
 
-    def _get_purpose_recommendations(self, payload: Dict[str, Any], purpose: str) -> List[str]:
+    def _get_purpose_recommendations(self, payload: dict[str, Any], purpose: str) -> list[str]:
         """Generate purpose-specific recommendations for a chunk"""
         recommendations = []
 
@@ -627,7 +629,7 @@ class DSCVectorStore:
 
     def find_resonant_chunks(
         self, chunk_id: int, min_resonance: float = 0.7
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Find chunks that resonate with a given chunk"""
 
         if not self.client:
@@ -677,7 +679,7 @@ class DSCVectorStore:
 
         return resonant_chunks
 
-    def evolve_chunks_by_phase(self, target_phase: str) -> List[Dict[str, Any]]:
+    def evolve_chunks_by_phase(self, target_phase: str) -> list[dict[str, Any]]:
         """Find chunks ready to evolve to a target phase"""
 
         if not self.client:
@@ -744,7 +746,7 @@ class DSCVectorStore:
 
         return candidates
 
-    def _calculate_evolution_readiness(self, payload: Dict[str, Any], target_phase: str) -> float:
+    def _calculate_evolution_readiness(self, payload: dict[str, Any], target_phase: str) -> float:
         """Calculate how ready a chunk is to evolve to target phase"""
 
         epc = payload["blessing_epc"]

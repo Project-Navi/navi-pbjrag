@@ -8,7 +8,7 @@ designed to work with MCP Memory Service setups.
 
 import json
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import numpy as np
 
@@ -27,9 +27,10 @@ except ImportError:
     embedding_functions = None
     torch = None
 
-from ..crown_jewel.field_container import FieldContainer
-from ..crown_jewel.phase_manager import PhaseManager
-from ..metrics import CoreMetrics
+from pbjrag.dsc.crown_jewel.field_container import FieldContainer
+from pbjrag.dsc.crown_jewel.phase_manager import PhaseManager
+from pbjrag.dsc.metrics import CoreMetrics
+
 from .chunker import DSCChunk
 from .vector_store import DSCEmbeddedChunk, DSCVectorStore
 
@@ -48,8 +49,8 @@ class DSCChromaStore(DSCVectorStore):
         collection_name: str = "crown_jewel_dsc",
         embedding_model: str = "all-mpnet-base-v2",
         batch_size: int = 32,
-        field_container: Optional[FieldContainer] = None,
-        phase_manager: Optional[PhaseManager] = None,
+        field_container: FieldContainer | None = None,
+        phase_manager: PhaseManager | None = None,
         device: str = "cuda",
     ):
 
@@ -109,7 +110,7 @@ class DSCChromaStore(DSCVectorStore):
             logger.error(f"Failed to setup ChromaDB collection: {e}")
             self.collection = None
 
-    def _get_embedding(self, text: str, model: str = None) -> List[float]:
+    def _get_embedding(self, text: str, model: str = None) -> list[float]:
         """Get embedding using ChromaDB's embedding function"""
         if not self.collection:
             # Fallback to random if no collection
@@ -153,7 +154,7 @@ class DSCChromaStore(DSCVectorStore):
 
         return DSCEmbeddedChunk(chunk=chunk, embedding=embedding, field_embeddings=field_embeddings)
 
-    def index_chunks(self, chunks: List[DSCChunk], batch_size: Optional[int] = None):
+    def index_chunks(self, chunks: list[DSCChunk], batch_size: int | None = None):
         """Index DSC chunks into ChromaDB with Crown Jewel integration"""
         logger.info(f"Indexing {len(chunks)} chunks into ChromaDB...")
 
@@ -240,11 +241,11 @@ class DSCChromaStore(DSCVectorStore):
         self,
         query: str,
         search_mode: str = "hybrid",
-        blessing_filter: Optional[str] = None,
-        phase_filter: Optional[List[str]] = None,
-        purpose: Optional[str] = None,
+        blessing_filter: str | None = None,
+        phase_filter: list[str] | None = None,
+        purpose: str | None = None,
         top_k: int = 10,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Enhanced search using ChromaDB with Crown Jewel phase and purpose awareness.
         """
@@ -329,7 +330,7 @@ class DSCChromaStore(DSCVectorStore):
 
     def find_resonant_chunks(
         self, chunk_content: str, min_resonance: float = 0.7
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Find chunks that resonate with given content using ChromaDB"""
 
         if not self.collection:
@@ -370,7 +371,7 @@ class DSCChromaStore(DSCVectorStore):
             logger.error(f"Resonance search failed: {e}")
             return []
 
-    def evolve_chunks_by_phase(self, target_phase: str) -> List[Dict[str, Any]]:
+    def evolve_chunks_by_phase(self, target_phase: str) -> list[dict[str, Any]]:
         """Find chunks ready to evolve to a target phase using ChromaDB"""
 
         if not self.collection:
@@ -434,7 +435,7 @@ class DSCChromaStore(DSCVectorStore):
             logger.error(f"Evolution search failed: {e}")
             return []
 
-    def get_collection_stats(self) -> Dict[str, Any]:
+    def get_collection_stats(self) -> dict[str, Any]:
         """Get statistics about the ChromaDB collection"""
 
         if not self.collection:

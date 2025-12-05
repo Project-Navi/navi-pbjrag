@@ -9,7 +9,7 @@ import json
 import logging
 import os
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 try:
     import networkx as nx
@@ -34,7 +34,7 @@ class DSCNeo4jStore:
         self,
         uri: str = "bolt://localhost:7687",
         user: str = "neo4j",
-        password: Optional[str] = None,
+        password: str | None = None,
         database: str = "neo4j",
     ):
         """Initialize Neo4j connection.
@@ -50,7 +50,8 @@ class DSCNeo4jStore:
         actual_password = password or os.environ.get("NEO4J_PASSWORD")
         if not actual_password:
             logger.error(
-                "Neo4j password not provided. Set NEO4J_PASSWORD environment variable or pass password parameter."
+                "Neo4j password not provided. Set NEO4J_PASSWORD environment variable "
+                "or pass password parameter."
             )
             self.driver = None
             return
@@ -100,7 +101,7 @@ class DSCNeo4jStore:
                 except Exception as e:
                     logger.warning(f"Schema setup query failed: {e}")
 
-    def store_code_structure(self, file_path: str, ast_data: Dict[str, Any]):
+    def store_code_structure(self, file_path: str, ast_data: dict[str, Any]):
         """
         Store AST structure as a graph
 
@@ -196,7 +197,7 @@ class DSCNeo4jStore:
 
                 session.run(import_query, {"module_path": file_path, "import_name": import_name})
 
-    def store_dsc_field_state(self, chunk_id: str, field_state: Dict[str, float]):
+    def store_dsc_field_state(self, chunk_id: str, field_state: dict[str, float]):
         """
         Store DSC field state as a node with 6 dimensions
         """
@@ -235,7 +236,7 @@ class DSCNeo4jStore:
                 },
             )
 
-    def store_fractal_pattern(self, pattern: Dict[str, Any]):
+    def store_fractal_pattern(self, pattern: dict[str, Any]):
         """
         Store fractal pattern detection results
         """
@@ -277,7 +278,7 @@ class DSCNeo4jStore:
 
                 session.run(link_query, {"pattern_id": pattern_id, "module_path": location})
 
-    def store_blessing_vector(self, entity_id: str, blessing: Dict[str, Any]):
+    def store_blessing_vector(self, entity_id: str, blessing: dict[str, Any]):
         """
         Store blessing vector calculation
         """
@@ -355,7 +356,7 @@ class DSCNeo4jStore:
                     },
                 )
 
-    def query_pattern_clusters(self) -> List[Dict[str, Any]]:
+    def query_pattern_clusters(self) -> list[dict[str, Any]]:
         """
         Find clusters of related patterns using graph algorithms
         """
@@ -378,7 +379,7 @@ class DSCNeo4jStore:
             result = session.run(query)
             return [dict(record) for record in result]
 
-    def find_code_smells(self) -> List[Dict[str, Any]]:
+    def find_code_smells(self) -> list[dict[str, Any]]:
         """
         Query for potential code smells using graph patterns
         """
@@ -415,7 +416,7 @@ class DSCNeo4jStore:
 
             return smells
 
-    def get_evolution_timeline(self, entity_id: str) -> List[Dict[str, Any]]:
+    def get_evolution_timeline(self, entity_id: str) -> list[dict[str, Any]]:
         """
         Get the evolution timeline of an entity's field states and blessings
         """
@@ -453,7 +454,7 @@ class UnifiedGraphStore:
     Unified store combining Neo4j (graph), Qdrant (vectors), and ChromaDB (documents)
     """
 
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: dict[str, Any]):
         """Initialize all storage backends"""
         self.neo4j = None
         self.qdrant = None
@@ -481,7 +482,7 @@ class UnifiedGraphStore:
 
             self.chroma = DSCChromaStore(chroma_path=config.get("chroma_path", "./chroma_db"))
 
-    def store_analysis(self, analysis_results: Dict[str, Any]):
+    def store_analysis(self, analysis_results: dict[str, Any]):
         """Store analysis results across all backends"""
 
         # Store structure in Neo4j
@@ -503,7 +504,7 @@ class UnifiedGraphStore:
         if self.chroma and "documents" in analysis_results:
             self.chroma.add_documents(analysis_results["documents"])
 
-    def query_unified(self, query: str) -> Dict[str, Any]:
+    def query_unified(self, query: str) -> dict[str, Any]:
         """Query across all storage backends"""
         results = {}
 

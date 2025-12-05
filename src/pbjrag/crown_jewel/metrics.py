@@ -5,7 +5,7 @@ This module consolidates all symbolic metrics, blessing calculations, and cohere
 into a single, comprehensive system for quantifying code qualities.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import numpy as np
 
@@ -38,7 +38,7 @@ class CoherenceCurve:
         normalized = 2 / (1 + np.exp(-2 * weighted)) - 1
         return float(np.clip(normalized, 0.0, 1.0))
 
-    def bless_weight(self, vector: Dict[str, Any]) -> str:
+    def bless_weight(self, vector: dict[str, Any]) -> str:
         """
         Recommends a blessing tier based on a vector of metrics, inspired by v6.1.
         """
@@ -79,7 +79,7 @@ class CoreMetrics:
     Consolidates functionality from symbolic_metrics, blessing_metrics, and related modules.
     """
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config: dict[str, Any] | None = None):
         """
         Initialize the CoreMetrics system with optional configuration.
 
@@ -93,7 +93,7 @@ class CoreMetrics:
             stability_threshold=self.config.get("stability_threshold", 0.5),
         )
 
-    def quantize_scalar(self, value: float, precision: Optional[int] = None) -> float:
+    def quantize_scalar(self, value: float, precision: int | None = None) -> float:
         """
         Quantize a scalar value to the specified precision.
 
@@ -115,8 +115,8 @@ class CoreMetrics:
         return float(round(value * scale) / scale)
 
     def quantize_vector(
-        self, vector: Dict[str, float], precision: Optional[int] = None
-    ) -> Dict[str, float]:
+        self, vector: dict[str, float], precision: int | None = None
+    ) -> dict[str, float]:
         """
         Quantize all values in a vector to the specified precision.
 
@@ -157,7 +157,7 @@ class CoreMetrics:
         entropy: float = 0.5,
         contradiction: float = 0.5,
         presence: float = 0.5,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Create a comprehensive blessing vector from core metrics.
 
@@ -264,7 +264,7 @@ class CoreMetrics:
 
     def calculate_reccs_score(
         self, entropy: float, complexity: float, contradiction: float, symbolism: float
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """
         Calculate RECCS (Resonance, Entropy, Complexity, Contradiction, Symbolism) score.
 
@@ -357,7 +357,7 @@ class CoreMetrics:
         # Default
         return "transition"
 
-    def coherence_vector(self, vectors: List[Dict[str, float]]) -> Dict[str, float]:
+    def coherence_vector(self, vectors: list[dict[str, float]]) -> dict[str, float]:
         """
         Calculate the coherence vector for a group of blessing vectors.
 
@@ -406,7 +406,7 @@ class CoreMetrics:
             "blessing": self.coherence_curve.bless_weight(blessing_vector),
         }
 
-    def recommend_blessing(self, vector: Dict[str, Any]) -> Dict[str, Any]:
+    def recommend_blessing(self, vector: dict[str, Any]) -> dict[str, Any]:
         """
         Generate blessing recommendations based on a blessing vector.
 

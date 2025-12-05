@@ -6,7 +6,7 @@ and manages the ritual flow of the Crown Jewel Planner.
 """
 
 import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 class PhaseManager:
@@ -15,7 +15,7 @@ class PhaseManager:
     Provides a clean interface for phase rituals and transitions.
     """
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config: dict[str, Any] | None = None):
         """
         Initialize the phase manager with optional configuration.
 
@@ -109,7 +109,7 @@ class PhaseManager:
 
         self.phase_history.append(entry)
 
-    def get_phase_history(self) -> List[Dict[str, Any]]:
+    def get_phase_history(self) -> list[dict[str, Any]]:
         """
         Get the phase transition history.
 
@@ -118,7 +118,7 @@ class PhaseManager:
         """
         return self.phase_history
 
-    def get_phase_data(self, phase: Optional[str] = None) -> Dict[str, Any]:
+    def get_phase_data(self, phase: str | None = None) -> dict[str, Any]:
         """
         Get data for the specified phase or the current phase.
 
@@ -135,7 +135,7 @@ class PhaseManager:
 
         return self.phase_data.get(target_phase, {})
 
-    def update_phase_data(self, data: Dict[str, Any], phase: Optional[str] = None) -> None:
+    def update_phase_data(self, data: dict[str, Any], phase: str | None = None) -> None:
         """
         Update data for the specified phase or the current phase.
 

@@ -11,7 +11,7 @@ import json
 import logging
 import sys
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 from .error_handler import handle_error
 from .field_container import create_field
@@ -28,7 +28,7 @@ class Orchestrator:
     Manages the flow of analysis, blessing, and integration.
     """
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config: dict[str, Any] | None = None):
         """
         Initialize the orchestrator with optional configuration.
 
@@ -84,7 +84,7 @@ class Orchestrator:
         logger.addHandler(console_handler)
         logger.setLevel(log_level)
 
-    def run(self) -> Dict[str, Any]:
+    def run(self) -> dict[str, Any]:
         """
         Run the full orchestration pipeline.
 
@@ -160,7 +160,7 @@ class Orchestrator:
 
             # Save fragments to file
             fragments_file = Path(self.output_dir) / "fragments.json"
-            with open(fragments_file, "w", encoding="utf-8") as f:
+            with fragments_file.open("w", encoding="utf-8") as f:
                 json.dump(fragments, f, indent=2)
 
             # Update phase data
@@ -199,7 +199,7 @@ class Orchestrator:
 
             # Save patterns to file
             patterns_file = Path(self.output_dir) / "patterns.json"
-            with open(patterns_file, "w", encoding="utf-8") as f:
+            with patterns_file.open("w", encoding="utf-8") as f:
                 json.dump(patterns, f, indent=2)
 
             # Update phase data
@@ -285,7 +285,7 @@ class Orchestrator:
 
             # Save combinations to file
             combos_file = Path(self.output_dir) / f"combinations_{self.purpose}.json"
-            with open(combos_file, "w", encoding="utf-8") as f:
+            with combos_file.open("w", encoding="utf-8") as f:
                 json.dump(combinations, f, indent=2)
 
             # Allow emergence from field
@@ -301,7 +301,8 @@ class Orchestrator:
             )
 
             logger.info(
-                f"Emergence phase complete - {len(combinations)} combinations suggested, {len(emerged)} patterns emerged"
+                f"Emergence phase complete - {len(combinations)} combinations suggested, "
+                f"{len(emerged)} patterns emerged"
             )
 
         except Exception as e:
@@ -334,7 +335,8 @@ class Orchestrator:
             )
 
             logger.info(
-                f"Blessing phase complete - {len(amplified)} patterns amplified, field coherence: {coherence:.4f}"
+                f"Blessing phase complete - {len(amplified)} patterns amplified, "
+                f"field coherence: {coherence:.4f}"
             )
 
         except Exception as e:
@@ -343,7 +345,7 @@ class Orchestrator:
             logger.info(f"Error handled: {error_result.get('message')}")
             raise
 
-    def _run_expression_phase(self) -> Dict[str, Any]:
+    def _run_expression_phase(self) -> dict[str, Any]:
         """
         Run the expression phase - manifest the solution.
 
@@ -361,7 +363,7 @@ class Orchestrator:
 
             # Save solution to file
             solution_file = Path(self.output_dir) / "solution.json"
-            with open(solution_file, "w", encoding="utf-8") as f:
+            with solution_file.open("w", encoding="utf-8") as f:
                 json.dump(solution, f, indent=2)
 
             # Update phase data
@@ -373,7 +375,8 @@ class Orchestrator:
             )
 
             logger.info(
-                f"Expression phase complete - solution manifested with success: {solution.get('success', False)}"
+                f"Expression phase complete - solution manifested with success: "
+                f"{solution.get('success', False)}"
             )
 
             return solution
@@ -385,8 +388,8 @@ class Orchestrator:
             raise
 
     def _create_final_report(
-        self, solution: Dict[str, Any], state_files: Dict[str, str]
-    ) -> Dict[str, Any]:
+        self, solution: dict[str, Any], state_files: dict[str, str]
+    ) -> dict[str, Any]:
         """
         Create the final report.
 
@@ -427,7 +430,7 @@ class Orchestrator:
 
         # Save report to file
         report_file = Path(self.output_dir) / "final_report.json"
-        with open(report_file, "w", encoding="utf-8") as f:
+        with report_file.open("w", encoding="utf-8") as f:
             json.dump(report, f, indent=2)
 
         # Create markdown report
@@ -435,7 +438,7 @@ class Orchestrator:
 
         return report
 
-    def _create_markdown_report(self, report: Dict[str, Any], output_file: Path) -> None:
+    def _create_markdown_report(self, report: dict[str, Any], output_file: Path) -> None:
         """
         Create a markdown report.
 
@@ -443,7 +446,7 @@ class Orchestrator:
         - report: Report data
         - output_file: Output file path
         """
-        with open(output_file, "w", encoding="utf-8") as f:
+        with output_file.open("w", encoding="utf-8") as f:
             f.write("# Crown Jewel Planner Report\n\n")
             f.write(f"**Purpose:** {report['purpose']}\n")
             f.write(f"**Timestamp:** {report['timestamp']}\n")
@@ -488,7 +491,7 @@ class Orchestrator:
                 f.write(f"- {file_type}: {file_path}\n")
 
 
-def run_orchestration(config: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+def run_orchestration(config: dict[str, Any] | None = None) -> dict[str, Any]:
     """
     Run the orchestration pipeline with the specified configuration.
 

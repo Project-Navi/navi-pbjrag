@@ -9,14 +9,14 @@ Crown Jewel Core's coherence curves and field management.
 import ast
 import re
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import numpy as np
 
-from ..crown_jewel.field_container import FieldContainer
+from pbjrag.crown_jewel.field_container import FieldContainer
 
 # Import from crown_jewel_core
-from ..crown_jewel.metrics import CoreMetrics, create_blessing_vector
+from pbjrag.crown_jewel.metrics import CoreMetrics, create_blessing_vector
 
 
 @dataclass
@@ -37,7 +37,7 @@ class FieldState:
     def dimension(self) -> int:
         return self.semantic.shape[0]
 
-    def to_dict(self) -> Dict[str, List[float]]:
+    def to_dict(self) -> dict[str, list[float]]:
         """Convert to dictionary for JSON serialization"""
         return {
             "semantic": self.semantic.tolist(),
@@ -64,7 +64,7 @@ class BlessingState:
     resonance_score: float
     phase: str  # compost, reflection, becoming, stillness, turning, emergent, grinding
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for JSON serialization"""
         return {
             "tier": self.tier,
@@ -87,11 +87,11 @@ class DSCChunk:
     field_state: FieldState
     blessing: BlessingState
     chunk_type: str  # function, class, module, etc.
-    provides: List[str]  # What this chunk offers
-    depends_on: List[str]  # What this chunk needs
-    file_path: Optional[str] = None  # Added for crown_jewel integration
+    provides: list[str]  # What this chunk offers
+    depends_on: list[str]  # What this chunk needs
+    file_path: str | None = None  # Added for crown_jewel integration
 
-    def to_fragment(self) -> Dict[str, Any]:
+    def to_fragment(self) -> dict[str, Any]:
         """Convert to crown_jewel fragment format"""
         return {
             "content": self.content,
@@ -118,7 +118,7 @@ class DSCCodeChunker:
     Enhanced DSC chunker integrated with Crown Jewel Core's metrics system.
     """
 
-    def __init__(self, field_dim: int = 8, field_container: Optional[FieldContainer] = None):
+    def __init__(self, field_dim: int = 8, field_container: FieldContainer | None = None):
         """Initialize with field dimension and optional field container"""
         self.field_dim = field_dim
         self.field_container = field_container or FieldContainer()
@@ -135,7 +135,7 @@ class DSCCodeChunker:
             "grinding": (0.9, 1.0),
         }
 
-    def chunk_code(self, code: str, filepath: str = "") -> List[DSCChunk]:
+    def chunk_code(self, code: str, filepath: str = "") -> list[DSCChunk]:
         """Main entry point - chunk code using DSC principles"""
         try:
             tree = ast.parse(code)
@@ -203,8 +203,8 @@ class DSCCodeChunker:
                 self.field_container.add_pattern(pattern)
 
     def _find_similar_fragments(
-        self, fragments: List[Dict[str, Any]]
-    ) -> List[List[Dict[str, Any]]]:
+        self, fragments: list[dict[str, Any]]
+    ) -> list[list[dict[str, Any]]]:
         """Find groups of similar fragments"""
         groups = []
         used = set()
@@ -238,7 +238,7 @@ class DSCCodeChunker:
         return groups
 
     def _create_function_chunk(
-        self, node: ast.FunctionDef, lines: List[str], tree: ast.AST
+        self, node: ast.FunctionDef, lines: list[str], tree: ast.AST
     ) -> DSCChunk:
         """Create a chunk for a function with full DSC analysis"""
         start_line = node.lineno - 1
@@ -265,7 +265,7 @@ class DSCCodeChunker:
             depends_on=deps,
         )
 
-    def _create_class_chunk(self, node: ast.ClassDef, lines: List[str], tree: ast.AST) -> DSCChunk:
+    def _create_class_chunk(self, node: ast.ClassDef, lines: list[str], tree: ast.AST) -> DSCChunk:
         """Create a chunk for a class with full DSC analysis"""
         start_line = node.lineno - 1
         end_line = getattr(node, "end_lineno", start_line + 1)
@@ -438,7 +438,7 @@ class DSCCodeChunker:
 
         # Structural complexity
         complexity = 0
-        for child in ast.walk(node):
+        for _child in ast.walk(node):
             complexity += 1
         field[1] = 1 - np.exp(-complexity / 50)  # Normalized complexity
 
@@ -761,16 +761,18 @@ class DSCCodeChunker:
 
         return field
 
-    def _get_dependencies(self, node: ast.AST) -> List[str]:
+    def _get_dependencies(self, node: ast.AST) -> list[str]:
         """Extract what this code depends on."""
         deps = set()
 
         # Track all names that are loaded (not stored)
         for child in ast.walk(node):
-            if isinstance(child, ast.Name) and isinstance(child.ctx, ast.Load):
-                # Skip builtins and common names
-                if child.id not in {"self", "True", "False", "None"}:
-                    deps.add(child.id)
+            if (
+                isinstance(child, ast.Name)
+                and isinstance(child.ctx, ast.Load)
+                and child.id not in {"self", "True", "False", "None"}
+            ):
+                deps.add(child.id)
 
         # Remove names that are defined in this scope
         for child in ast.walk(node):
@@ -820,16 +822,18 @@ class DSCCodeChunker:
 
         return "stillness"  # Default
 
-    def _extract_dependencies(self, node: ast.AST) -> List[str]:
+    def _extract_dependencies(self, node: ast.AST) -> list[str]:
         """Extract what this code depends on"""
         deps = set()
 
         # Track all names that are loaded (not stored)
         for child in ast.walk(node):
-            if isinstance(child, ast.Name) and isinstance(child.ctx, ast.Load):
-                # Skip builtins and common names
-                if child.id not in {"self", "True", "False", "None"}:
-                    deps.add(child.id)
+            if (
+                isinstance(child, ast.Name)
+                and isinstance(child.ctx, ast.Load)
+                and child.id not in {"self", "True", "False", "None"}
+            ):
+                deps.add(child.id)
 
         # Remove names that are defined in this scope
         for child in ast.walk(node):
@@ -839,8 +843,8 @@ class DSCCodeChunker:
         return list(deps)
 
     def _create_module_chunk(
-        self, tree: ast.AST, lines: List[str], existing_chunks: List[DSCChunk]
-    ) -> Optional[DSCChunk]:
+        self, tree: ast.AST, lines: list[str], existing_chunks: list[DSCChunk]
+    ) -> DSCChunk | None:
         """Create chunk for module-level code"""
         # Find lines not covered by existing chunks
         covered_lines = set()
@@ -1321,11 +1325,13 @@ class DSCCodeChunker:
             # 7. Special methods and operator overloading
             special_method_count = 0
             for child in ast.walk(node):
-                if isinstance(child, ast.FunctionDef):
-                    if child.name.startswith("__") and child.name.endswith("__"):
-                        # Exclude common ones like __init__
-                        if child.name not in ["__init__", "__new__", "__del__"]:
-                            special_method_count += 1
+                if (
+                    isinstance(child, ast.FunctionDef)
+                    and child.name.startswith("__")
+                    and child.name.endswith("__")
+                    and child.name not in ["__init__", "__new__", "__del__"]
+                ):
+                    special_method_count += 1
 
             if self.field_dim > 6:
                 field[6] = min(1.0, special_method_count / 3.0)

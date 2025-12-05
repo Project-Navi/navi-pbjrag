@@ -14,14 +14,14 @@ import logging
 import os
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import numpy as np
 
 # Check for scikit-learn availability
 
 try:
-    import sklearn
+    import sklearn  # noqa: F401
 
     HAVE_SKLEARN = True
 except ImportError:
@@ -38,7 +38,7 @@ class PatternAnalyzer:
     Consolidates functionality from multiple analysis modules.
     """
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config: dict[str, Any] | None = None):
         """
         Initialize the pattern analyzer with optional configuration.
 
@@ -48,7 +48,7 @@ class PatternAnalyzer:
         self.config = config or {}
         self.metrics = CoreMetrics(self.config)
 
-    def analyze_file(self, file_path: str) -> Dict[str, Any]:
+    def analyze_file(self, file_path: str) -> dict[str, Any]:
         """
         Analyze a single file and extract patterns.
 
@@ -60,7 +60,7 @@ class PatternAnalyzer:
         """
         try:
             # Read the file
-            with open(file_path, "r", encoding="utf-8", errors="replace") as f:
+            with Path(file_path).open(encoding="utf-8", errors="replace") as f:
                 content = f.read()
 
             # Extract basic metrics
@@ -109,7 +109,7 @@ class PatternAnalyzer:
                 ),
             }
 
-    def _extract_basic_metrics(self, file_path: str, content: str) -> Dict[str, Any]:
+    def _extract_basic_metrics(self, file_path: str, content: str) -> dict[str, Any]:
         """
         Extract basic metrics from a file.
 
@@ -143,7 +143,7 @@ class PatternAnalyzer:
             "timestamp": datetime.datetime.now().isoformat(),
         }
 
-    def _extract_ast_metrics(self, tree: ast.AST, content: str) -> Dict[str, Any]:
+    def _extract_ast_metrics(self, tree: ast.AST, content: str) -> dict[str, Any]:
         """
         Extract metrics from an AST.
 
@@ -230,7 +230,7 @@ class PatternAnalyzer:
             "cadence": cadence,
         }
 
-    def _extract_plaintext_metrics(self, content: str) -> Dict[str, Any]:
+    def _extract_plaintext_metrics(self, content: str) -> dict[str, Any]:
         """
         Extract metrics from plaintext when AST parsing fails.
 
@@ -362,9 +362,7 @@ class PatternAnalyzer:
         branching_factor = min(1.0, branching_count / max(node_count, 1) * 3)
         nesting_factor = min(1.0, max_nesting / 10)
 
-        complexity = (branching_factor * 0.7) + (nesting_factor * 0.3)
-
-        return complexity
+        return (branching_factor * 0.7) + (nesting_factor * 0.3)
 
     def _calculate_entropy(self, content: str) -> float:
         """
@@ -389,18 +387,16 @@ class PatternAnalyzer:
 
         # Calculate Shannon entropy
         entropy = 0.0
-        for token, freq in token_freqs.items():
+        for freq in token_freqs.values():
             prob = freq / token_count
             if prob > 0:
                 entropy -= prob * np.log2(prob)
 
         # Normalize entropy to [0,1]
         max_entropy = np.log2(token_count) if token_count > 1 else 1
-        normalized_entropy = min(1.0, entropy / max_entropy)
+        return min(1.0, entropy / max_entropy)
 
-        return normalized_entropy
-
-    def _extract_docstrings(self, tree: ast.AST) -> List[str]:
+    def _extract_docstrings(self, tree: ast.AST) -> list[str]:
         """
         Extract docstrings from AST.
 
@@ -423,8 +419,8 @@ class PatternAnalyzer:
     def _calculate_contradiction(
         self,
         tree: ast.AST,
-        functions: List[Dict[str, Any]],
-        classes: List[Dict[str, Any]],
+        functions: list[dict[str, Any]],
+        classes: list[dict[str, Any]],
     ) -> float:
         """
         Calculate contradiction pressure.
@@ -475,11 +471,9 @@ class PatternAnalyzer:
         global_contradiction = min(1.0, len(global_vars) / 20)
 
         # Combine contradiction factors
-        contradiction_pressure = (naming_contradiction * 0.6) + (global_contradiction * 0.4)
+        return (naming_contradiction * 0.6) + (global_contradiction * 0.4)
 
-        return contradiction_pressure
-
-    def _calculate_ethical_alignment(self, docstrings: List[str], content: str) -> float:
+    def _calculate_ethical_alignment(self, docstrings: list[str], content: str) -> float:
         """
         Calculate ethical alignment.
 
@@ -523,16 +517,12 @@ class PatternAnalyzer:
         return_factor = min(0.2, return_docs / max(len(docstrings), 1) * 0.2)
         example_factor = 0.2 if has_examples else 0.0
 
-        ethical_alignment = (
-            license_factor + author_factor + param_factor + return_factor + example_factor
-        )
-
-        return ethical_alignment
+        return license_factor + author_factor + param_factor + return_factor + example_factor
 
     def _calculate_cadence(
         self,
-        functions: List[Dict[str, Any]],
-        classes: List[Dict[str, Any]],
+        functions: list[dict[str, Any]],
+        classes: list[dict[str, Any]],
         content: str,
     ) -> float:
         """
@@ -582,19 +572,14 @@ class PatternAnalyzer:
             indent_by_2 = all(level % 2 == 0 for level in indentation_levels)
             indent_by_4 = all(level % 4 == 0 for level in indentation_levels)
 
-            if indent_by_2 or indent_by_4:
-                indent_consistency = 1.0
-            else:
-                indent_consistency = 0.5
+            indent_consistency = 1.0 if indent_by_2 or indent_by_4 else 0.5
         else:
             indent_consistency = 0.5
 
         # Combine cadence factors
-        cadence = (length_consistency * 0.4) + (size_consistency * 0.4) + (indent_consistency * 0.2)
+        return (length_consistency * 0.4) + (size_consistency * 0.4) + (indent_consistency * 0.2)
 
-        return cadence
-
-    def detect_patterns(self, fragments: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def detect_patterns(self, fragments: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """
         Detect patterns in a list of fragments.
 
@@ -639,7 +624,7 @@ class PatternAnalyzer:
 
         return patterns
 
-    def _group_by_similarity(self, fragments: List[Dict[str, Any]]) -> List[List[Dict[str, Any]]]:
+    def _group_by_similarity(self, fragments: list[dict[str, Any]]) -> list[list[dict[str, Any]]]:
         """
         Group fragments by similarity.
 
@@ -694,25 +679,24 @@ class PatternAnalyzer:
                 groups.append(group)
 
             return groups
-        else:
-            # Fallback if sklearn is not available
-            logger.warning("sklearn not available, using simplified grouping")
+        # Fallback if sklearn is not available
+        logger.warning("sklearn not available, using simplified grouping")
 
-            # Group by file extension
-            extension_groups = {}
+        # Group by file extension
+        extension_groups = {}
 
-            for fragment in fragments:
-                file_path = fragment.get("file", "")
-                ext = os.path.splitext(file_path)[1]
+        for fragment in fragments:
+            file_path = fragment.get("file", "")
+            ext = Path(file_path).suffix
 
-                if ext not in extension_groups:
-                    extension_groups[ext] = []
+            if ext not in extension_groups:
+                extension_groups[ext] = []
 
-                extension_groups[ext].append(fragment)
+            extension_groups[ext].append(fragment)
 
-            return list(extension_groups.values())
+        return list(extension_groups.values())
 
-    def _detect_functional_patterns(self, fragments: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def _detect_functional_patterns(self, fragments: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """
         Detect functional patterns in fragments.
 
@@ -765,7 +749,7 @@ class PatternAnalyzer:
 
         return patterns
 
-    def _detect_structural_patterns(self, fragments: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def _detect_structural_patterns(self, fragments: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """
         Detect structural patterns in fragments.
 
@@ -820,11 +804,11 @@ class PatternAnalyzer:
 
     def suggest_combinations(
         self,
-        fragments: List[Dict[str, Any]],
+        fragments: list[dict[str, Any]],
         top_n: int = 10,
         max_group_size: int = 3,
-        field_context: Optional[Dict[str, Any]] = None,
-    ) -> List[Dict[str, Any]]:
+        field_context: dict[str, Any] | None = None,
+    ) -> list[dict[str, Any]]:
         """
         Suggest combinations of fragments based on purpose and coherence.
 
@@ -907,7 +891,7 @@ class PatternAnalyzer:
 
         return scored_combos[:top_n]
 
-    def _calculate_purpose_alignment(self, combo: List[Dict[str, Any]], purpose: str) -> float:
+    def _calculate_purpose_alignment(self, combo: list[dict[str, Any]], purpose: str) -> float:
         """
         Calculate alignment of a combination with a purpose.
 
@@ -966,11 +950,9 @@ class PatternAnalyzer:
                 weighted_sum += value * weight
 
         # Normalize by total weight and fragment count
-        alignment = weighted_sum / (total_weight * len(combo))
+        return weighted_sum / (total_weight * len(combo))
 
-        return alignment
-
-    def _calculate_emergence_score(self, combo: List[Dict[str, Any]]) -> float:
+    def _calculate_emergence_score(self, combo: list[dict[str, Any]]) -> float:
         """
         Calculate emergence potential of a combination.
 
@@ -1006,14 +988,12 @@ class PatternAnalyzer:
         presence_mean = sum(presences) / len(presences)
 
         # Calculate emergence score
-        emergence_score = (
+        return (
             entropy_diversity * 0.3
             + contradiction_balance * 0.3
             + ethical_alignment * 0.2
             + presence_mean * 0.2
         )
-
-        return emergence_score
 
 
 # Singleton instance
@@ -1021,8 +1001,8 @@ analyzer = PatternAnalyzer()
 
 
 def analyze_codebase(
-    project_root: str, max_depth: int = 2, output_dir: Optional[str] = None
-) -> List[Dict[str, Any]]:
+    project_root: str, max_depth: int = 2, output_dir: str | None = None
+) -> list[dict[str, Any]]:
     """
     Analyze a codebase and extract fragments.
 
@@ -1054,10 +1034,10 @@ def analyze_codebase(
         # Analyze Python files
         for file in files:
             if file.endswith(".py"):
-                file_path = os.path.join(root, file)
+                file_path = Path(root) / file
 
                 # Analyze the file
-                fragment = analyzer.analyze_file(file_path)
+                fragment = analyzer.analyze_file(str(file_path))
                 fragments.append(fragment)
 
     logger.info(f"Analyzed {len(fragments)} fragments")
@@ -1068,7 +1048,7 @@ def analyze_codebase(
         output_path.mkdir(exist_ok=True, parents=True)
 
         fragments_file = output_path / "fragments.json"
-        with open(fragments_file, "w", encoding="utf-8") as f:
+        with fragments_file.open("w", encoding="utf-8") as f:
             json.dump(fragments, f, indent=2)
 
         logger.info(f"Saved fragments to {fragments_file}")
@@ -1077,8 +1057,8 @@ def analyze_codebase(
 
 
 def detect_patterns(
-    fragments: List[Dict[str, Any]], config: Optional[Dict[str, Any]] = None
-) -> List[Dict[str, Any]]:
+    fragments: list[dict[str, Any]], config: dict[str, Any] | None = None
+) -> list[dict[str, Any]]:
     """
     Detect patterns in a list of fragments.
 
@@ -1104,11 +1084,11 @@ def detect_patterns(
 
 
 def suggest_combinations(
-    fragments: List[Dict[str, Any]],
+    fragments: list[dict[str, Any]],
     top_n: int = 10,
     max_group_size: int = 3,
-    field_context: Optional[Dict[str, Any]] = None,
-) -> List[Dict[str, Any]]:
+    field_context: dict[str, Any] | None = None,
+) -> list[dict[str, Any]]:
     """
     Suggest combinations of fragments based on purpose and coherence.
 

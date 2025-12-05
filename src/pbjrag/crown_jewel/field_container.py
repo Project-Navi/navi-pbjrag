@@ -8,8 +8,9 @@ potential_capacitor into a single, comprehensive system for managing field state
 import datetime
 import json
 import logging
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Set
+from typing import Any
 
 from .metrics import CoreMetrics, create_blessing_vector
 
@@ -22,7 +23,7 @@ class FieldContainer:
     Consolidates functionality from setup_field, sdk_compost_engine, and potential_capacitor.
     """
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config: dict[str, Any] | None = None):
         """
         Initialize the field container with optional configuration.
 
@@ -55,7 +56,7 @@ class FieldContainer:
         # Timestamps for decay calculations
         self.last_pulse = datetime.datetime.now()
 
-    def update_environment(self, env_data: Dict[str, Any]) -> None:
+    def update_environment(self, env_data: dict[str, Any]) -> None:
         """
         Update the field environment with new data.
 
@@ -64,7 +65,7 @@ class FieldContainer:
         """
         self.environment.update(env_data)
 
-    def get_environment(self) -> Dict[str, Any]:
+    def get_environment(self) -> dict[str, Any]:
         """
         Get the current field environment.
 
@@ -73,7 +74,7 @@ class FieldContainer:
         """
         return self.environment
 
-    def update_user_input(self, input_data: Dict[str, Any]) -> None:
+    def update_user_input(self, input_data: dict[str, Any]) -> None:
         """
         Update user input data in the field.
 
@@ -82,7 +83,7 @@ class FieldContainer:
         """
         self.user_input.update(input_data)
 
-    def get_user_input(self) -> Dict[str, Any]:
+    def get_user_input(self) -> dict[str, Any]:
         """
         Get the current user input data.
 
@@ -91,7 +92,7 @@ class FieldContainer:
         """
         return self.user_input
 
-    def update_dependencies(self, deps: Dict[str, Any]) -> None:
+    def update_dependencies(self, deps: dict[str, Any]) -> None:
         """
         Update dependency information in the field.
 
@@ -100,7 +101,7 @@ class FieldContainer:
         """
         self.dependencies.update(deps)
 
-    def get_dependencies(self) -> Dict[str, Any]:
+    def get_dependencies(self) -> dict[str, Any]:
         """
         Get the current dependency information.
 
@@ -118,7 +119,7 @@ class FieldContainer:
         """
         self.installed_dependencies.add(dep_name)
 
-    def get_installed_dependencies(self) -> Set[str]:
+    def get_installed_dependencies(self) -> set[str]:
         """
         Get the set of installed dependencies.
 
@@ -127,7 +128,7 @@ class FieldContainer:
         """
         return self.installed_dependencies
 
-    def add_pattern(self, pattern: Dict[str, Any]) -> None:
+    def add_pattern(self, pattern: dict[str, Any]) -> None:
         """
         Add a pattern to the field.
 
@@ -151,7 +152,7 @@ class FieldContainer:
 
         self.patterns.append(pattern)
 
-    def update_pattern(self, pattern_id: str, updates: Dict[str, Any]) -> bool:
+    def update_pattern(self, pattern_id: str, updates: dict[str, Any]) -> bool:
         """
         Update an existing pattern in the field.
 
@@ -169,8 +170,8 @@ class FieldContainer:
         return False
 
     def get_patterns(
-        self, filter_fn: Optional[Callable[[Dict[str, Any]], bool]] = None
-    ) -> List[Dict[str, Any]]:
+        self, filter_fn: Callable[[dict[str, Any]], bool] | None = None
+    ) -> list[dict[str, Any]]:
         """
         Get patterns from the field, optionally filtered.
 
@@ -185,7 +186,7 @@ class FieldContainer:
 
         return [p for p in self.patterns if filter_fn(p)]
 
-    def add_conflict(self, conflict: Dict[str, Any]) -> None:
+    def add_conflict(self, conflict: dict[str, Any]) -> None:
         """
         Add a conflict to the field.
 
@@ -197,7 +198,7 @@ class FieldContainer:
 
         self.conflicts.append(conflict)
 
-    def resolve_conflict(self, conflict_id: str, resolution: Dict[str, Any]) -> bool:
+    def resolve_conflict(self, conflict_id: str, resolution: dict[str, Any]) -> bool:
         """
         Resolve an existing conflict in the field.
 
@@ -216,7 +217,7 @@ class FieldContainer:
                 return True
         return False
 
-    def get_conflicts(self, include_resolved: bool = False) -> List[Dict[str, Any]]:
+    def get_conflicts(self, include_resolved: bool = False) -> list[dict[str, Any]]:
         """
         Get conflicts from the field.
 
@@ -231,7 +232,7 @@ class FieldContainer:
 
         return [c for c in self.conflicts if not c.get("resolved", False)]
 
-    def add_solution(self, solution: Dict[str, Any]) -> None:
+    def add_solution(self, solution: dict[str, Any]) -> None:
         """
         Add a solution to the field.
 
@@ -243,7 +244,7 @@ class FieldContainer:
 
         self.solutions.append(solution)
 
-    def get_solutions(self) -> List[Dict[str, Any]]:
+    def get_solutions(self) -> list[dict[str, Any]]:
         """
         Get solutions from the field.
 
@@ -252,7 +253,7 @@ class FieldContainer:
         """
         return self.solutions
 
-    def add_fragment(self, fragment: Dict[str, Any]) -> None:
+    def add_fragment(self, fragment: dict[str, Any]) -> None:
         """
         Add a fragment to the field memory.
 
@@ -277,8 +278,8 @@ class FieldContainer:
         self.fragments.append(fragment)
 
     def get_fragments(
-        self, filter_fn: Optional[Callable[[Dict[str, Any]], bool]] = None
-    ) -> List[Dict[str, Any]]:
+        self, filter_fn: Callable[[dict[str, Any]], bool] | None = None
+    ) -> list[dict[str, Any]]:
         """
         Get fragments from the field memory, optionally filtered.
 
@@ -293,7 +294,7 @@ class FieldContainer:
 
         return [f for f in self.fragments if filter_fn(f)]
 
-    def store_in_compost(self, item: Dict[str, Any], reason: str = "") -> None:
+    def store_in_compost(self, item: dict[str, Any], reason: str = "") -> None:
         """
         Store an item in the compost for potential future use.
 
@@ -342,8 +343,8 @@ class FieldContainer:
         return decayed
 
     def get_compost(
-        self, filter_fn: Optional[Callable[[Dict[str, Any]], bool]] = None
-    ) -> List[Dict[str, Any]]:
+        self, filter_fn: Callable[[dict[str, Any]], bool] | None = None
+    ) -> list[dict[str, Any]]:
         """
         Get items from the compost, optionally filtered.
 
@@ -358,7 +359,7 @@ class FieldContainer:
 
         return [c for c in self.compost if filter_fn(c)]
 
-    def hold_in_capacitor(self, item: Dict[str, Any], reason: str = "") -> None:
+    def hold_in_capacitor(self, item: dict[str, Any], reason: str = "") -> None:
         """
         Hold an item in the capacitor for potential future emergence.
 
@@ -374,7 +375,7 @@ class FieldContainer:
 
         self.capacitor.append(item)
 
-    def pulse_check(self, field_context: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+    def pulse_check(self, field_context: dict[str, Any] | None = None) -> list[dict[str, Any]]:
         """
         Check for items in the capacitor that are ready for release based on field context.
 
@@ -417,7 +418,7 @@ class FieldContainer:
 
         return ready_items
 
-    def pulse_release_all(self) -> List[Dict[str, Any]]:
+    def pulse_release_all(self) -> list[dict[str, Any]]:
         """
         Release all items from the capacitor regardless of readiness.
 
@@ -436,7 +437,7 @@ class FieldContainer:
 
         return released
 
-    def get_capacitor(self) -> List[Dict[str, Any]]:
+    def get_capacitor(self) -> list[dict[str, Any]]:
         """
         Get all items currently held in the capacitor.
 
@@ -445,7 +446,7 @@ class FieldContainer:
         """
         return self.capacitor
 
-    def add_blessed_group(self, group: Dict[str, Any]) -> None:
+    def add_blessed_group(self, group: dict[str, Any]) -> None:
         """
         Add a blessed group to the field memory.
 
@@ -457,7 +458,7 @@ class FieldContainer:
 
         self.blessed_groups.append(group)
 
-    def get_blessed_groups(self) -> List[Dict[str, Any]]:
+    def get_blessed_groups(self) -> list[dict[str, Any]]:
         """
         Get all blessed groups from the field memory.
 
@@ -531,7 +532,7 @@ class FieldContainer:
         # Log the dissolution
         logger.info(f"Dissolved {len(rigid_patterns)} rigid patterns into compost")
 
-    def allow_emergence(self) -> List[Dict[str, Any]]:
+    def allow_emergence(self) -> list[dict[str, Any]]:
         """
         Allow new patterns to emerge from the field as part of the emergence phase.
 
@@ -550,7 +551,7 @@ class FieldContainer:
 
         return emerged_items
 
-    def amplify_coherent_patterns(self) -> List[Dict[str, Any]]:
+    def amplify_coherent_patterns(self) -> list[dict[str, Any]]:
         """
         Amplify coherent patterns in the field as part of the blessing phase.
 
@@ -579,7 +580,7 @@ class FieldContainer:
 
         return amplified
 
-    def manifest_solution(self) -> Dict[str, Any]:
+    def manifest_solution(self) -> dict[str, Any]:
         """
         Manifest a solution from the field as part of the expression phase.
 
@@ -617,12 +618,13 @@ class FieldContainer:
 
         # Log the manifestation
         logger.info(
-            f"Manifested solution with EPC: {top_group.get('group_blessing', {}).get('epc', 0.0):.4f}"
+            f"Manifested solution with EPC: "
+            f"{top_group.get('group_blessing', {}).get('epc', 0.0):.4f}"
         )
 
         return solution
 
-    def save_field_state(self, output_dir: str) -> Dict[str, str]:
+    def save_field_state(self, output_dir: str) -> dict[str, str]:
         """
         Save the current field state to files in the specified directory.
 
@@ -647,27 +649,27 @@ class FieldContainer:
         field_summary_file = output_path / f"field_summary_{timestamp}.json"
 
         # Save fragments
-        with open(fragments_file, "w", encoding="utf-8") as f:
+        with fragments_file.open("w", encoding="utf-8") as f:
             json.dump(self.fragments, f, indent=2)
 
         # Save patterns
-        with open(patterns_file, "w", encoding="utf-8") as f:
+        with patterns_file.open("w", encoding="utf-8") as f:
             json.dump(self.patterns, f, indent=2)
 
         # Save blessed groups
-        with open(groups_file, "w", encoding="utf-8") as f:
+        with groups_file.open("w", encoding="utf-8") as f:
             json.dump(self.blessed_groups, f, indent=2)
 
         # Save compost
-        with open(compost_file, "w", encoding="utf-8") as f:
+        with compost_file.open("w", encoding="utf-8") as f:
             json.dump(self.compost, f, indent=2)
 
         # Save capacitor
-        with open(capacitor_file, "w", encoding="utf-8") as f:
+        with capacitor_file.open("w", encoding="utf-8") as f:
             json.dump(self.capacitor, f, indent=2)
 
         # Save solutions
-        with open(solutions_file, "w", encoding="utf-8") as f:
+        with solutions_file.open("w", encoding="utf-8") as f:
             json.dump(self.solutions, f, indent=2)
 
         # Create and save field summary
@@ -686,7 +688,7 @@ class FieldContainer:
             "installed_dependencies": list(self.installed_dependencies),
         }
 
-        with open(field_summary_file, "w", encoding="utf-8") as f:
+        with field_summary_file.open("w", encoding="utf-8") as f:
             json.dump(field_summary, f, indent=2)
 
         # Log the save
@@ -702,7 +704,7 @@ class FieldContainer:
             "field_summary": str(field_summary_file),
         }
 
-    def load_field_state(self, input_dir: str, timestamp: Optional[str] = None) -> bool:
+    def load_field_state(self, input_dir: str, timestamp: str | None = None) -> bool:
         """
         Load field state from files in the specified directory.
 
@@ -757,37 +759,37 @@ class FieldContainer:
 
         # Load field summary
         try:
-            with open(field_summary_file, "r", encoding="utf-8") as f:
+            with field_summary_file.open(encoding="utf-8") as f:
                 field_summary = json.load(f)
 
             # Load fragments if file exists
             if fragments_file.exists():
-                with open(fragments_file, "r", encoding="utf-8") as f:
+                with fragments_file.open(encoding="utf-8") as f:
                     self.fragments = json.load(f)
 
             # Load patterns if file exists
             if patterns_file.exists():
-                with open(patterns_file, "r", encoding="utf-8") as f:
+                with patterns_file.open(encoding="utf-8") as f:
                     self.patterns = json.load(f)
 
             # Load blessed groups if file exists
             if groups_file.exists():
-                with open(groups_file, "r", encoding="utf-8") as f:
+                with groups_file.open(encoding="utf-8") as f:
                     self.blessed_groups = json.load(f)
 
             # Load compost if file exists
             if compost_file.exists():
-                with open(compost_file, "r", encoding="utf-8") as f:
+                with compost_file.open(encoding="utf-8") as f:
                     self.compost = json.load(f)
 
             # Load capacitor if file exists
             if capacitor_file.exists():
-                with open(capacitor_file, "r", encoding="utf-8") as f:
+                with capacitor_file.open(encoding="utf-8") as f:
                     self.capacitor = json.load(f)
 
             # Load solutions if file exists
             if solutions_file.exists():
-                with open(solutions_file, "r", encoding="utf-8") as f:
+                with solutions_file.open(encoding="utf-8") as f:
                     self.solutions = json.load(f)
 
             # Update field state from summary
@@ -816,7 +818,7 @@ def get_field() -> FieldContainer:
     return field
 
 
-def create_field(config: Optional[Dict[str, Any]] = None) -> FieldContainer:
+def create_field(config: dict[str, Any] | None = None) -> FieldContainer:
     """Create a new field container instance with the specified configuration."""
     global field
     field = FieldContainer(config)

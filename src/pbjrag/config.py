@@ -13,21 +13,24 @@ Uses Pydantic for validation when available, falls back to dict validation.
 
 import logging
 import os
-import sys
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
 # Optional Pydantic import for validation
 try:
-    from pydantic import BaseModel, Field, ValidationError, field_validator
+    from pydantic import BaseModel, Field, ValidationError
 
     HAVE_PYDANTIC = True
 except ImportError:
     HAVE_PYDANTIC = False
     BaseModel = object  # type: ignore
-    Field = lambda *args, **kwargs: None  # type: ignore
+
+    def Field(*args, **kwargs):  # noqa: N802
+        """Stub for Field when pydantic is not installed."""
+        return
+
     ValidationError = Exception  # type: ignore
 
 # Optional YAML import
@@ -89,7 +92,7 @@ if HAVE_PYDANTIC:
 
         uri: str = "bolt://localhost:7687"
         user: str = "neo4j"
-        password: Optional[str] = None
+        password: str | None = None
         database: str = "neo4j"
         enable_graph_algorithms: bool = True
 
@@ -99,7 +102,7 @@ if HAVE_PYDANTIC:
         backend: str = Field(default="ollama", pattern="^(ollama|openai|sentence_transformers)$")
         url: str = "http://localhost:11434"
         model: str = "snowflake-arctic-embed2:latest"
-        dimension: Optional[int] = Field(default=1024, ge=128)
+        dimension: int | None = Field(default=1024, ge=128)
         normalize: bool = True
         enable_cache: bool = True
         cache_dir: str = ".pbjrag_cache"
@@ -108,7 +111,7 @@ if HAVE_PYDANTIC:
         """Analysis configuration"""
 
         coherence_method: str = Field(default="standard", pattern="^(standard|weighted|adaptive)$")
-        blessing_tiers: Dict[str, float] = Field(
+        blessing_tiers: dict[str, float] = Field(
             default_factory=lambda: {"positive": 0.7, "neutral": 0.4}
         )
         enable_pattern_detection: bool = True
@@ -158,8 +161,6 @@ if HAVE_PYDANTIC:
 class ConfigurationError(Exception):
     """Raised when configuration is invalid or cannot be loaded"""
 
-    pass
-
 
 class ConfigLoader:
     """
@@ -167,15 +168,15 @@ class ConfigLoader:
     """
 
     def __init__(self):
-        self._config: Dict[str, Any] = {}
+        self._config: dict[str, Any] = {}
         self._loaded = False
 
     def load(
         self,
-        config_file: Optional[Union[str, Path]] = None,
-        config_dict: Optional[Dict[str, Any]] = None,
+        config_file: str | Path | None = None,
+        config_dict: dict[str, Any] | None = None,
         validate: bool = True,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Load configuration from multiple sources.
 
@@ -238,7 +239,7 @@ class ConfigLoader:
                 raise
             raise ConfigurationError(f"Failed to load configuration: {e}")
 
-    def _load_default_config(self) -> Dict[str, Any]:
+    def _load_default_config(self) -> dict[str, Any]:
         """Load default configuration from config/default.yaml"""
         # Try to find config/default.yaml relative to this file
         config_dir = Path(__file__).parent.parent.parent / "config"
@@ -251,7 +252,7 @@ class ConfigLoader:
         logger.warning("Could not load default.yaml, using hardcoded defaults")
         return self._get_hardcoded_defaults()
 
-    def _load_yaml_config(self, path: Union[str, Path]) -> Dict[str, Any]:
+    def _load_yaml_config(self, path: str | Path) -> dict[str, Any]:
         """Load configuration from YAML file"""
         if not HAVE_YAML:
             raise ConfigurationError("YAML support not available. Install with: pip install pyyaml")
@@ -261,7 +262,7 @@ class ConfigLoader:
             raise ConfigurationError(f"Configuration file not found: {path}")
 
         try:
-            with open(path, "r", encoding="utf-8") as f:
+            with path.open(encoding="utf-8") as f:
                 config = yaml.safe_load(f)
                 if not isinstance(config, dict):
                     raise ConfigurationError(
@@ -271,9 +272,9 @@ class ConfigLoader:
         except yaml.YAMLError as e:
             raise ConfigurationError(f"Failed to parse YAML config {path}: {e}")
 
-    def _load_env_overrides(self) -> Dict[str, Any]:
+    def _load_env_overrides(self) -> dict[str, Any]:
         """Load configuration overrides from environment variables"""
-        overrides: Dict[str, Any] = {}
+        overrides: dict[str, Any] = {}
 
         # Special handling for common variables
         env_mappings = {
@@ -311,7 +312,7 @@ class ConfigLoader:
 
         return overrides
 
-    def _set_nested(self, d: Dict[str, Any], path: tuple, value: Any) -> None:
+    def _set_nested(self, d: dict[str, Any], path: tuple, value: Any) -> None:
         """Set a nested dictionary value using a tuple path"""
         for key in path[:-1]:
             d = d.setdefault(key, {})
@@ -340,7 +341,7 @@ class ConfigLoader:
         # String
         return value
 
-    def _deep_merge(self, base: Dict[str, Any], override: Dict[str, Any]) -> Dict[str, Any]:
+    def _deep_merge(self, base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any]:
         """Deep merge two dictionaries, override takes precedence"""
         result = base.copy()
         for key, value in override.items():
@@ -350,7 +351,7 @@ class ConfigLoader:
                 result[key] = value
         return result
 
-    def _get_hardcoded_defaults(self) -> Dict[str, Any]:
+    def _get_hardcoded_defaults(self) -> dict[str, Any]:
         """Fallback hardcoded defaults if YAML not available"""
         return {
             "core": {
@@ -404,7 +405,7 @@ class ConfigLoader:
         return value
 
     @property
-    def config(self) -> Dict[str, Any]:
+    def config(self) -> dict[str, Any]:
         """Get the complete configuration dictionary"""
         if not self._loaded:
             raise ConfigurationError("Configuration not loaded. Call load() first.")
@@ -415,12 +416,12 @@ class ConfigLoader:
 # Global Configuration Instance
 # =============================================================================
 
-_global_config: Optional[ConfigLoader] = None
+_global_config: ConfigLoader | None = None
 
 
 def get_config(
-    config_file: Optional[Union[str, Path]] = None,
-    config_dict: Optional[Dict[str, Any]] = None,
+    config_file: str | Path | None = None,
+    config_dict: dict[str, Any] | None = None,
     reload: bool = False,
 ) -> ConfigLoader:
     """
@@ -450,9 +451,9 @@ def get_config(
 
 
 def load_config(
-    config_file: Optional[Union[str, Path]] = None,
-    config_dict: Optional[Dict[str, Any]] = None,
-) -> Dict[str, Any]:
+    config_file: str | Path | None = None,
+    config_dict: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     """
     Convenience function to load and return configuration as a dictionary.
 
@@ -477,7 +478,7 @@ def load_config(
 # =============================================================================
 
 
-def setup_logging(config: Optional[Dict[str, Any]] = None) -> None:
+def setup_logging(config: dict[str, Any] | None = None) -> None:
     """
     Setup logging based on configuration.
 

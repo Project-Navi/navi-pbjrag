@@ -7,7 +7,7 @@ single, comprehensive system for handling errors and ambiguities.
 
 import logging
 import re
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ class ErrorHandler:
     Consolidates error metabolization and ambiguity resolution.
     """
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config: dict[str, Any] | None = None):
         """
         Initialize the error handler with optional configuration.
 
@@ -31,7 +31,7 @@ class ErrorHandler:
         self._error_patterns = self._load_error_patterns()
         self._solution_templates = self._load_solution_templates()
 
-    def _load_error_patterns(self) -> List[Dict[str, Any]]:
+    def _load_error_patterns(self) -> list[dict[str, Any]]:
         """
         Load error patterns from configuration.
 
@@ -87,7 +87,9 @@ class ErrorHandler:
                     "solution_type": "fix_value",
                 },
                 {
-                    "pattern": r"FileNotFoundError: \[Errno 2\] No such file or directory: '([^']+)'",
+                    "pattern": (
+                        r"FileNotFoundError: \[Errno 2\] No such file or directory: '([^']+)'"
+                    ),
                     "type": "missing_file",
                     "extract": lambda m: m.group(1),
                     "solution_type": "create_file",
@@ -96,7 +98,7 @@ class ErrorHandler:
 
         return patterns
 
-    def _load_solution_templates(self) -> Dict[str, Dict[str, Any]]:
+    def _load_solution_templates(self) -> dict[str, dict[str, Any]]:
         """
         Load solution templates from configuration.
 
@@ -117,12 +119,17 @@ class ErrorHandler:
                 "fix_import": {
                     "action": "fix_import",
                     "message": "Fix the import of {name} from {module}",
-                    "suggestion": "Check if {name} exists in {module} or if it needs to be imported from a different module.",
+                    "suggestion": (
+                        "Check if {name} exists in {module} or if it needs to be "
+                        "imported from a different module."
+                    ),
                 },
                 "fix_syntax": {
                     "action": "fix_syntax",
                     "message": "Fix the syntax error: {error} in {file} at line {line}",
-                    "suggestion": "Review the code at the specified location and correct the syntax error.",
+                    "suggestion": (
+                        "Review the code at the specified location " "and correct the syntax error."
+                    ),
                 },
                 "fix_attribute": {
                     "action": "fix_attribute",
@@ -148,9 +155,7 @@ class ErrorHandler:
 
         return templates
 
-    def handle_error(
-        self, error: Union[str, Exception], field: Optional[Any] = None
-    ) -> Dict[str, Any]:
+    def handle_error(self, error: str | Exception, field: Any | None = None) -> dict[str, Any]:
         """
         Handle an error by metabolizing it and generating a solution.
 
@@ -187,7 +192,10 @@ class ErrorHandler:
             )
             return {
                 "success": False,
-                "message": f"No matching solution template found for error type: {error_info.get('type')}",
+                "message": (
+                    f"No matching solution template found for error type: "
+                    f"{error_info.get('type')}"
+                ),
                 "error": error_str,
                 "error_info": error_info,
                 "solution": None,
@@ -219,7 +227,7 @@ class ErrorHandler:
             "solution": applied_solution,
         }
 
-    def _extract_error_pattern(self, error_str: str) -> Optional[Dict[str, Any]]:
+    def _extract_error_pattern(self, error_str: str) -> dict[str, Any] | None:
         """
         Extract error pattern from an error string.
 
@@ -249,7 +257,7 @@ class ErrorHandler:
 
         return None
 
-    def _find_matching_template(self, error_info: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    def _find_matching_template(self, error_info: dict[str, Any]) -> dict[str, Any] | None:
         """
         Find a matching solution template for an error.
 
@@ -267,8 +275,8 @@ class ErrorHandler:
         return self._solution_templates.get(solution_type)
 
     def _apply_template(
-        self, template: Dict[str, Any], error_info: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, template: dict[str, Any], error_info: dict[str, Any]
+    ) -> dict[str, Any]:
         """
         Apply a solution template to an error.
 
@@ -322,8 +330,8 @@ class ErrorHandler:
         return solution
 
     def resolve_ambiguity(
-        self, options: List[Any], context: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+        self, options: list[Any], context: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         """
         Resolve ambiguity by selecting the best option based on context.
 
@@ -376,7 +384,8 @@ class ErrorHandler:
             else:
                 selected = options[0]
                 logger.warning(
-                    f"Not all options have the score key '{score_key}', falling back to first option"
+                    f"Not all options have the score key '{score_key}', "
+                    "falling back to first option"
                 )
         else:
             # Default to first option
@@ -400,7 +409,7 @@ class ErrorHandler:
 error_handler = ErrorHandler()
 
 
-def handle_error(error: Union[str, Exception], field: Optional[Any] = None) -> Dict[str, Any]:
+def handle_error(error: str | Exception, field: Any | None = None) -> dict[str, Any]:
     """
     Handle an error by metabolizing it and generating a solution.
 
@@ -415,9 +424,7 @@ def handle_error(error: Union[str, Exception], field: Optional[Any] = None) -> D
     return error_handler.handle_error(error, field)
 
 
-def resolve_ambiguity(
-    options: List[Any], context: Optional[Dict[str, Any]] = None
-) -> Dict[str, Any]:
+def resolve_ambiguity(options: list[Any], context: dict[str, Any] | None = None) -> dict[str, Any]:
     """
     Resolve ambiguity by selecting the best option based on context.
 

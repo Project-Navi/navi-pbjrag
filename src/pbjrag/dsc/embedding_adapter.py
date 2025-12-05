@@ -4,7 +4,7 @@ Flexible embedding adapter that supports multiple backends
 including instruction-following models
 """
 import logging
-from typing import Any, Dict, List, Literal
+from typing import Any, Literal
 
 import numpy as np
 import requests
@@ -59,7 +59,7 @@ class EmbeddingAdapter:
         task: Literal[
             "search_document", "search_query", "clustering", "classification"
         ] = "search_document",
-    ) -> List[float]:
+    ) -> list[float]:
         """
         Get embedding for text with optional task instruction
 
@@ -72,16 +72,15 @@ class EmbeddingAdapter:
         """
         if self.backend == "ollama":
             return self._embed_ollama(text, task)
-        elif self.backend == "openai":
+        if self.backend == "openai":
             return self._embed_openai(text, task)
-        elif self.backend == "instructor":
+        if self.backend == "instructor":
             return self._embed_instructor(text, task)
-        elif self.backend == "direct":
+        if self.backend == "direct":
             return self._embed_direct(text, task)
-        else:
-            return self._embed_fallback(text)
+        return self._embed_fallback(text)
 
-    def _embed_ollama(self, text: str, task: str) -> List[float]:
+    def _embed_ollama(self, text: str, task: str) -> list[float]:
         """Embed using Ollama API"""
         try:
             # For models that support instructions
@@ -119,10 +118,9 @@ class EmbeddingAdapter:
 
             if response.status_code == 200:
                 return response.json()["embedding"]
-            else:
-                if not self._warned:
-                    logger.warning(f"Ollama embedding failed: {response.status_code}")
-                    self._warned = True
+            if not self._warned:
+                logger.warning(f"Ollama embedding failed: {response.status_code}")
+                self._warned = True
 
         except Exception as e:
             if not self._warned:
@@ -131,7 +129,7 @@ class EmbeddingAdapter:
 
         return self._embed_fallback(text)
 
-    def _embed_openai(self, text: str, task: str) -> List[float]:
+    def _embed_openai(self, text: str, task: str) -> list[float]:
         """Embed using OpenAI-compatible API (vLLM, TEI)"""
         try:
             # Build input based on model capabilities
@@ -167,9 +165,8 @@ class EmbeddingAdapter:
                     data = response.json()
                     if "data" in data and len(data["data"]) > 0:
                         return data["data"][0]["embedding"]
-                    else:
-                        logger.error("OpenAI API unexpected response format")
-                        return self._embed_fallback(text)
+                    logger.error("OpenAI API unexpected response format")
+                    return self._embed_fallback(text)
                 except KeyError as e:
                     logger.error(f"OpenAI API embedding error: {e}")
                     return self._embed_fallback(text)
@@ -185,13 +182,13 @@ class EmbeddingAdapter:
 
         return self._embed_fallback(text)
 
-    def _embed_instructor(self, text: str, task: str) -> List[float]:
+    def _embed_instructor(self, text: str, task: str) -> list[float]:
         """Embed using instructor-style models"""
         # This could use sentence-transformers or a custom API
         instruction = self.instructions.get(task, "Represent this text:")
         return self._embed_openai(f"{instruction} {text}", "search_document")
 
-    def _embed_direct(self, text: str, task: str) -> List[float]:
+    def _embed_direct(self, text: str, task: str) -> list[float]:
         """Direct embedding using sentence-transformers (if installed)"""
         try:
             from sentence_transformers import SentenceTransformer
@@ -216,7 +213,7 @@ class EmbeddingAdapter:
             logger.warning(f"Direct embedding error: {e}")
             return self._embed_fallback(text)
 
-    def _embed_fallback(self, text: str) -> List[float]:
+    def _embed_fallback(self, text: str) -> list[float]:
         """Fallback to random embeddings for testing"""
         if not self._warned:
             logger.warning("Using random embeddings as fallback")
@@ -226,14 +223,14 @@ class EmbeddingAdapter:
         np.random.seed(hash(text) % 2**32)
         return np.random.rand(self.dimension).tolist()
 
-    def batch_embed(self, texts: List[str], task: str = "search_document") -> List[List[float]]:
+    def batch_embed(self, texts: list[str], task: str = "search_document") -> list[list[float]]:
         """Embed multiple texts efficiently"""
         # For now, just loop - could optimize with batch APIs
         return [self.embed(text, task) for text in texts]
 
 
 # Convenience functions
-def create_embedding_adapter(config: Dict[str, Any]) -> EmbeddingAdapter:
+def create_embedding_adapter(config: dict[str, Any]) -> EmbeddingAdapter:
     """Create embedding adapter from config"""
 
     # Try to auto-detect best backend
@@ -248,10 +245,7 @@ def create_embedding_adapter(config: Dict[str, Any]) -> EmbeddingAdapter:
         backend = "openai"
 
     # Set dimension based on model
-    if "bge" in model.lower():
-        default_dim = 1024
-    else:
-        default_dim = 768
+    default_dim = 1024 if "bge" in model.lower() else 768
 
     return EmbeddingAdapter(
         backend=backend,

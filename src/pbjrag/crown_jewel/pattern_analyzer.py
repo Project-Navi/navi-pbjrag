@@ -73,9 +73,7 @@ class PatternAnalyzer:
                 metrics.update(ast_metrics)
                 metrics["ast_parse_error"] = False
             except Exception as e:
-                logger.warning(
-                    f"AST parse error in {file_path}: {e} (falling back to plaintext)"
-                )
+                logger.warning(f"AST parse error in {file_path}: {e} (falling back to plaintext)")
                 plaintext_metrics = self._extract_plaintext_metrics(content)
                 metrics.update(plaintext_metrics)
                 metrics["ast_parse_error"] = True
@@ -262,19 +260,13 @@ class PatternAnalyzer:
 
         if indentation_levels:
             max_indentation = max(indentation_levels)
-            complexity = min(
-                1.0, (max_indentation / 20) * 0.5 + (len(lines) / 500) * 0.5
-            )
+            complexity = min(1.0, (max_indentation / 20) * 0.5 + (len(lines) / 500) * 0.5)
         else:
             complexity = 0.5
 
         # Estimate contradiction based on mixed naming conventions
-        camel_case = sum(
-            1 for token in unique_tokens if re.match(r"^[a-z][a-zA-Z0-9]*$", token)
-        )
-        snake_case = sum(
-            1 for token in unique_tokens if re.match(r"^[a-z][a-z0-9_]*$", token)
-        )
+        camel_case = sum(1 for token in unique_tokens if re.match(r"^[a-z][a-zA-Z0-9]*$", token))
+        snake_case = sum(1 for token in unique_tokens if re.match(r"^[a-z][a-z0-9_]*$", token))
 
         if unique_tokens:
             naming_consistency = max(camel_case, snake_case) / len(unique_tokens)
@@ -483,15 +475,11 @@ class PatternAnalyzer:
         global_contradiction = min(1.0, len(global_vars) / 20)
 
         # Combine contradiction factors
-        contradiction_pressure = (naming_contradiction * 0.6) + (
-            global_contradiction * 0.4
-        )
+        contradiction_pressure = (naming_contradiction * 0.6) + (global_contradiction * 0.4)
 
         return contradiction_pressure
 
-    def _calculate_ethical_alignment(
-        self, docstrings: List[str], content: str
-    ) -> float:
+    def _calculate_ethical_alignment(self, docstrings: List[str], content: str) -> float:
         """
         Calculate ethical alignment.
 
@@ -504,12 +492,10 @@ class PatternAnalyzer:
         """
         # Check for license/copyright
         has_license = any(
-            re.search(r"licen[sc]e", content, re.IGNORECASE) is not None
-            for d in docstrings
+            re.search(r"licen[sc]e", content, re.IGNORECASE) is not None for d in docstrings
         )
         has_copyright = any(
-            re.search(r"copyright", content, re.IGNORECASE) is not None
-            for d in docstrings
+            re.search(r"copyright", content, re.IGNORECASE) is not None for d in docstrings
         )
 
         # Check for author attribution
@@ -519,20 +505,15 @@ class PatternAnalyzer:
 
         # Check for parameter documentation
         param_docs = sum(
-            1
-            for d in docstrings
-            if re.search(r"param|parameter|arg|argument", d, re.IGNORECASE)
+            1 for d in docstrings if re.search(r"param|parameter|arg|argument", d, re.IGNORECASE)
         )
 
         # Check for return value documentation
-        return_docs = sum(
-            1 for d in docstrings if re.search(r"return|returns", d, re.IGNORECASE)
-        )
+        return_docs = sum(1 for d in docstrings if re.search(r"return|returns", d, re.IGNORECASE))
 
         # Check for examples
         has_examples = any(
-            re.search(r"example|usage", d, re.IGNORECASE) is not None
-            for d in docstrings
+            re.search(r"example|usage", d, re.IGNORECASE) is not None for d in docstrings
         )
 
         # Calculate ethical alignment
@@ -543,11 +524,7 @@ class PatternAnalyzer:
         example_factor = 0.2 if has_examples else 0.0
 
         ethical_alignment = (
-            license_factor
-            + author_factor
-            + param_factor
-            + return_factor
-            + example_factor
+            license_factor + author_factor + param_factor + return_factor + example_factor
         )
 
         return ethical_alignment
@@ -578,9 +555,7 @@ class PatternAnalyzer:
             return 0.5
 
         avg_length = sum(line_lengths) / len(line_lengths)
-        variance = sum((length - avg_length) ** 2 for length in line_lengths) / len(
-            line_lengths
-        )
+        variance = sum((length - avg_length) ** 2 for length in line_lengths) / len(line_lengths)
         normalized_variance = min(1.0, variance / (avg_length**2))
         length_consistency = 1.0 - normalized_variance
 
@@ -589,9 +564,7 @@ class PatternAnalyzer:
 
         if func_sizes:
             avg_size = sum(func_sizes) / len(func_sizes)
-            size_variance = sum((size - avg_size) ** 2 for size in func_sizes) / len(
-                func_sizes
-            )
+            size_variance = sum((size - avg_size) ** 2 for size in func_sizes) / len(func_sizes)
             normalized_size_variance = min(1.0, size_variance / (avg_size**2))
             size_consistency = 1.0 - normalized_size_variance
         else:
@@ -617,11 +590,7 @@ class PatternAnalyzer:
             indent_consistency = 0.5
 
         # Combine cadence factors
-        cadence = (
-            (length_consistency * 0.4)
-            + (size_consistency * 0.4)
-            + (indent_consistency * 0.2)
-        )
+        cadence = (length_consistency * 0.4) + (size_consistency * 0.4) + (indent_consistency * 0.2)
 
         return cadence
 
@@ -670,9 +639,7 @@ class PatternAnalyzer:
 
         return patterns
 
-    def _group_by_similarity(
-        self, fragments: List[Dict[str, Any]]
-    ) -> List[List[Dict[str, Any]]]:
+    def _group_by_similarity(self, fragments: List[Dict[str, Any]]) -> List[List[Dict[str, Any]]]:
         """
         Group fragments by similarity.
 
@@ -745,9 +712,7 @@ class PatternAnalyzer:
 
             return list(extension_groups.values())
 
-    def _detect_functional_patterns(
-        self, fragments: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
+    def _detect_functional_patterns(self, fragments: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
         Detect functional patterns in fragments.
 
@@ -775,9 +740,7 @@ class PatternAnalyzer:
                 if signature not in function_groups:
                     function_groups[signature] = []
 
-                function_groups[signature].append(
-                    {"fragment": fragment, "function": function}
-                )
+                function_groups[signature].append({"fragment": fragment, "function": function})
 
         # Create patterns for common functions
         for signature, group in function_groups.items():
@@ -802,9 +765,7 @@ class PatternAnalyzer:
 
         return patterns
 
-    def _detect_structural_patterns(
-        self, fragments: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
+    def _detect_structural_patterns(self, fragments: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
         Detect structural patterns in fragments.
 
@@ -946,9 +907,7 @@ class PatternAnalyzer:
 
         return scored_combos[:top_n]
 
-    def _calculate_purpose_alignment(
-        self, combo: List[Dict[str, Any]], purpose: str
-    ) -> float:
+    def _calculate_purpose_alignment(self, combo: List[Dict[str, Any]], purpose: str) -> float:
         """
         Calculate alignment of a combination with a purpose.
 
@@ -1030,17 +989,13 @@ class PatternAnalyzer:
         # Calculate entropy diversity
         entropies = [b.get("entropy", 0.5) for b in blessings]
         entropy_mean = sum(entropies) / len(entropies)
-        entropy_variance = sum((e - entropy_mean) ** 2 for e in entropies) / len(
-            entropies
-        )
+        entropy_variance = sum((e - entropy_mean) ** 2 for e in entropies) / len(entropies)
         entropy_diversity = min(1.0, entropy_variance * 5)  # Scale up to [0,1]
 
         # Calculate contradiction balance
         contradictions = [b.get("κ", 0.5) for b in blessings]
         contradiction_mean = sum(contradictions) / len(contradictions)
-        contradiction_balance = (
-            1.0 - abs(contradiction_mean - 0.5) * 2
-        )  # Optimal at 0.5
+        contradiction_balance = 1.0 - abs(contradiction_mean - 0.5) * 2  # Optimal at 0.5
 
         # Calculate ethical alignment
         ethics = [b.get("ε", 0.5) for b in blessings]

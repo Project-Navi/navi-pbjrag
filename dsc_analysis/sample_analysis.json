@@ -1,6 +1,6 @@
 {
   "success": true,
-  "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_file_with_valid_c0/sample.py",
+  "file_path": "/tmp/pytest-of-ndspence/pytest-34/test_analyze_file_with_valid_c0/sample.py",
   "chunks": [
     {
       "content": "def fibonacci(n):\n    \"\"\"Calculate fibonacci number.\"\"\"\n    if n <= 1:\n        return n\n    return fibonacci(n - 1) + fibonacci(n - 2)",
@@ -14,7 +14,7 @@
         "n",
         "fibonacci"
       ],
-      "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_file_with_valid_c0/sample.py",
+      "file_path": "/tmp/pytest-of-ndspence/pytest-34/test_analyze_file_with_valid_c0/sample.py",
       "blessing": {
         "tier": "\u03a6-",
         "epc": 0.1638,
@@ -66,24 +66,24 @@
           0.0
         ],
         "entropic": [
+          0.2,
+          0.0,
+          1.0,
           0.0,
           0.0,
           0.0,
           0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          0.21
         ],
         "rhythmic": [
           0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          1.0,
+          0.49970422949202775,
+          0.8,
+          0.7,
+          1.0,
+          0.6666173715820046,
+          0.6149556344238042
         ],
         "contradiction": [
           0.1,
@@ -110,10 +110,10 @@
           0.0,
           0.0,
           0.0,
+          0.05,
+          0.5,
           0.0,
-          0.0,
-          0.0,
-          0.0
+          0.05500000000000001
         ]
       }
     },
@@ -131,7 +131,7 @@
         "b",
         "a"
       ],
-      "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_file_with_valid_c0/sample.py",
+      "file_path": "/tmp/pytest-of-ndspence/pytest-34/test_analyze_file_with_valid_c0/sample.py",
       "blessing": {
         "tier": "\u03a6-",
         "epc": 0.1222,
@@ -183,24 +183,24 @@
           0.0
         ],
         "entropic": [
+          0.1,
           0.0,
           0.0,
           0.0,
           0.0,
           0.0,
           0.0,
-          0.0,
-          0.0
+          0.03
         ],
         "rhythmic": [
           0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          1.0,
+          0.7553250205637206,
+          0.8,
+          1.0,
+          0.625,
+          0.69672083676062,
+          0.6270487530845581
         ],
         "contradiction": [
           0.0,
@@ -227,10 +227,10 @@
           0.0,
           0.0,
           0.0,
+          0.1,
+          0.4,
           0.0,
-          0.0,
-          0.0,
-          0.0
+          0.05000000000000001
         ]
       }
     },
@@ -246,7 +246,7 @@
         "b",
         "a"
       ],
-      "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_file_with_valid_c0/sample.py",
+      "file_path": "/tmp/pytest-of-ndspence/pytest-34/test_analyze_file_with_valid_c0/sample.py",
       "blessing": {
         "tier": "\u03a6-",
         "epc": 0.2234,
@@ -298,24 +298,24 @@
           0.0
         ],
         "entropic": [
+          0.1,
           0.0,
           0.0,
           0.0,
           0.0,
           0.0,
           0.0,
-          0.0,
-          0.0
+          0.03
         ],
         "rhythmic": [
           0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          1.0,
+          0.8333942161359736,
+          0.8,
+          0.7,
+          0.6666666666666666,
+          0.6666768138004402,
+          0.615009132420396
         ],
         "contradiction": [
           0.0,
@@ -342,10 +342,10 @@
           0.0,
           0.0,
           0.0,
+          0.05,
+          0.3333333333333333,
           0.0,
-          0.0,
-          0.0,
-          0.0
+          0.03833333333333333
         ]
       }
     },
@@ -361,7 +361,7 @@
         "b",
         "a"
       ],
-      "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_file_with_valid_c0/sample.py",
+      "file_path": "/tmp/pytest-of-ndspence/pytest-34/test_analyze_file_with_valid_c0/sample.py",
       "blessing": {
         "tier": "\u03a6-",
         "epc": 0.2234,
@@ -413,24 +413,24 @@
           0.0
         ],
         "entropic": [
+          0.1,
           0.0,
           0.0,
           0.0,
           0.0,
           0.0,
           0.0,
-          0.0,
-          0.0
+          0.03
         ],
         "rhythmic": [
           0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          1.0,
+          0.7798423570368223,
+          0.8,
+          0.7,
+          0.6666666666666666,
+          0.6577515039505816,
+          0.6069763535555233
         ],
         "contradiction": [
           0.0,
@@ -457,10 +457,10 @@
           0.0,
           0.0,
           0.0,
+          0.05,
+          0.3333333333333333,
           0.0,
-          0.0,
-          0.0,
-          0.0
+          0.03833333333333333
         ]
       }
     }

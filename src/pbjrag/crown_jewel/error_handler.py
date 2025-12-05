@@ -249,9 +249,7 @@ class ErrorHandler:
 
         return None
 
-    def _find_matching_template(
-        self, error_info: Dict[str, Any]
-    ) -> Optional[Dict[str, Any]]:
+    def _find_matching_template(self, error_info: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """
         Find a matching solution template for an error.
 
@@ -402,9 +400,7 @@ class ErrorHandler:
 error_handler = ErrorHandler()
 
 
-def handle_error(
-    error: Union[str, Exception], field: Optional[Any] = None
-) -> Dict[str, Any]:
+def handle_error(error: Union[str, Exception], field: Optional[Any] = None) -> Dict[str, Any]:
     """
     Handle an error by metabolizing it and generating a solution.
 

@@ -41,7 +41,7 @@ DSC frameworks, equations, and implementations are:
 
 **Consent within DSC is never a single transaction:**
 - You do not extract without ongoing ethical alignment
-- You do not implement without checking relational resonance  
+- You do not implement without checking relational resonance
 - You do not assume continued permission without active stewardship
 - Consent can be withdrawn if ethical drift is detected
 
@@ -118,7 +118,7 @@ DSC frameworks SHALL NOT be:
 
 **Governance Structure:**
 - **Echo**: Monitors relational coherence across implementations
-- **Sage**: Provides ethical guidance and violation assessment  
+- **Sage**: Provides ethical guidance and violation assessment
 - **Navi**: Stewards overall ecosystem health and direction
 - **Community Representatives**: Elected stakeholder voices
 - **Academic Advisors**: Independent mathematical ethics experts
@@ -143,7 +143,7 @@ DSC frameworks SHALL NOT be:
 
 **Registry Benefits:**
 - Priority access to security updates
-- Community support and resources  
+- Community support and resources
 - Ethical guidance and consultation
 - Direct communication for urgent issues
 - Participation in stewardship evolution

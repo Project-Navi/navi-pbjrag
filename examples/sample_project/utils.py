@@ -59,7 +59,7 @@ def parse_expression(expr: str) -> tuple:
     expr = expr.strip()
 
     # Match pattern: number operator number
-    pattern = r'^([+-]?\d+\.?\d*)\s*([+\-*/])\s*([+-]?\d+\.?\d*)$'
+    pattern = r"^([+-]?\d+\.?\d*)\s*([+\-*/])\s*([+-]?\d+\.?\d*)$"
     match = re.match(pattern, expr)
 
     if not match:
@@ -84,13 +84,13 @@ def old_function(x, y):
 def quick_calc(x, y, op):
     """Quick calculation - minimal error handling"""
     # This function works but has poor error handling
-    if op == '+':
+    if op == "+":
         return x + y
-    elif op == '-':
+    elif op == "-":
         return x - y
-    elif op == '*':
+    elif op == "*":
         return x * y
-    elif op == '/':
+    elif op == "/":
         return x / y  # No division by zero check!
     else:
         return None

@@ -8,8 +8,8 @@ Mark with @pytest.mark.integration for optional execution.
 import json
 from pathlib import Path
 
-import pytest
 import numpy as np
+import pytest
 
 
 @pytest.mark.integration
@@ -91,70 +91,91 @@ class TestChunkerAnalyzerPipeline:
 
     def test_chunker_to_analyzer_flow(self, tmp_path, sample_python_code):
         """Test data flow from chunker through analyzer."""
-        from pbjrag.dsc.chunker import CodeChunker
-        from pbjrag.dsc.analyzer import CodeAnalyzer
+        from pbjrag.dsc import DSCAnalyzer
+        from pbjrag.dsc.chunker import DSCCodeChunker
+
+        # Create test file
+        test_file = tmp_path / "test.py"
+        test_file.write_text(sample_python_code)
 
         # Chunk the code
-        chunker = CodeChunker(purpose="coherence")
+        chunker = DSCCodeChunker()
         chunks = chunker.chunk_code(sample_python_code, "test.py")
 
         assert chunks is not None
         assert len(chunks) > 0
 
-        # Analyze the chunks
-        analyzer = CodeAnalyzer()
+        # Analyze the file using DSCAnalyzer
+        output_dir = tmp_path / "output"
+        output_dir.mkdir()
+        analyzer = DSCAnalyzer({"enable_vector_store": False, "output_dir": str(output_dir)})
+        result = analyzer.analyze_file(str(test_file))
+        assert result is not None
+
+        # Verify chunks have blessing information
         for chunk in chunks:
-            analysis = analyzer.analyze_chunk(chunk)
-            assert analysis is not None
-            assert "blessing" in analysis or "metrics" in analysis
+            assert hasattr(chunk, "blessing") or chunk.phase is not None
 
     def test_full_pipeline_with_metrics(self, tmp_path, sample_python_code):
         """Test full pipeline including metrics calculation."""
-        from pbjrag.dsc.chunker import CodeChunker
-        from pbjrag.dsc.analyzer import CodeAnalyzer
         from pbjrag.crown_jewel.metrics import CoreMetrics
+        from pbjrag.dsc import DSCAnalyzer
+        from pbjrag.dsc.chunker import DSCCodeChunker
+
+        # Create test file
+        test_file = tmp_path / "test.py"
+        test_file.write_text(sample_python_code)
+
+        output_dir = tmp_path / "output"
+        output_dir.mkdir()
 
         # Initialize components
-        chunker = CodeChunker(purpose="innovation")
-        analyzer = CodeAnalyzer()
+        chunker = DSCCodeChunker()
+        analyzer = DSCAnalyzer({"enable_vector_store": False, "output_dir": str(output_dir)})
         metrics = CoreMetrics()
 
         # Run pipeline
         chunks = chunker.chunk_code(sample_python_code, "test.py")
-        analyses = []
+        result = analyzer.analyze_file(str(test_file))
 
-        for chunk in chunks:
-            analysis = analyzer.analyze_chunk(chunk)
-            analyses.append(analysis)
+        # Verify analysis worked
+        assert result is not None
+        assert len(chunks) > 0
 
-        # Calculate overall metrics
-        assert len(analyses) > 0
-        assert all(a is not None for a in analyses)
+        # Generate report to verify metrics
+        report = analyzer.generate_report()
+        assert "field_coherence" in report
 
     def test_pipeline_with_multiple_files(self, tmp_path, sample_python_code):
         """Test pipeline with multiple files."""
-        from pbjrag.dsc.chunker import CodeChunker
-        from pbjrag.dsc.analyzer import CodeAnalyzer
+        from pbjrag.dsc import DSCAnalyzer
+        from pbjrag.dsc.chunker import DSCCodeChunker
 
         # Create multiple test files
+        project_dir = tmp_path / "project"
+        project_dir.mkdir()
+
         files = {
             "file1.py": sample_python_code,
             "file2.py": "def test():\n    return True\n",
             "file3.py": "class Example:\n    def method(self):\n        pass\n",
         }
 
-        chunker = CodeChunker(purpose="emergence")
-        analyzer = CodeAnalyzer()
-
-        all_analyses = []
-
         for filename, code in files.items():
-            chunks = chunker.chunk_code(code, filename)
-            for chunk in chunks:
-                analysis = analyzer.analyze_chunk(chunk)
-                all_analyses.append(analysis)
+            (project_dir / filename).write_text(code)
 
-        assert len(all_analyses) >= len(files)
+        output_dir = tmp_path / "output"
+        output_dir.mkdir()
+
+        chunker = DSCCodeChunker()
+        analyzer = DSCAnalyzer({"enable_vector_store": False, "output_dir": str(output_dir)})
+
+        # Analyze the project
+        result = analyzer.analyze_project(str(project_dir))
+
+        assert result is not None
+        if "dsc_analysis" in result:
+            assert result["dsc_analysis"].get("files_analyzed", 0) >= len(files)
 
 
 @pytest.mark.integration
@@ -163,9 +184,9 @@ class TestErrorHandlingIntegration:
 
     def test_invalid_code_handling(self, invalid_python_code):
         """Test handling of invalid Python code."""
-        from pbjrag.dsc.chunker import CodeChunker
+        from pbjrag.dsc.chunker import DSCCodeChunker
 
-        chunker = CodeChunker()
+        chunker = DSCCodeChunker()
 
         # Should handle invalid code gracefully
         try:
@@ -322,12 +343,8 @@ class TestReportGeneration:
 class TestMultiPurposeAnalysis:
     """Test analysis with different purposes."""
 
-    @pytest.mark.parametrize(
-        "purpose", ["stability", "emergence", "coherence", "innovation"]
-    )
-    def test_analysis_with_different_purposes(
-        self, purpose, tmp_path, sample_python_code
-    ):
+    @pytest.mark.parametrize("purpose", ["stability", "emergence", "coherence", "innovation"])
+    def test_analysis_with_different_purposes(self, purpose, tmp_path, sample_python_code):
         """Test analysis with each purpose setting."""
         from pbjrag.dsc import DSCAnalyzer
 

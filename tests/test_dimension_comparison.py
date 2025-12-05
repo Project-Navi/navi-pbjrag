@@ -15,9 +15,9 @@ from pbjrag.dsc.chunker import DSCCodeChunker
 def test_dimension_comparison():
     """Compare how different code styles score on each dimension"""
 
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("DSC DIMENSION COMPARISON TEST")
-    print("="*70)
+    print("=" * 70)
 
     chunker = DSCCodeChunker(field_dim=8)
 
@@ -44,7 +44,9 @@ def subtract_numbers(a, b):
         avg_entropy = sum(c.field_state.entropic.mean() for c in func_chunks) / len(func_chunks)
         avg_rhythm = sum(c.field_state.rhythmic.mean() for c in func_chunks) / len(func_chunks)
         avg_emergence = sum(c.field_state.emergent.mean() for c in func_chunks) / len(func_chunks)
-        print(f"   Results: Entropy={avg_entropy:.3f}, Rhythm={avg_rhythm:.3f}, Emergence={avg_emergence:.3f}")
+        print(
+            f"   Results: Entropy={avg_entropy:.3f}, Rhythm={avg_rhythm:.3f}, Emergence={avg_emergence:.3f}"
+        )
         assert avg_entropy < 0.3, "Simple code should have low entropy"
         assert avg_rhythm > 0.5, "Simple code should have good rhythm"
         assert avg_emergence < 0.15, "Simple code should have low emergence"
@@ -90,7 +92,9 @@ def complex_logic(x, y, z, mode='default'):
         avg_entropy = sum(c.field_state.entropic.mean() for c in func_chunks) / len(func_chunks)
         avg_rhythm = sum(c.field_state.rhythmic.mean() for c in func_chunks) / len(func_chunks)
         avg_emergence = sum(c.field_state.emergent.mean() for c in func_chunks) / len(func_chunks)
-        print(f"   Results: Entropy={avg_entropy:.3f}, Rhythm={avg_rhythm:.3f}, Emergence={avg_emergence:.3f}")
+        print(
+            f"   Results: Entropy={avg_entropy:.3f}, Rhythm={avg_rhythm:.3f}, Emergence={avg_emergence:.3f}"
+        )
         assert avg_entropy > 0.4, "Complex code should have high entropy"
         assert 0.3 < avg_rhythm < 0.7, "Complex code should have medium rhythm"
         assert avg_emergence < 0.2, "Complex code should have low-medium emergence"
@@ -148,7 +152,9 @@ if (length := len(evens)) > 5:
         avg_entropy = sum(c.field_state.entropic.mean() for c in func_chunks) / len(func_chunks)
         avg_rhythm = sum(c.field_state.rhythmic.mean() for c in func_chunks) / len(func_chunks)
         avg_emergence = sum(c.field_state.emergent.mean() for c in func_chunks) / len(func_chunks)
-        print(f"   Results: Entropy={avg_entropy:.3f}, Rhythm={avg_rhythm:.3f}, Emergence={avg_emergence:.3f}")
+        print(
+            f"   Results: Entropy={avg_entropy:.3f}, Rhythm={avg_rhythm:.3f}, Emergence={avg_emergence:.3f}"
+        )
         # Advanced code can be clean (low entropy) while still being sophisticated
         assert avg_entropy < 0.3, "Advanced code should be relatively clean"
         assert avg_rhythm > 0.4, "Advanced code should have good rhythm"
@@ -182,20 +188,22 @@ def another_func(a, b, c):
         avg_entropy = sum(c.field_state.entropic.mean() for c in func_chunks) / len(func_chunks)
         avg_rhythm = sum(c.field_state.rhythmic.mean() for c in func_chunks) / len(func_chunks)
         avg_emergence = sum(c.field_state.emergent.mean() for c in func_chunks) / len(func_chunks)
-        print(f"   Results: Entropy={avg_entropy:.3f}, Rhythm={avg_rhythm:.3f}, Emergence={avg_emergence:.3f}")
+        print(
+            f"   Results: Entropy={avg_entropy:.3f}, Rhythm={avg_rhythm:.3f}, Emergence={avg_emergence:.3f}"
+        )
         # Inconsistent formatting doesn't necessarily mean high entropy (complexity)
         assert avg_entropy < 0.4, "Inconsistent code should have low-medium entropy"
         assert 0.4 < avg_rhythm < 0.7, "Inconsistent code rhythm is still detected"
         assert avg_emergence < 0.2, "Inconsistent code should have low emergence"
         print("   ✓ Results match expectations")
 
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("✓ ALL COMPARISON TESTS PASSED")
     print("  The three dimension implementations correctly distinguish between:")
     print("  - Entropic (chaos/complexity)")
     print("  - Rhythmic (consistency/flow)")
     print("  - Emergent (novelty/creativity)")
-    print("="*70)
+    print("=" * 70)
 
 
 if __name__ == "__main__":
@@ -208,5 +216,6 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n✗ ERROR: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)

@@ -8,12 +8,12 @@
 
 ## 1) Definitions
 
-- **“Project Navi,” “we,” “us.”** Project Navi, steward of the DeepEthos / Compass frameworks and brand.  
-- **“Client,” “you.”** The organization or person accepting these terms.  
-- **“Services.”** Professional services such as consulting, design, training, systems architecture, workflow development.  
-- **“Deliverables.”** Materials produced under a SOW/Order (docs, models, prompts, specs, configs, code, reports).  
-- **“Materials.”** Pre‑existing Project Navi assets (frameworks, templates, examples).  
-- **“Confidential Information.”** Non‑public information disclosed and marked or understood as confidential.  
+- **“Project Navi,” “we,” “us.”** Project Navi, steward of the DeepEthos / Compass frameworks and brand.
+- **“Client,” “you.”** The organization or person accepting these terms.
+- **“Services.”** Professional services such as consulting, design, training, systems architecture, workflow development.
+- **“Deliverables.”** Materials produced under a SOW/Order (docs, models, prompts, specs, configs, code, reports).
+- **“Materials.”** Pre‑existing Project Navi assets (frameworks, templates, examples).
+- **“Confidential Information.”** Non‑public information disclosed and marked or understood as confidential.
 - **“Personal Data.”** Any information relating to an identified or identifiable natural person.
 
 ## 2) Scope & Acceptance
@@ -36,14 +36,14 @@ You will not use Services/Deliverables to: (a) exploit, surveil, or coerce peopl
 
 ## 5) Attribution (Required; Waivable)
 
-For **public‑facing** works based on Deliverables, include a reasonable credit such as:  
+For **public‑facing** works based on Deliverables, include a reasonable credit such as:
 > “Built with Project Navi (DeepEthos/Compass) — project‑navi.com”
 
 For **internal‑only** materials, retain author/copyright notices in files. **At Client’s written request** (e.g., confidentiality, regulatory, or white‑label needs), Project Navi will grant an **attribution waiver**. Trademark use beyond attribution requires written consent (§13).
 
 ## 6) IP & License Grants
 
-**Your IP.** You retain rights to your data, systems, and pre‑existing materials.  
+**Your IP.** You retain rights to your data, systems, and pre‑existing materials.
 **Our IP.** We retain rights to Project Navi methods, DeepEthos/Compass Runtime logic, Differential Symbolic Calculus, templates, and brand assets.
 
 **Deliverable license.** Unless otherwise stated in a SOW, we grant a **non‑exclusive, non‑transferable** license to use Deliverables for **your internal business**, subject to PNEUL‑C and any third‑party licenses referenced within the Deliverables.

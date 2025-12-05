@@ -4,8 +4,8 @@ Calculator module - A simple calculator with various operations.
 This module demonstrates good code quality practices.
 """
 
-from typing import Union, List
 import logging
+from typing import List, Union
 
 logger = logging.getLogger(__name__)
 

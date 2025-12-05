@@ -2,9 +2,10 @@
 Tests for optional dependencies - Feature flags and graceful fallback.
 """
 
-import pytest
 import sys
 from unittest.mock import patch
+
+import pytest
 
 
 class TestOptionalDependencies:
@@ -23,16 +24,19 @@ class TestOptionalDependencies:
         if HAVE_CHROMA:
             # If ChromaDB is available, should be able to import
             from pbjrag.dsc import DSCChromaStore
+
             assert DSCChromaStore is not None
         else:
             # If not available, should handle gracefully
             from pbjrag import dsc
-            assert not hasattr(dsc, 'DSCChromaStore') or dsc.DSCChromaStore is None
+
+            assert not hasattr(dsc, "DSCChromaStore") or dsc.DSCChromaStore is None
 
     def test_qdrant_feature_flag_detection(self):
         """Test HAVE_QDRANT feature flag detection."""
         try:
             from pbjrag.dsc.vector_store import HAVE_QDRANT
+
             assert isinstance(HAVE_QDRANT, bool)
         except ImportError:
             # Module might not be directly importable, that's ok
@@ -42,6 +46,7 @@ class TestOptionalDependencies:
         """Test HAVE_NEO4J feature flag detection."""
         try:
             from pbjrag.dsc.neo4j_store import HAVE_NEO4J
+
             assert isinstance(HAVE_NEO4J, bool)
         except ImportError:
             # Module might not be directly importable, that's ok
@@ -70,14 +75,17 @@ class TestOptionalDependencies:
     def test_graceful_fallback_on_missing_chroma(self, sample_python_code):
         """Test graceful fallback when ChromaDB is missing."""
         # Temporarily hide chromadb if it exists
-        with patch.dict(sys.modules, {'chromadb': None}):
+        with patch.dict(sys.modules, {"chromadb": None}):
             # Re-import to trigger feature detection
             import importlib
+
             from pbjrag import dsc
+
             importlib.reload(dsc)
 
             # Should still be able to use basic functionality
             from pbjrag import DSCCodeChunker
+
             chunker = DSCCodeChunker(field_dim=8)
             chunks = chunker.chunk_code(sample_python_code, filepath="test.py")
 
@@ -101,12 +109,14 @@ class TestOptionalDependencies:
         # Try to import other feature flags if available
         try:
             from pbjrag.dsc.vector_store import HAVE_QDRANT
+
             assert isinstance(HAVE_QDRANT, bool)
         except (ImportError, AttributeError):
             pass
 
         try:
             from pbjrag.dsc.neo4j_store import HAVE_NEO4J
+
             assert isinstance(HAVE_NEO4J, bool)
         except (ImportError, AttributeError):
             pass
@@ -137,15 +147,15 @@ class TestOptionalDependencies:
 
         # Core functionality should work
         assert len(chunks) > 0
-        assert all(hasattr(chunk, 'blessing') for chunk in chunks)
-        assert all(hasattr(chunk, 'field_state') for chunk in chunks)
+        assert all(hasattr(chunk, "blessing") for chunk in chunks)
+        assert all(hasattr(chunk, "field_state") for chunk in chunks)
 
     def test_imports_do_not_fail_without_optional_deps(self):
         """Test that basic imports work without optional dependencies."""
         # These should always work regardless of optional deps
-        from pbjrag import DSCAnalyzer, DSCCodeChunker, PhaseManager, Orchestrator
-        from pbjrag.crown_jewel import CoreMetrics, create_blessing_vector, FieldContainer
-        from pbjrag.dsc import DSCChunk, FieldState, BlessingState
+        from pbjrag import DSCAnalyzer, DSCCodeChunker, Orchestrator, PhaseManager
+        from pbjrag.crown_jewel import CoreMetrics, FieldContainer, create_blessing_vector
+        from pbjrag.dsc import BlessingState, DSCChunk, FieldState
 
         # All imports should succeed
         assert DSCAnalyzer is not None

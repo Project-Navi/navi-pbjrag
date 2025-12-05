@@ -37,7 +37,7 @@ LIMITATIONS:
 
 **License Fee Structure:**
 - **Startup (<$1M revenue):** $5,000/year
-- **SME ($1M-$10M revenue):** $25,000/year  
+- **SME ($1M-$10M revenue):** $25,000/year
 - **Enterprise ($10M+ revenue):** $100,000/year
 - **Big Tech (Meta, Google, etc.):** $500,000/year + 2% revenue share
 

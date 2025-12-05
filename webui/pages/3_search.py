@@ -2,9 +2,10 @@
 🔎 Search - Semantic search across analyzed code using Qdrant
 """
 
-import streamlit as st
 import sys
 from pathlib import Path
+
+import streamlit as st
 
 # Add parent directory to path for pbjrag imports
 parent_dir = Path(__file__).parent.parent.parent
@@ -13,6 +14,7 @@ sys.path.insert(0, str(parent_dir / "src"))
 try:
     from pbjrag import DSCAnalyzer
     from pbjrag.dsc.vector_store import DSCVectorStore
+
     PBJRAG_AVAILABLE = True
 except ImportError as e:
     PBJRAG_AVAILABLE = False
@@ -30,13 +32,13 @@ TIER_LABELS = {
 }
 
 # Check if we have analysis results
-if 'analysis_results' not in st.session_state or not st.session_state.analysis_results:
+if "analysis_results" not in st.session_state or not st.session_state.analysis_results:
     st.warning("⚠️ No analysis results found. Please run analysis first.")
     st.info("👉 Go to the **📊 Analyze** page to analyze your code")
     st.stop()
 
 results = st.session_state.analysis_results
-chunks = results.get('chunks', [])
+chunks = results.get("chunks", [])
 
 if not chunks:
     st.error("❌ No chunks found in analysis results")
@@ -49,7 +51,7 @@ st.markdown("---")
 query = st.text_input(
     "🔍 Search Query",
     placeholder="e.g., 'error handling', 'data validation', 'API endpoints'",
-    help="Enter a natural language query to search for relevant code chunks"
+    help="Enter a natural language query to search for relevant code chunks",
 )
 
 # Search options
@@ -59,7 +61,7 @@ with col1:
     search_mode = st.selectbox(
         "Search Mode",
         ["Semantic (AI)", "Keyword", "Hybrid"],
-        help="Semantic uses meaning, Keyword uses exact matches, Hybrid combines both"
+        help="Semantic uses meaning, Keyword uses exact matches, Hybrid combines both",
     )
 
 with col2:
@@ -68,7 +70,7 @@ with col2:
         min_value=1,
         max_value=20,
         value=5,
-        help="Maximum number of results to return"
+        help="Maximum number of results to return",
     )
 
 with col3:
@@ -78,20 +80,21 @@ with col3:
         max_value=1.0,
         value=0.3,
         step=0.05,
-        help="Minimum relevance score (0-1)"
+        help="Minimum relevance score (0-1)",
     )
 
 search_button = st.button("🚀 Search", type="primary")
 
 # Clear search results button
-if 'search_results' in st.session_state:
+if "search_results" in st.session_state:
     if st.button("🗑️ Clear Search Results", help="Clear current search results"):
-        if 'search_results' in st.session_state:
+        if "search_results" in st.session_state:
             del st.session_state.search_results
-        if 'search_query' in st.session_state:
+        if "search_query" in st.session_state:
             del st.session_state.search_query
         st.success("✅ Search results cleared!")
         st.rerun()
+
 
 # Search function
 def keyword_search(query: str, chunks: list, max_results: int, min_score: float):
@@ -101,7 +104,7 @@ def keyword_search(query: str, chunks: list, max_results: int, min_score: float)
     query_terms = query_lower.split()
 
     for i, chunk in enumerate(chunks):
-        content = chunk.get('content', '').lower()
+        content = chunk.get("content", "").lower()
 
         # Calculate relevance score based on keyword matches
         score = 0
@@ -114,16 +117,19 @@ def keyword_search(query: str, chunks: list, max_results: int, min_score: float)
         score = min(score, 1.0)
 
         if score >= min_score:
-            results.append({
-                'chunk_index': i,
-                'chunk': chunk,
-                'score': score,
-                'matches': sum(content.count(term) for term in query_terms)
-            })
+            results.append(
+                {
+                    "chunk_index": i,
+                    "chunk": chunk,
+                    "score": score,
+                    "matches": sum(content.count(term) for term in query_terms),
+                }
+            )
 
     # Sort by score
-    results.sort(key=lambda x: x['score'], reverse=True)
+    results.sort(key=lambda x: x["score"], reverse=True)
     return results[:max_results]
+
 
 def semantic_search(query: str, chunks: list, max_results: int, min_score: float):
     """Semantic search using Qdrant vector database."""
@@ -149,40 +155,41 @@ def semantic_search(query: str, chunks: list, max_results: int, min_score: float
 
         # Perform semantic search
         search_results = analyzer.vector_store.search(
-            query=query,
-            search_mode="content",
-            top_k=max_results
+            query=query, search_mode="content", top_k=max_results
         )
 
         # Format results to match expected structure
         formatted_results = []
         for i, result in enumerate(search_results):
-            score = result.get('score', 0)
+            score = result.get("score", 0)
             if score >= min_score:
                 # Find matching chunk in local chunks by content similarity
-                chunk_data = result.get('payload', {})
-                formatted_results.append({
-                    'chunk_index': i,
-                    'chunk': {
-                        'content': chunk_data.get('content', ''),
-                        'blessing': {
-                            'tier': chunk_data.get('blessing_tier', 'Unknown'),
-                            'epc': chunk_data.get('blessing_epc', 0),
-                            'phase': chunk_data.get('blessing_phase', 'Unknown'),
+                chunk_data = result.get("payload", {})
+                formatted_results.append(
+                    {
+                        "chunk_index": i,
+                        "chunk": {
+                            "content": chunk_data.get("content", ""),
+                            "blessing": {
+                                "tier": chunk_data.get("blessing_tier", "Unknown"),
+                                "epc": chunk_data.get("blessing_epc", 0),
+                                "phase": chunk_data.get("blessing_phase", "Unknown"),
+                            },
+                            "chunk_type": chunk_data.get("chunk_type", "unknown"),
+                            "provides": chunk_data.get("provides", []),
+                            "depends_on": chunk_data.get("depends_on", []),
                         },
-                        'chunk_type': chunk_data.get('chunk_type', 'unknown'),
-                        'provides': chunk_data.get('provides', []),
-                        'depends_on': chunk_data.get('depends_on', []),
-                    },
-                    'score': score,
-                    'matches': 0  # Semantic doesn't use keyword matches
-                })
+                        "score": score,
+                        "matches": 0,  # Semantic doesn't use keyword matches
+                    }
+                )
 
         return formatted_results
 
     except Exception as e:
         st.error(f"Semantic search error: {e}")
         return keyword_search(query, chunks, max_results, min_score)
+
 
 def hybrid_search(query: str, chunks: list, max_results: int, min_score: float):
     """Hybrid search combining keyword and semantic approaches."""
@@ -197,38 +204,43 @@ def hybrid_search(query: str, chunks: list, max_results: int, min_score: float):
 
         # Use vector store's hybrid search
         search_results = analyzer.vector_store.search(
-            query=query,
-            search_mode="hybrid",
-            top_k=max_results
+            query=query, search_mode="hybrid", top_k=max_results
         )
 
         # Format results
         formatted_results = []
         for i, result in enumerate(search_results):
-            score = result.get('score', 0)
+            score = result.get("score", 0)
             if score >= min_score:
-                chunk_data = result.get('payload', {})
-                formatted_results.append({
-                    'chunk_index': i,
-                    'chunk': {
-                        'content': chunk_data.get('content', ''),
-                        'blessing': {
-                            'tier': chunk_data.get('blessing_tier', 'Unknown'),
-                            'epc': chunk_data.get('blessing_epc', 0),
-                            'phase': chunk_data.get('blessing_phase', 'Unknown'),
+                chunk_data = result.get("payload", {})
+                formatted_results.append(
+                    {
+                        "chunk_index": i,
+                        "chunk": {
+                            "content": chunk_data.get("content", ""),
+                            "blessing": {
+                                "tier": chunk_data.get("blessing_tier", "Unknown"),
+                                "epc": chunk_data.get("blessing_epc", 0),
+                                "phase": chunk_data.get("blessing_phase", "Unknown"),
+                            },
+                            "chunk_type": chunk_data.get("chunk_type", "unknown"),
+                            "provides": chunk_data.get("provides", []),
+                            "depends_on": chunk_data.get("depends_on", []),
                         },
-                        'chunk_type': chunk_data.get('chunk_type', 'unknown'),
-                        'provides': chunk_data.get('provides', []),
-                        'depends_on': chunk_data.get('depends_on', []),
-                    },
-                    'score': score,
-                    'matches': 0
-                })
+                        "score": score,
+                        "matches": 0,
+                    }
+                )
 
-        return formatted_results if formatted_results else keyword_search(query, chunks, max_results, min_score)
+        return (
+            formatted_results
+            if formatted_results
+            else keyword_search(query, chunks, max_results, min_score)
+        )
 
     except Exception as e:
         return keyword_search(query, chunks, max_results, min_score)
+
 
 # Execute search
 if search_button and query:
@@ -244,7 +256,7 @@ if search_button and query:
         st.session_state.search_query = query
 
 # Display results
-if 'search_results' in st.session_state and st.session_state.search_results:
+if "search_results" in st.session_state and st.session_state.search_results:
     search_results = st.session_state.search_results
 
     st.markdown("---")
@@ -256,19 +268,19 @@ if 'search_results' in st.session_state and st.session_state.search_results:
 
     # Display each result
     for i, result in enumerate(search_results):
-        chunk = result['chunk']
-        score = result['score']
-        chunk_index = result['chunk_index']
-        blessing = chunk.get('blessing', {})
+        chunk = result["chunk"]
+        score = result["score"]
+        chunk_index = result["chunk_index"]
+        blessing = chunk.get("blessing", {})
 
         # Determine tier label with icon and text for accessibility
-        tier = blessing.get('tier', 'Unknown')
+        tier = blessing.get("tier", "Unknown")
         tier_display = TIER_LABELS.get(tier, tier)
-        if tier == 'Φ+':
+        if tier == "Φ+":
             tier_color = "🟢"
-        elif tier == 'Φ~':
+        elif tier == "Φ~":
             tier_color = "🟡"
-        elif tier == 'Φ-':
+        elif tier == "Φ-":
             tier_color = "🔴"
         else:
             tier_color = "⚪"
@@ -277,20 +289,20 @@ if 'search_results' in st.session_state and st.session_state.search_results:
         with st.expander(
             f"{tier_color} **Result {i+1}** - Chunk {chunk_index} | "
             f"Relevance: {score:.2f} | Tier: {tier_display}",
-            expanded=(i == 0)  # Expand first result by default
+            expanded=(i == 0),  # Expand first result by default
         ):
             col1, col2 = st.columns([3, 1])
 
             with col1:
                 st.markdown("#### Code Content")
-                code_content = chunk.get('content', '')
+                code_content = chunk.get("content", "")
 
                 # Highlight query terms (simple approach)
-                if 'search_query' in st.session_state:
+                if "search_query" in st.session_state:
                     query_terms = st.session_state.search_query.lower().split()
                     st.markdown(f"**Matches:** {', '.join(query_terms)}")
 
-                st.code(code_content, language='python', line_numbers=True)
+                st.code(code_content, language="python", line_numbers=True)
 
             with col2:
                 st.markdown("#### Metadata")
@@ -298,10 +310,10 @@ if 'search_results' in st.session_state and st.session_state.search_results:
                 st.metric("Chunk Index", chunk_index)
                 st.metric("Blessing Tier", tier_display)
                 st.metric("EPC", f"{blessing.get('epc', 0):.3f}")
-                st.metric("Phase", blessing.get('phase', 'Unknown'))
+                st.metric("Phase", blessing.get("phase", "Unknown"))
 
-                if 'matches' in result:
-                    st.metric("Keyword Matches", result['matches'])
+                if "matches" in result:
+                    st.metric("Keyword Matches", result["matches"])
 
                 # Link to explore page
                 if st.button(f"📖 View in Explorer", key=f"view_{chunk_index}"):
@@ -311,18 +323,19 @@ if 'search_results' in st.session_state and st.session_state.search_results:
     st.markdown("---")
     if st.button("💾 Export Search Results"):
         import json
+
         export_data = {
-            'query': st.session_state.search_query,
-            'results_count': len(search_results),
-            'results': [
+            "query": st.session_state.search_query,
+            "results_count": len(search_results),
+            "results": [
                 {
-                    'chunk_index': r['chunk_index'],
-                    'score': r['score'],
-                    'tier': r['chunk'].get('blessing', {}).get('tier'),
-                    'content_preview': r['chunk'].get('content', '')[:200] + '...'
+                    "chunk_index": r["chunk_index"],
+                    "score": r["score"],
+                    "tier": r["chunk"].get("blessing", {}).get("tier"),
+                    "content_preview": r["chunk"].get("content", "")[:200] + "...",
                 }
                 for r in search_results
-            ]
+            ],
         }
 
         json_data = json.dumps(export_data, indent=2)
@@ -330,7 +343,7 @@ if 'search_results' in st.session_state and st.session_state.search_results:
             label="⬇️ Download JSON",
             data=json_data,
             file_name="search_results.json",
-            mime="application/json"
+            mime="application/json",
         )
 
 else:
@@ -338,7 +351,8 @@ else:
     st.info("👆 Enter a search query and click 'Search' to find relevant code chunks")
 
     with st.expander("📖 How to Search", expanded=True):
-        st.markdown("""
+        st.markdown(
+            """
         ### Search Modes
 
         - **Semantic (AI)**: Understands meaning and context (requires Qdrant)
@@ -359,7 +373,8 @@ else:
         - "API endpoints with authentication"
         - "class definitions with inheritance"
         - "test functions for user management"
-        """)
+        """
+        )
 
     # Show some stats about available chunks
     st.markdown("---")
@@ -371,16 +386,17 @@ else:
         st.metric("Total Chunks", len(chunks))
 
     with col2:
-        phi_plus = sum(1 for c in chunks if c.get('blessing', {}).get('tier') == 'Φ+')
+        phi_plus = sum(1 for c in chunks if c.get("blessing", {}).get("tier") == "Φ+")
         st.metric("🟢 Φ+ Crown Jewel", phi_plus)
 
     with col3:
-        total_lines = sum(len(c.get('content', '').split('\n')) for c in chunks)
+        total_lines = sum(len(c.get("content", "").split("\n")) for c in chunks)
         st.metric("Total Lines", total_lines)
 
 # Footer tips
 with st.expander("💡 Advanced Tips"):
-    st.markdown("""
+    st.markdown(
+        """
     ### Future Enhancements
 
     When Qdrant vector database is integrated, you'll be able to:
@@ -404,4 +420,5 @@ with st.expander("💡 Advanced Tips"):
     2. Run Qdrant server: `docker run -p 6333:6333 qdrant/qdrant`
     3. Index your code chunks
     4. Restart the WebUI
-    """)
+    """
+    )

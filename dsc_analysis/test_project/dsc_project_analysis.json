@@ -6,9 +6,9 @@
     "message": "No blessed groups available for solution"
   },
   "report": {
-    "timestamp": "2025-12-05T01:12:56.177652",
+    "timestamp": "2025-12-05T05:31:12.596254",
     "purpose": "coherence",
-    "project_root": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project",
+    "project_root": "/tmp/pytest-of-ndspence/pytest-34/test_analyze_project0/test_project",
     "scan_depth": 2,
     "output_dir": "dsc_analysis/test_project",
     "top_n": 10,
@@ -17,35 +17,35 @@
     "phase_history": [
       {
         "phase": "initialization",
-        "timestamp": "2025-12-05T01:12:56.092882"
+        "timestamp": "2025-12-05T05:31:12.572810"
       },
       {
         "phase": "witness",
-        "timestamp": "2025-12-05T01:12:56.093328"
+        "timestamp": "2025-12-05T05:31:12.573264"
       },
       {
         "phase": "recognition",
-        "timestamp": "2025-12-05T01:12:56.095796"
+        "timestamp": "2025-12-05T05:31:12.575829"
       },
       {
         "phase": "compost",
-        "timestamp": "2025-12-05T01:12:56.176142"
+        "timestamp": "2025-12-05T05:31:12.594860"
       },
       {
         "phase": "emergence",
-        "timestamp": "2025-12-05T01:12:56.176256"
+        "timestamp": "2025-12-05T05:31:12.594961"
       },
       {
         "phase": "blessing",
-        "timestamp": "2025-12-05T01:12:56.176535"
+        "timestamp": "2025-12-05T05:31:12.595218"
       },
       {
         "phase": "expression",
-        "timestamp": "2025-12-05T01:12:56.176623"
+        "timestamp": "2025-12-05T05:31:12.595304"
       },
       {
         "phase": "witness",
-        "timestamp": "2025-12-05T01:12:56.177956"
+        "timestamp": "2025-12-05T05:31:12.596532"
       }
     ],
     "current_phase": "expression",
@@ -59,23 +59,23 @@
       "message": "No blessed groups available for solution"
     },
     "state_files": {
-      "fragments": "dsc_analysis/test_project/fragments_20251205_011256.json",
-      "patterns": "dsc_analysis/test_project/patterns_20251205_011256.json",
-      "blessed_groups": "dsc_analysis/test_project/blessed_groups_20251205_011256.json",
-      "compost": "dsc_analysis/test_project/compost_20251205_011256.json",
-      "capacitor": "dsc_analysis/test_project/capacitor_20251205_011256.json",
-      "solutions": "dsc_analysis/test_project/solutions_20251205_011256.json",
-      "field_summary": "dsc_analysis/test_project/field_summary_20251205_011256.json"
+      "fragments": "dsc_analysis/test_project/fragments_20251205_053112.json",
+      "patterns": "dsc_analysis/test_project/patterns_20251205_053112.json",
+      "blessed_groups": "dsc_analysis/test_project/blessed_groups_20251205_053112.json",
+      "compost": "dsc_analysis/test_project/compost_20251205_053112.json",
+      "capacitor": "dsc_analysis/test_project/capacitor_20251205_053112.json",
+      "solutions": "dsc_analysis/test_project/solutions_20251205_053112.json",
+      "field_summary": "dsc_analysis/test_project/field_summary_20251205_053112.json"
     }
   },
   "state_files": {
-    "fragments": "dsc_analysis/test_project/fragments_20251205_011256.json",
-    "patterns": "dsc_analysis/test_project/patterns_20251205_011256.json",
-    "blessed_groups": "dsc_analysis/test_project/blessed_groups_20251205_011256.json",
-    "compost": "dsc_analysis/test_project/compost_20251205_011256.json",
-    "capacitor": "dsc_analysis/test_project/capacitor_20251205_011256.json",
-    "solutions": "dsc_analysis/test_project/solutions_20251205_011256.json",
-    "field_summary": "dsc_analysis/test_project/field_summary_20251205_011256.json"
+    "fragments": "dsc_analysis/test_project/fragments_20251205_053112.json",
+    "patterns": "dsc_analysis/test_project/patterns_20251205_053112.json",
+    "blessed_groups": "dsc_analysis/test_project/blessed_groups_20251205_053112.json",
+    "compost": "dsc_analysis/test_project/compost_20251205_053112.json",
+    "capacitor": "dsc_analysis/test_project/capacitor_20251205_053112.json",
+    "solutions": "dsc_analysis/test_project/solutions_20251205_053112.json",
+    "field_summary": "dsc_analysis/test_project/field_summary_20251205_053112.json"
   },
   "dsc_analysis": {
     "files_analyzed": 3,
@@ -83,7 +83,7 @@
     "total_patterns": 2,
     "compost_candidates": [
       {
-        "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/utils.py",
+        "file_path": "/tmp/pytest-of-ndspence/pytest-34/test_analyze_project0/test_project/utils.py",
         "chunk_type": "function",
         "provides": [
           "helper"
@@ -91,7 +91,7 @@
         "reason": "Low blessing tier (\u03a6-)"
       },
       {
-        "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/main.py",
+        "file_path": "/tmp/pytest-of-ndspence/pytest-34/test_analyze_project0/test_project/main.py",
         "chunk_type": "function",
         "provides": [
           "fibonacci"
@@ -99,7 +99,7 @@
         "reason": "Low blessing tier (\u03a6-)"
       },
       {
-        "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/main.py",
+        "file_path": "/tmp/pytest-of-ndspence/pytest-34/test_analyze_project0/test_project/main.py",
         "chunk_type": "class",
         "provides": [
           "Calculator",
@@ -109,7 +109,7 @@
         "reason": "Low blessing tier (\u03a6-)"
       },
       {
-        "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/main.py",
+        "file_path": "/tmp/pytest-of-ndspence/pytest-34/test_analyze_project0/test_project/main.py",
         "chunk_type": "function",
         "provides": [
           "add"
@@ -117,7 +117,7 @@
         "reason": "Low blessing tier (\u03a6-)"
       },
       {
-        "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/main.py",
+        "file_path": "/tmp/pytest-of-ndspence/pytest-34/test_analyze_project0/test_project/main.py",
         "chunk_type": "function",
         "provides": [
           "multiply"
@@ -125,7 +125,7 @@
         "reason": "Low blessing tier (\u03a6-)"
       },
       {
-        "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/submodule/helper.py",
+        "file_path": "/tmp/pytest-of-ndspence/pytest-34/test_analyze_project0/test_project/submodule/helper.py",
         "chunk_type": "class",
         "provides": [
           "Helper"
@@ -146,25 +146,25 @@
     "fractal_patterns": {
       "pattern_0": [
         {
-          "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/utils.py",
+          "file_path": "/tmp/pytest-of-ndspence/pytest-34/test_analyze_project0/test_project/utils.py",
           "provides": [
             "helper"
           ]
         },
         {
-          "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/main.py",
+          "file_path": "/tmp/pytest-of-ndspence/pytest-34/test_analyze_project0/test_project/main.py",
           "provides": [
             "add"
           ]
         },
         {
-          "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/main.py",
+          "file_path": "/tmp/pytest-of-ndspence/pytest-34/test_analyze_project0/test_project/main.py",
           "provides": [
             "multiply"
           ]
         },
         {
-          "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/submodule/helper.py",
+          "file_path": "/tmp/pytest-of-ndspence/pytest-34/test_analyze_project0/test_project/submodule/helper.py",
           "provides": [
             "Helper"
           ]

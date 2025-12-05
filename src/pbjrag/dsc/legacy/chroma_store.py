@@ -66,11 +66,9 @@ class DSCChromaStore(DSCVectorStore):
                 )
 
                 # Use the same embedding model as MCP Memory Service
-                self.embedding_function = (
-                    embedding_functions.SentenceTransformerEmbeddingFunction(
-                        model_name=embedding_model,
-                        device=device if torch and torch.cuda.is_available() else "cpu",
-                    )
+                self.embedding_function = embedding_functions.SentenceTransformerEmbeddingFunction(
+                    model_name=embedding_model,
+                    device=device if torch and torch.cuda.is_available() else "cpu",
                 )
 
                 logger.info(f"✅ ChromaDB initialized at {chroma_path}")
@@ -134,7 +132,7 @@ class DSCChromaStore(DSCVectorStore):
         # Combine all field representations
         combined_text = f"""
         {chunk.content}
-        
+
         TYPE: {chunk.chunk_type} PROVIDES: {' '.join(chunk.provides)}
         SEMANTIC: {self._field_to_text(chunk, "semantic")}
         ETHICAL: {self._field_to_text(chunk, "ethical")}
@@ -153,18 +151,14 @@ class DSCChromaStore(DSCVectorStore):
             "phase": embedding,
         }
 
-        return DSCEmbeddedChunk(
-            chunk=chunk, embedding=embedding, field_embeddings=field_embeddings
-        )
+        return DSCEmbeddedChunk(chunk=chunk, embedding=embedding, field_embeddings=field_embeddings)
 
     def index_chunks(self, chunks: List[DSCChunk], batch_size: Optional[int] = None):
         """Index DSC chunks into ChromaDB with Crown Jewel integration"""
         logger.info(f"Indexing {len(chunks)} chunks into ChromaDB...")
 
         if not self.collection:
-            logger.warning(
-                "No ChromaDB collection available, using field container only"
-            )
+            logger.warning("No ChromaDB collection available, using field container only")
             # Still add to field container
             for chunk in chunks:
                 fragment = chunk.to_fragment()
@@ -257,9 +251,7 @@ class DSCChromaStore(DSCVectorStore):
 
         if not self.collection:
             logger.warning("No ChromaDB collection available")
-            return self._search_field_container(
-                query, blessing_filter, phase_filter, top_k
-            )
+            return self._search_field_container(query, blessing_filter, phase_filter, top_k)
 
         # Build where clause for ChromaDB
         where_clause = {}
@@ -280,9 +272,7 @@ class DSCChromaStore(DSCVectorStore):
                 ]
             elif purpose == "emergence":
                 # Prefer emerging phases
-                where_clause["blessing_phase"] = {
-                    "$in": ["becoming", "turning", "emergent"]
-                }
+                where_clause["blessing_phase"] = {"$in": ["becoming", "turning", "emergent"]}
             elif purpose == "coherence":
                 # Prefer high resonance
                 where_clause["blessing_resonance"] = {"$gte": 0.7}
@@ -305,9 +295,7 @@ class DSCChromaStore(DSCVectorStore):
                         {
                             "id": results["ids"][0][i],
                             "score": 1.0
-                            - results["distances"][0][
-                                i
-                            ],  # Convert distance to similarity
+                            - results["distances"][0][i],  # Convert distance to similarity
                             "content": results["documents"][0][i],
                             "chunk_type": metadata.get("chunk_type", ""),
                             "provides": json.loads(metadata.get("provides", "[]")),
@@ -323,18 +311,14 @@ class DSCChromaStore(DSCVectorStore):
                             "metrics": {
                                 "complexity": metadata.get("semantic_complexity", 0.5),
                                 "ethical_mean": metadata.get("ethical_mean", 0.5),
-                                "contradiction": metadata.get(
-                                    "contradiction_mean", 0.5
-                                ),
+                                "contradiction": metadata.get("contradiction_mean", 0.5),
                             },
                         }
                     )
 
                     # Add purpose-specific recommendations if requested
                     if purpose:
-                        recommendations = self._get_purpose_recommendations(
-                            metadata, purpose
-                        )
+                        recommendations = self._get_purpose_recommendations(metadata, purpose)
                         formatted[-1]["recommendations"] = recommendations
 
             return formatted
@@ -462,11 +446,7 @@ class DSCChromaStore(DSCVectorStore):
 
             # Sample some documents to get blessing distribution
             sample_size = min(100, count)
-            sample = (
-                self.collection.get(limit=sample_size)
-                if count > 0
-                else {"metadatas": []}
-            )
+            sample = self.collection.get(limit=sample_size) if count > 0 else {"metadatas": []}
 
             blessing_dist = {"Φ+": 0, "Φ~": 0, "Φ-": 0}
             phase_dist = {}
@@ -484,9 +464,7 @@ class DSCChromaStore(DSCVectorStore):
                 "phase_distribution": phase_dist,
                 "collection_name": self.collection_name,
                 "embedding_model": self.embedding_model,
-                "chroma_path": (
-                    self.client._settings.persist_directory if self.client else None
-                ),
+                "chroma_path": (self.client._settings.persist_directory if self.client else None),
             }
 
         except Exception as e:

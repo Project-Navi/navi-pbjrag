@@ -1,6 +1,6 @@
 {
   "success": true,
-  "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/utils.py",
+  "file_path": "/tmp/pytest-of-ndspence/pytest-34/test_analyze_project0/test_project/utils.py",
   "chunks": [
     {
       "content": "def helper(): pass",
@@ -11,7 +11,7 @@
         "helper"
       ],
       "depends_on": [],
-      "file_path": "/tmp/pytest-of-ndspence/pytest-7/test_analyze_project0/test_project/utils.py",
+      "file_path": "/tmp/pytest-of-ndspence/pytest-34/test_analyze_project0/test_project/utils.py",
       "blessing": {
         "tier": "\u03a6-",
         "epc": 0.0681,
@@ -63,24 +63,24 @@
           0.0
         ],
         "entropic": [
+          0.1,
           0.0,
           0.0,
           0.0,
           0.0,
           0.0,
           0.0,
-          0.0,
-          0.0
+          0.03
         ],
         "rhythmic": [
           0.0,
+          0.8,
+          1.0,
+          0.8,
+          0.7,
           0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          0.5499999999999999,
+          0.5
         ],
         "contradiction": [
           0.0,
@@ -107,10 +107,10 @@
           0.0,
           0.0,
           0.0,
+          0.05,
+          0.1,
           0.0,
-          0.0,
-          0.0,
-          0.0
+          0.015000000000000003
         ]
       }
     }

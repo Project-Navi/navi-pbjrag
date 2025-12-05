@@ -50,7 +50,7 @@ streamlit run webui/app.py
 1. Navigate to **🔎 Search** page
 2. Enter a search query (e.g., "error handling in API calls")
 3. Configure search:
-   - **Search Mode**: 
+   - **Search Mode**:
      - Semantic (AI) - Uses meaning (requires Qdrant)
      - Keyword - Simple text matching
      - Hybrid - Combines both
@@ -72,12 +72,12 @@ streamlit run webui/app.py
   - Clear purpose and design
   - Good maintainability
   - Recommended for reference
-  
+
 - **Φ~ (Core)**: Average quality, functional code
   - Works but could be improved
   - May have some technical debt
   - Focus on incremental improvements
-  
+
 - **Φ- (Noise)**: Low-quality code needing attention
   - Complexity issues
   - Poor structure

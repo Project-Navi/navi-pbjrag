@@ -155,7 +155,7 @@ class EmbeddingAdapter:
                 endpoint = f"{self.base_url}/embeddings"
             else:  # LMStudio and others use /v1/embeddings
                 endpoint = f"{self.base_url}/v1/embeddings"
-            
+
             response = requests.post(
                 endpoint,
                 json={"input": input_text, "model": self.model},
@@ -175,9 +175,7 @@ class EmbeddingAdapter:
                     return self._embed_fallback(text)
             else:
                 if not self._warned:
-                    logger.warning(
-                        f"OpenAI API embedding failed: {response.status_code}"
-                    )
+                    logger.warning(f"OpenAI API embedding failed: {response.status_code}")
                     self._warned = True
 
         except Exception as e:
@@ -209,9 +207,7 @@ class EmbeddingAdapter:
                 input_text = text
 
             embedding = self._model.encode(input_text)
-            return (
-                embedding.tolist() if hasattr(embedding, "tolist") else list(embedding)
-            )
+            return embedding.tolist() if hasattr(embedding, "tolist") else list(embedding)
 
         except ImportError:
             logger.warning("sentence-transformers not installed, using fallback")
@@ -230,9 +226,7 @@ class EmbeddingAdapter:
         np.random.seed(hash(text) % 2**32)
         return np.random.rand(self.dimension).tolist()
 
-    def batch_embed(
-        self, texts: List[str], task: str = "search_document"
-    ) -> List[List[float]]:
+    def batch_embed(self, texts: List[str], task: str = "search_document") -> List[List[float]]:
         """Embed multiple texts efficiently"""
         # For now, just loop - could optimize with batch APIs
         return [self.embed(text, task) for text in texts]

@@ -6,8 +6,9 @@ and some areas for improvement.
 """
 
 import sys
+
 from calculator import Calculator
-from utils import parse_expression, validate_input, is_numeric, format_number
+from utils import format_number, is_numeric, parse_expression, validate_input
 
 
 def main():
@@ -25,13 +26,13 @@ def main():
             user_input = input("\n> ").strip()
 
             # Handle commands
-            if user_input.lower() == 'quit':
+            if user_input.lower() == "quit":
                 print("Goodbye!")
                 break
-            elif user_input.lower() == 'history':
+            elif user_input.lower() == "history":
                 show_history(calc)
                 continue
-            elif user_input.lower() == 'clear':
+            elif user_input.lower() == "clear":
                 calc.clear_history()
                 print("History cleared!")
                 continue
@@ -59,13 +60,13 @@ def calculate(calc, expression):
     try:
         num1, op, num2 = parse_expression(expression)
 
-        if op == '+':
+        if op == "+":
             return calc.add(num1, num2)
-        elif op == '-':
+        elif op == "-":
             return calc.subtract(num1, num2)
-        elif op == '*':
+        elif op == "*":
             return calc.multiply(num1, num2)
-        elif op == '/':
+        elif op == "/":
             return calc.divide(num1, num2)
         else:
             print("❌ Unsupported operator")

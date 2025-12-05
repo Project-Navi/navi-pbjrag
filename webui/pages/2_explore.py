@@ -2,10 +2,11 @@
 🔍 Explore - Browse and filter analyzed code chunks
 """
 
-import streamlit as st
 import sys
 from pathlib import Path
+
 import pandas as pd
+import streamlit as st
 
 # Add parent directory to path for pbjrag imports
 parent_dir = Path(__file__).parent.parent.parent
@@ -30,13 +31,13 @@ TIER_LABELS = {
 }
 
 # Check if we have analysis results
-if 'analysis_results' not in st.session_state or not st.session_state.analysis_results:
+if "analysis_results" not in st.session_state or not st.session_state.analysis_results:
     st.warning("⚠️ No analysis results found. Please run analysis first.")
     st.info("👉 Go to the **📊 Analyze** page to analyze your code")
     st.stop()
 
 results = st.session_state.analysis_results
-chunks = results.get('chunks', [])
+chunks = results.get("chunks", [])
 
 if not chunks:
     st.error("❌ No chunks found in analysis results")
@@ -52,13 +53,17 @@ with st.sidebar:
     tier_display_options = ["All"] + [TIER_LABELS.get(t, t) for t in tier_options[1:]]
     selected_tier_display = st.selectbox("Select Tier", tier_display_options)
     # Map back to tier code
-    selected_tier = "All" if selected_tier_display == "All" else tier_options[tier_display_options.index(selected_tier_display)]
+    selected_tier = (
+        "All"
+        if selected_tier_display == "All"
+        else tier_options[tier_display_options.index(selected_tier_display)]
+    )
 
     # Phase filter
     st.subheader("Blessing Phase")
     phases = set()
     for chunk in chunks:
-        phase = chunk.get('blessing', {}).get('phase', 'Unknown')
+        phase = chunk.get("blessing", {}).get("phase", "Unknown")
         phases.add(phase)
 
     phase_options = ["All"] + sorted(list(phases))
@@ -66,26 +71,19 @@ with st.sidebar:
 
     # EPC range filter
     st.subheader("EPC Range")
-    epc_min, epc_max = st.slider(
-        "EPC (Evolutionary Path Clarity)",
-        0.0, 1.0, (0.0, 1.0),
-        step=0.05
-    )
+    epc_min, epc_max = st.slider("EPC (Evolutionary Path Clarity)", 0.0, 1.0, (0.0, 1.0), step=0.05)
 
     # Sort options
     st.subheader("Sort By")
-    sort_by = st.selectbox(
-        "Sort Order",
-        ["Chunk Index", "EPC (High to Low)", "EPC (Low to High)"]
-    )
+    sort_by = st.selectbox("Sort Order", ["Chunk Index", "EPC (High to Low)", "EPC (Low to High)"])
 
 # Apply filters
 filtered_chunks = []
 for i, chunk in enumerate(chunks):
-    blessing = chunk.get('blessing', {})
-    tier = blessing.get('tier', 'Unknown')
-    phase = blessing.get('phase', 'Unknown')
-    epc = blessing.get('epc', 0.5)
+    blessing = chunk.get("blessing", {})
+    tier = blessing.get("tier", "Unknown")
+    phase = blessing.get("phase", "Unknown")
+    epc = blessing.get("epc", 0.5)
 
     # Apply tier filter
     if selected_tier != "All" and tier != selected_tier:
@@ -101,20 +99,14 @@ for i, chunk in enumerate(chunks):
 
     # Add chunk index for reference
     chunk_with_index = chunk.copy()
-    chunk_with_index['_index'] = i
+    chunk_with_index["_index"] = i
     filtered_chunks.append(chunk_with_index)
 
 # Sort chunks
 if sort_by == "EPC (High to Low)":
-    filtered_chunks.sort(
-        key=lambda c: c.get('blessing', {}).get('epc', 0),
-        reverse=True
-    )
+    filtered_chunks.sort(key=lambda c: c.get("blessing", {}).get("epc", 0), reverse=True)
 elif sort_by == "EPC (Low to High)":
-    filtered_chunks.sort(
-        key=lambda c: c.get('blessing', {}).get('epc', 0),
-        reverse=False
-    )
+    filtered_chunks.sort(key=lambda c: c.get("blessing", {}).get("epc", 0), reverse=False)
 # Default is by chunk index (already in order)
 
 # Display results count
@@ -130,24 +122,26 @@ st.subheader("📋 Chunk Summary")
 
 summary_data = []
 for chunk in filtered_chunks:
-    blessing = chunk.get('blessing', {})
-    field_state = chunk.get('field_state', {})
+    blessing = chunk.get("blessing", {})
+    field_state = chunk.get("field_state", {})
 
     # Calculate average field value
     field_values = [v for v in field_state.values() if isinstance(v, (int, float))]
     avg_field = sum(field_values) / len(field_values) if field_values else 0
 
-    tier_raw = blessing.get('tier', 'Unknown')
+    tier_raw = blessing.get("tier", "Unknown")
     tier_display = TIER_LABELS.get(tier_raw, tier_raw)
 
-    summary_data.append({
-        'Index': chunk['_index'],
-        'Tier': tier_display,
-        'Phase': blessing.get('phase', 'Unknown'),
-        'EPC': f"{blessing.get('epc', 0):.3f}",
-        'Avg Field': f"{avg_field:.3f}",
-        'Lines': len(chunk.get('content', '').split('\n'))
-    })
+    summary_data.append(
+        {
+            "Index": chunk["_index"],
+            "Tier": tier_display,
+            "Phase": blessing.get("phase", "Unknown"),
+            "EPC": f"{blessing.get('epc', 0):.3f}",
+            "Avg Field": f"{avg_field:.3f}",
+            "Lines": len(chunk.get("content", "").split("\n")),
+        }
+    )
 
 df = pd.DataFrame(summary_data)
 st.dataframe(df, use_container_width=True)
@@ -160,12 +154,12 @@ st.subheader("📖 Detailed Chunk View")
 selected_idx = st.selectbox(
     "Select Chunk to View",
     range(len(filtered_chunks)),
-    format_func=lambda i: f"Chunk {filtered_chunks[i]['_index']} - {TIER_LABELS.get(filtered_chunks[i].get('blessing', {}).get('tier', 'Unknown'), filtered_chunks[i].get('blessing', {}).get('tier', 'Unknown'))}"
+    format_func=lambda i: f"Chunk {filtered_chunks[i]['_index']} - {TIER_LABELS.get(filtered_chunks[i].get('blessing', {}).get('tier', 'Unknown'), filtered_chunks[i].get('blessing', {}).get('tier', 'Unknown'))}",
 )
 
 selected_chunk = filtered_chunks[selected_idx]
-blessing = selected_chunk.get('blessing', {})
-field_state = selected_chunk.get('field_state', {})
+blessing = selected_chunk.get("blessing", {})
+field_state = selected_chunk.get("field_state", {})
 
 # Display chunk details
 col1, col2 = st.columns([2, 1])
@@ -174,29 +168,29 @@ with col1:
     st.markdown("#### Code Content")
 
     # Display tier with icon, text label, and color for accessibility
-    tier = blessing.get('tier', 'Unknown')
+    tier = blessing.get("tier", "Unknown")
     tier_display = TIER_LABELS.get(tier, tier)
-    if tier == 'Φ+':
+    if tier == "Φ+":
         color = "green"
-    elif tier == 'Φ~':
+    elif tier == "Φ~":
         color = "orange"
-    elif tier == 'Φ-':
+    elif tier == "Φ-":
         color = "red"
     else:
         color = "gray"
 
     st.markdown(f"**Blessing Tier:** :{color}[{tier_display}]")
 
-    code_content = selected_chunk.get('content', '')
-    st.code(code_content, language='python', line_numbers=True)
+    code_content = selected_chunk.get("content", "")
+    st.code(code_content, language="python", line_numbers=True)
 
 with col2:
     st.markdown("#### Metadata")
 
-    st.metric("Chunk Index", selected_chunk['_index'])
+    st.metric("Chunk Index", selected_chunk["_index"])
     st.metric("EPC", f"{blessing.get('epc', 0):.3f}")
-    st.metric("Phase", blessing.get('phase', 'Unknown'))
-    st.metric("Lines", len(code_content.split('\n')))
+    st.metric("Phase", blessing.get("phase", "Unknown"))
+    st.metric("Lines", len(code_content.split("\n")))
 
     # Additional blessing details
     with st.expander("📊 Blessing Details"):
@@ -219,15 +213,15 @@ with col2:
     st.markdown("#### Field Dimensions")
 
     dimensions = [
-        ('coherence', '🔗 Logical flow'),
-        ('clarity', '💡 Readability'),
-        ('completeness', '✅ Feature coverage'),
-        ('consistency', '🎯 Code patterns'),
-        ('correctness', '✔️ Bug-free'),
-        ('coupling', '🔌 Dependencies'),
-        ('complexity', '🧩 Cyclomatic'),
-        ('coverage', '🧪 Test coverage'),
-        ('changeability', '🔧 Maintainability')
+        ("coherence", "🔗 Logical flow"),
+        ("clarity", "💡 Readability"),
+        ("completeness", "✅ Feature coverage"),
+        ("consistency", "🎯 Code patterns"),
+        ("correctness", "✔️ Bug-free"),
+        ("coupling", "🔌 Dependencies"),
+        ("complexity", "🧩 Cyclomatic"),
+        ("coverage", "🧪 Test coverage"),
+        ("changeability", "🔧 Maintainability"),
     ]
 
     for dim, desc in dimensions:
@@ -250,7 +244,8 @@ with col3:
 
 # Tips
 with st.expander("💡 Tips"):
-    st.markdown("""
+    st.markdown(
+        """
     ### Using the Explorer
 
     - **Filters**: Use sidebar filters to narrow down chunks
@@ -263,4 +258,5 @@ with st.expander("💡 Tips"):
     - **EPC (0-1)**: Higher = clearer evolutionary path
     - **Field State (0-1)**: Higher values = better in that dimension
     - **Tier**: 🟢 Φ+ Crown Jewel (best) → 🟡 Φ~ Standard (okay) → 🔴 Φ- Needs Work (needs work)
-    """)
+    """
+    )

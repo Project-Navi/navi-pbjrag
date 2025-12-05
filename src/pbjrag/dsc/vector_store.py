@@ -15,10 +15,19 @@ import numpy as np
 # Optional dependencies with graceful fallback
 try:
     from qdrant_client import QdrantClient
-    from qdrant_client.models import (Distance, FieldCondition, Filter,
-                                      MatchAny, MatchValue, NamedVector,
-                                      OptimizersConfigDiff, PointStruct, Range,
-                                      VectorParams, QueryRequest)
+    from qdrant_client.models import (
+        Distance,
+        FieldCondition,
+        Filter,
+        MatchAny,
+        MatchValue,
+        NamedVector,
+        OptimizersConfigDiff,
+        PointStruct,
+        QueryRequest,
+        Range,
+        VectorParams,
+    )
 
     HAVE_QDRANT = True
 except ImportError:
@@ -76,9 +85,7 @@ class DSCVectorStore:
             phase_manager: Optional PhaseManager for Crown Jewel integration
         """
         if not HAVE_QDRANT:
-            logger.warning(
-                "Qdrant client not available. Vector storage will be limited."
-            )
+            logger.warning("Qdrant client not available. Vector storage will be limited.")
             self.client = None
         else:
             try:
@@ -87,9 +94,7 @@ class DSCVectorStore:
                 self.client.get_collections()
                 logger.info(f"Connected to Qdrant at {qdrant_host}:{qdrant_port}")
             except Exception as e:
-                logger.warning(
-                    f"Could not connect to Qdrant at {qdrant_host}:{qdrant_port}: {e}"
-                )
+                logger.warning(f"Could not connect to Qdrant at {qdrant_host}:{qdrant_port}: {e}")
                 logger.warning("Vector storage will be disabled.")
                 self.client = None
 
@@ -110,7 +115,9 @@ class DSCVectorStore:
             base_url=embedding_url,
             dimension=embedding_dim,
         )
-        logger.info(f"Embedding adapter: {embedding_backend} @ {embedding_url} using {embedding_model}")
+        logger.info(
+            f"Embedding adapter: {embedding_backend} @ {embedding_url} using {embedding_model}"
+        )
 
         # Initialize collection if Qdrant is available
         if self.client:
@@ -133,9 +140,7 @@ class DSCVectorStore:
             # Field-specific vectors for field-aware search
             "semantic": VectorParams(size=self.embedding_dim, distance=Distance.COSINE),
             "ethical": VectorParams(size=self.embedding_dim, distance=Distance.COSINE),
-            "relational": VectorParams(
-                size=self.embedding_dim, distance=Distance.COSINE
-            ),
+            "relational": VectorParams(size=self.embedding_dim, distance=Distance.COSINE),
             # Crown Jewel specific: phase-aware vector
             "phase": VectorParams(size=self.embedding_dim, distance=Distance.COSINE),
         }
@@ -160,9 +165,7 @@ class DSCVectorStore:
 
         # Semantic field: embed a text representation
         semantic_text = self._field_to_text(chunk, "semantic")
-        field_embeddings["semantic"] = self.embedder.embed(
-            semantic_text, task="search_document"
-        )
+        field_embeddings["semantic"] = self.embedder.embed(semantic_text, task="search_document")
 
         # Ethical field: embed quality indicators
         ethical_text = self._field_to_text(chunk, "ethical")
@@ -178,9 +181,7 @@ class DSCVectorStore:
 
         # Phase field: embed phase-specific context
         phase_text = self._phase_to_text(chunk)
-        field_embeddings["phase"] = self.embedder.embed(
-            phase_text, task="classification"
-        )
+        field_embeddings["phase"] = self.embedder.embed(phase_text, task="classification")
 
         return DSCEmbeddedChunk(
             chunk=chunk, embedding=content_embedding, field_embeddings=field_embeddings
@@ -330,18 +331,14 @@ class DSCVectorStore:
 
         # If no Qdrant client, search in field container only
         if not self.client:
-            return self._search_field_container(
-                query, blessing_filter, phase_filter, top_k
-            )
+            return self._search_field_container(query, blessing_filter, phase_filter, top_k)
 
         # Build filter conditions
         must_conditions = []
 
         if blessing_filter:
             must_conditions.append(
-                FieldCondition(
-                    key="blessing_tier", match=MatchValue(value=blessing_filter)
-                )
+                FieldCondition(key="blessing_tier", match=MatchValue(value=blessing_filter))
             )
 
         if phase_filter:
@@ -407,18 +404,12 @@ class DSCVectorStore:
 
         # Filter by blessing
         if blessing_filter:
-            fragments = [
-                f
-                for f in fragments
-                if f.get("blessing", {}).get("Φ") == blessing_filter
-            ]
+            fragments = [f for f in fragments if f.get("blessing", {}).get("Φ") == blessing_filter]
 
         # Filter by phase
         if phase_filter:
             fragments = [
-                f
-                for f in fragments
-                if f.get("dsc_blessing", {}).get("phase") in phase_filter
+                f for f in fragments if f.get("dsc_blessing", {}).get("phase") in phase_filter
             ]
 
         # Simple text matching (could be enhanced)
@@ -565,9 +556,7 @@ class DSCVectorStore:
 
         return formatted
 
-    def _format_results(
-        self, results, purpose: Optional[str] = None
-    ) -> List[Dict[str, Any]]:
+    def _format_results(self, results, purpose: Optional[str] = None) -> List[Dict[str, Any]]:
         """Format search results with purpose-aware enhancements"""
         formatted = []
 
@@ -606,9 +595,7 @@ class DSCVectorStore:
 
         return formatted
 
-    def _get_purpose_recommendations(
-        self, payload: Dict[str, Any], purpose: str
-    ) -> List[str]:
+    def _get_purpose_recommendations(self, payload: Dict[str, Any], purpose: str) -> List[str]:
         """Generate purpose-specific recommendations for a chunk"""
         recommendations = []
 
@@ -618,9 +605,7 @@ class DSCVectorStore:
 
         if purpose == "stability":
             if blessing_tier != "Φ+":
-                recommendations.append(
-                    "Consider improving error handling and documentation"
-                )
+                recommendations.append("Consider improving error handling and documentation")
             if payload["blessing_contradiction"] > 0.5:
                 recommendations.append("Reduce complexity to improve stability")
 
@@ -634,9 +619,7 @@ class DSCVectorStore:
 
         elif purpose == "coherence":
             if payload["blessing_resonance"] < 0.5:
-                recommendations.append(
-                    "Low resonance - may need alignment with other components"
-                )
+                recommendations.append("Low resonance - may need alignment with other components")
             if blessing_tier == "Φ-":
                 recommendations.append("Improve blessing to enhance field coherence")
 
@@ -722,9 +705,7 @@ class DSCVectorStore:
             collection_name=self.collection_name,
             scroll_filter=Filter(
                 must=[
-                    FieldCondition(
-                        key="blessing_phase", match=MatchAny(any=from_phases)
-                    ),
+                    FieldCondition(key="blessing_phase", match=MatchAny(any=from_phases)),
                     FieldCondition(key="blessing_epc", range=Range(gte=min_epc)),
                 ]
             ),
@@ -763,9 +744,7 @@ class DSCVectorStore:
 
         return candidates
 
-    def _calculate_evolution_readiness(
-        self, payload: Dict[str, Any], target_phase: str
-    ) -> float:
+    def _calculate_evolution_readiness(self, payload: Dict[str, Any], target_phase: str) -> float:
         """Calculate how ready a chunk is to evolve to target phase"""
 
         epc = payload["blessing_epc"]

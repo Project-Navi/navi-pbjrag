@@ -135,9 +135,7 @@ class PhaseManager:
 
         return self.phase_data.get(target_phase, {})
 
-    def update_phase_data(
-        self, data: Dict[str, Any], phase: Optional[str] = None
-    ) -> None:
+    def update_phase_data(self, data: Dict[str, Any], phase: Optional[str] = None) -> None:
         """
         Update data for the specified phase or the current phase.
 

@@ -2,9 +2,10 @@
 Tests for CoreMetrics - Blessing calculation and metrics.
 """
 
-import pytest
 import numpy as np
-from pbjrag.crown_jewel import CoreMetrics, create_blessing_vector, FieldContainer
+import pytest
+
+from pbjrag.crown_jewel import CoreMetrics, FieldContainer, create_blessing_vector
 
 
 class TestCoreMetrics:
@@ -37,11 +38,7 @@ class TestCoreMetrics:
 
         # Call create_blessing_vector with the correct signature
         blessing_vector = metrics.create_blessing_vector(
-            cadence=0.5,
-            qualia=0.6,
-            entropy=0.4,
-            contradiction=0.3,
-            presence=0.7
+            cadence=0.5, qualia=0.6, entropy=0.4, contradiction=0.3, presence=0.7
         )
 
         assert isinstance(blessing_vector, dict)
